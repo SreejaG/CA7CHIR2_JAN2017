@@ -383,7 +383,20 @@ NSBlockOperation *likeOper;
             streamORChannelDict = [[GlobalStreamList sharedInstance] GlobalStreamDataSource];
         }
         else if(pageIndicator == 2){
-            streamORChannelDict = [[SharedChannelDetailsAPI sharedInstance] selectedSharedChannelMediaSource];
+            NSArray *dummy = [[NSArray alloc]init];
+            NSMutableArray *dummyArray = [[NSMutableArray alloc]init];
+            dummy = [[SharedChannelDetailsAPI sharedInstance] selectedSharedChannelMediaSource];
+            for(int i=0;i<[dummy count];i++){
+                NSString *medType = dummy[i][@"mediaType"];
+                if([medType isEqual:@"live"]){
+                }
+                else{
+                    [dummyArray addObject:dummy[i]];
+                }
+            }
+            streamORChannelDict = [dummyArray copy];
+            [dummyArray removeAllObjects];
+            dummy = nil;
         }
         else if(pageIndicator == 0){
             SetUpView *setUpObj = [[SetUpView alloc]init];

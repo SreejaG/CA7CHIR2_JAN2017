@@ -1365,7 +1365,7 @@ class StreamsListViewController: UIViewController{
         }
         self.removeOverlay()
         streamListCollectionView.alpha = 1.0
-        let index = Int32(indexPathRow)
+        let index = indexPathRow - liveStreamSource.count
         if (mediaAndLiveArray.count > 0)
         {
             let type = mediaAndLiveArray[indexPathRow][stream_mediaTypeKey] as! String
@@ -1375,7 +1375,7 @@ class StreamsListViewController: UIViewController{
                 selectedMediaId = mediaAndLiveArray[indexPathRow][stream_mediaIdKey] as! String
                 let dateString = mediaAndLiveArray[indexPathRow]["createdTime"] as! String
                 let imageTakenTime = FileManagerViewController.sharedInstance.getTimeDifference(dateStr: dateString)
-                vc = MovieViewController.movieViewController(withImageVideo: mediaAndLiveArray[indexPathRow][stream_channelNameKey] as! String,channelId: mediaAndLiveArray[indexPathRow][channelIdkey] as! String, userName: mediaAndLiveArray[indexPathRow][userIdKey] as! String, mediaType:mediaAndLiveArray[indexPathRow][stream_mediaTypeKey] as! String, profileImage: profileImage, videoImageUrl:mediaAndLiveArray[indexPathRow][mediaUrlKey] as! UIImage, notifType: mediaAndLiveArray[indexPathRow][notificationKey] as! String, mediaId: mediaAndLiveArray[indexPathRow][stream_mediaIdKey] as! String,timeDiff:imageTakenTime,likeCountStr:likeCount, selectedItem: index,pageIndicator: 1, videoDuration: mediaAndLiveArray[indexPathRow][videoDurationKey] as? String) as! MovieViewController
+                vc = MovieViewController.movieViewController(withImageVideo: mediaAndLiveArray[indexPathRow][stream_channelNameKey] as! String,channelId: mediaAndLiveArray[indexPathRow][channelIdkey] as! String, userName: mediaAndLiveArray[indexPathRow][userIdKey] as! String, mediaType:mediaAndLiveArray[indexPathRow][stream_mediaTypeKey] as! String, profileImage: profileImage, videoImageUrl:mediaAndLiveArray[indexPathRow][mediaUrlKey] as! UIImage, notifType: mediaAndLiveArray[indexPathRow][notificationKey] as! String, mediaId: mediaAndLiveArray[indexPathRow][stream_mediaIdKey] as! String,timeDiff:imageTakenTime,likeCountStr:likeCount, selectedItem: Int32(index),pageIndicator: 1, videoDuration: mediaAndLiveArray[indexPathRow][videoDurationKey] as? String) as! MovieViewController
                 self.present(vc, animated: false) { () -> Void in
                 }
             }
