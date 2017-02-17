@@ -44,7 +44,7 @@ class OtherChannelViewController: UIViewController  {
     {
         super.viewDidLoad()
         NotificationCenter.default.removeObserver(self)
-        
+        UserDefaults.standard.setValue(channelId, forKey: "channelForInfinite")
         let SharedChannelMediaDetail = Notification.Name("SharedChannelMediaDetail")
         NotificationCenter.default.addObserver(self, selector:#selector(OtherChannelViewController.updateChannelMediaList(notif:)), name: SharedChannelMediaDetail, object: nil)
         
@@ -281,7 +281,7 @@ class OtherChannelViewController: UIViewController  {
                 self.NoDatalabel.text = "No Media Available"
                 self.view.addSubview(self.NoDatalabel)
             }
-            if(SharedChannelDetailsAPI.sharedInstance.selectedSharedChannelMediaSource.count < 18 && SharedChannelDetailsAPI.sharedInstance.selectedSharedChannelMediaSource.count != 0)
+            if(SharedChannelDetailsAPI.sharedInstance.selectedSharedChannelMediaSource.count < 16 && SharedChannelDetailsAPI.sharedInstance.selectedSharedChannelMediaSource.count != 0)
             {
                 self.getInfinteScrollData()
                 DispatchQueue.main.async {
@@ -489,7 +489,8 @@ class OtherChannelViewController: UIViewController  {
             let subid = subIdArray.min()!
             let channelSelectedMediaId =  "\(subid)"
             let userId = UserDefaults.standard.value(forKey: userLoginIdKey) as! String
-            SharedChannelDetailsAPI.sharedInstance.infiniteScroll(channelId: channelId, selectedChannelName: channelName, selectedChannelUserName: userId, channelMediaId: channelSelectedMediaId)
+            let ch = UserDefaults.standard.value(forKey: "channelForInfinite")
+            SharedChannelDetailsAPI.sharedInstance.infiniteScroll(channelId: ch as! String, selectedChannelName: channelName, selectedChannelUserName: userId, channelMediaId: channelSelectedMediaId)
         }
         else{
             self.downloadCompleteFlag = "end"
