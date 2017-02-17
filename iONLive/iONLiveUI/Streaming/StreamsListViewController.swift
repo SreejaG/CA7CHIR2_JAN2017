@@ -499,12 +499,12 @@ class StreamsListViewController: UIViewController{
         }
         else{
             let channelIds = info["channelId"] as! Int
+            let mediaArrayData  = info["mediaId"] as! NSArray
+            self.removeDataFromGlobal(channelId: channelIds, mediaArrayData: mediaArrayData)
             if let ch = UserDefaults.standard.value(forKey: "channelForInfinite")
             {
                 if("\(channelIds)" == ch as! String)
                 {
-                    let mediaArrayData  = info["mediaId"] as! NSArray
-                    self.removeDataFromGlobal(channelId: channelIds, mediaArrayData: mediaArrayData)
                     self.deleteFromOtherChannelIfExist(mediaArrayData: mediaArrayData)
                 }
             }

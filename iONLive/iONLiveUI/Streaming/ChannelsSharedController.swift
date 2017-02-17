@@ -644,6 +644,7 @@ extension ChannelsSharedController:UITableViewDataSource, UITableViewDelegate
         if(index != -1)
         {
             let sharedCount = mediaShared[index][sharedMediaCount] as! String
+            UserDefaults.standard.setValue(ChannelSharedListAPI.sharedInstance.SharedChannelListDataSource[indexPath.row][ch_channelIdkey] as! String, forKey: "channelForInfinite")
             channelItemListVC.channelId = ChannelSharedListAPI.sharedInstance.SharedChannelListDataSource[indexPath.row][ch_channelIdkey] as! String
             channelItemListVC.channelName = ChannelSharedListAPI.sharedInstance.SharedChannelListDataSource[indexPath.row][ch_channelNameKey] as! String
             channelItemListVC.totalMediaCount = sharedCount

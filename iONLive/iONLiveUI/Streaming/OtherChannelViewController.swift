@@ -84,7 +84,7 @@ class OtherChannelViewController: UIViewController  {
         {
             channelTitleLabel.text = channelName.uppercased()
         }
-        UserDefaults.standard.setValue(channelId, forKey: "channelForInfinite")
+     //   UserDefaults.standard.setValue(channelId, forKey: "channelForInfinite")
     }
     
     override func viewWillDisappear(_ animated: Bool) {
