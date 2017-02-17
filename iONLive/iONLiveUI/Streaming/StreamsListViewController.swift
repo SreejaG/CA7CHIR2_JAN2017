@@ -498,10 +498,16 @@ class StreamsListViewController: UIViewController{
             self.getDataUsingNotificationId(info: info)
         }
         else{
-            let channelId = info["channelId"] as! Int
-            let mediaArrayData  = info["mediaId"] as! NSArray
-            self.removeDataFromGlobal(channelId: channelId, mediaArrayData: mediaArrayData)
-            self.deleteFromOtherChannelIfExist(mediaArrayData: mediaArrayData)
+            let channelIds = info["channelId"] as! Int
+            if let ch = UserDefaults.standard.value(forKey: "channelForInfinite")
+            {
+                if("\(channelIds)" == ch as! String)
+                {
+                    let mediaArrayData  = info["mediaId"] as! NSArray
+                    self.removeDataFromGlobal(channelId: channelIds, mediaArrayData: mediaArrayData)
+                    self.deleteFromOtherChannelIfExist(mediaArrayData: mediaArrayData)
+                }
+            }
         }
     }
     
@@ -1469,13 +1475,13 @@ extension StreamsListViewController:UICollectionViewDataSource,UICollectionViewD
                     self.didSelectExtension(indexPathRow: indexPath.row,operation:self.operationInRedirection)
                 })
                 self.operationQueueObjRedirection.addOperation(operationInRedirection)
-
-//                let backgroundQueue = DispatchQueue(label: "com.app.queue",
-//                                                    qos: .background,
-//                                                    target: nil)
-//                backgroundQueue.async {
-//                    self.didSelectExtension(indexPathRow: indexPath.row)
-//                }
+                
+                //                let backgroundQueue = DispatchQueue(label: "com.app.queue",
+                //                                                    qos: .background,
+                //                                                    target: nil)
+                //                backgroundQueue.async {
+                //                    self.didSelectExtension(indexPathRow: indexPath.row)
+                //                }
             }
         }
     }

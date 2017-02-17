@@ -44,7 +44,6 @@ class OtherChannelViewController: UIViewController  {
     {
         super.viewDidLoad()
         NotificationCenter.default.removeObserver(self)
-        UserDefaults.standard.setValue(channelId, forKey: "channelForInfinite")
         let SharedChannelMediaDetail = Notification.Name("SharedChannelMediaDetail")
         NotificationCenter.default.addObserver(self, selector:#selector(OtherChannelViewController.updateChannelMediaList(notif:)), name: SharedChannelMediaDetail, object: nil)
         
@@ -85,6 +84,7 @@ class OtherChannelViewController: UIViewController  {
         {
             channelTitleLabel.text = channelName.uppercased()
         }
+        UserDefaults.standard.setValue(channelId, forKey: "channelForInfinite")
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -94,6 +94,7 @@ class OtherChannelViewController: UIViewController  {
         self.customView.removeFromSuperview()
         removeOverlay()
         NotificationCenter.default.removeObserver(self, name: Notification.Name("SharedChannelMediaDetail"), object: nil)
+        UserDefaults.standard.removeObject(forKey: "channelForInfinite")
     }
     func dismissFullView(notif: NSNotification)
     {
@@ -489,8 +490,10 @@ class OtherChannelViewController: UIViewController  {
             let subid = subIdArray.min()!
             let channelSelectedMediaId =  "\(subid)"
             let userId = UserDefaults.standard.value(forKey: userLoginIdKey) as! String
-            let ch = UserDefaults.standard.value(forKey: "channelForInfinite")
-            SharedChannelDetailsAPI.sharedInstance.infiniteScroll(channelId: ch as! String, selectedChannelName: channelName, selectedChannelUserName: userId, channelMediaId: channelSelectedMediaId)
+            if let ch = UserDefaults.standard.value(forKey: "channelForInfinite")
+            {
+                SharedChannelDetailsAPI.sharedInstance.infiniteScroll(channelId: ch as! String, selectedChannelName: channelName, selectedChannelUserName: userId, channelMediaId: channelSelectedMediaId)
+            }
         }
         else{
             self.downloadCompleteFlag = "end"
