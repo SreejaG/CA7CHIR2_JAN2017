@@ -87,7 +87,7 @@ class EditProfileViewController: UIViewController, UINavigationControllerDelegat
     }
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-       view.endEditing(true)
+        view.endEditing(true)
     }
     
     func tableViewTap(recognizer: UITapGestureRecognizer)
@@ -95,15 +95,15 @@ class EditProfileViewController: UIViewController, UINavigationControllerDelegat
         if recognizer.state == UIGestureRecognizerState.ended {
             let swipeLocation = recognizer.location(in: self.editProfTableView)
             if let swipedIndexPath = editProfTableView.indexPathForRow(at: swipeLocation) {
-//                if swipedIndexPath.section == 1 && swipedIndexPath.row == 2
-//                {
-//                    let sharingStoryboard = UIStoryboard(name:"EditProfile", bundle: nil)
-//                    let channelItemListVC = sharingStoryboard.instantiateViewController(withIdentifier: "ResetPasswordViewController") as! ResetPasswordViewController
-//                    channelItemListVC.navigationController?.isNavigationBarHidden = true
-//                    self.present(channelItemListVC, animated: false) { () -> Void in
-//                    }
-//                }
-//                else
+                //                if swipedIndexPath.section == 1 && swipedIndexPath.row == 2
+                //                {
+                //                    let sharingStoryboard = UIStoryboard(name:"EditProfile", bundle: nil)
+                //                    let channelItemListVC = sharingStoryboard.instantiateViewController(withIdentifier: "ResetPasswordViewController") as! ResetPasswordViewController
+                //                    channelItemListVC.navigationController?.isNavigationBarHidden = true
+                //                    self.present(channelItemListVC, animated: false) { () -> Void in
+                //                    }
+                //                }
+                //                else
                 if (swipedIndexPath.section == 1 && swipedIndexPath.row == 3)
                 {
                     synchronisingTapped()
@@ -427,8 +427,8 @@ class EditProfileViewController: UIViewController, UINavigationControllerDelegat
             uploadImage(signedUrl: fullImageURL, imageToSave: imageForProfile, completion: { (result) in
                 self.uploadImage(signedUrl: self.thumbURL, imageToSave: thumbImageForProfile!, completion: { (result) in
                     if(result == "Success"){
+                        self.notificationToCloudForProfileChange()
                         self.removeOverlay()
-                        self.imageForProfileOld = self.imageForProfile
                         let alert = UIAlertController(title: "Success", message: "Profile updated successfully", preferredStyle: UIAlertControllerStyle.alert)
                         alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: { (action) -> Void in
                             _ = self.navigationController?.popViewController(animated: false)
@@ -438,11 +438,29 @@ class EditProfileViewController: UIViewController, UINavigationControllerDelegat
                     else{
                         self.removeOverlay()
                         self.imageForProfile = self.imageForProfileOld
+                        self.updateProfileDetails()
                     }
                 })
             })
-            self.updateProfileDetails()
         }
+    }
+    
+    
+    func notificationToCloudForProfileChange()
+    {
+        let defaults = UserDefaults.standard
+        let userId = defaults.value(forKey: userLoginIdKey) as! String
+        let accessToken = defaults.value(forKey: userAccessTockenKey) as! String
+        profileManager.getUpdationProfileImage(userName: userId, accessToken: accessToken, success: { (response) in
+            self.imageForProfileOld = self.imageForProfile
+            self.updateProfileDetails()
+            return
+        }) { (error, message) in
+            self.imageForProfile = self.imageForProfileOld
+            self.updateProfileDetails()
+            return
+        }
+        
     }
     
     func  updateProfileDetails() {

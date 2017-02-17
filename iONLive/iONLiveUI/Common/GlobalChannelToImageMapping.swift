@@ -464,9 +464,27 @@ class GlobalChannelToImageMapping: NSObject {
         if channelId == "\(archiveChannelId)"
         {
             deleteMediasFromAllChannels(chanelId: channelId, mediaIds: mediaIds)
+            deleteMediaFromCache(mediaIds:mediaIds)
         }
         else{
             deleteMediaFromParticularChannel(chanelId: channelId,mediaIds:mediaIds)
+        }
+    }
+    
+    func deleteMediaFromCache(mediaIds: [String])
+    {
+        for i in 0 ..< mediaIds.count
+        {
+            if(i < mediaIds.count){
+                let selectedMediaId = mediaIds[i]
+                let mediaIdForFilePathThumb = "\(selectedMediaId)thumb"
+                let parentPath = FileManagerViewController.sharedInstance.getParentDirectoryPath().absoluteString
+                let savingPathThumb = parentPath! + "/" + mediaIdForFilePathThumb
+                _ = FileManagerViewController.sharedInstance.deleteImageFromFilePath(mediaPath: savingPathThumb)
+                let mediaIdForFilePathFull = "\(selectedMediaId)full"
+                let savingPathFull = parentPath! + "/" + mediaIdForFilePathFull
+                _ = FileManagerViewController.sharedInstance.deleteImageFromFilePath(mediaPath: savingPathFull)
+            }
         }
     }
     

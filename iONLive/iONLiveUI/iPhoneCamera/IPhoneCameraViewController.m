@@ -109,6 +109,8 @@ int timerCount = 0;
          object:[UIDevice currentDevice]];
         [self setButtonCornerRadius];
         [self setGUIBasedOnMode];
+        [self updateThumbnailsStream];
+        [self updateThumbnailsChannel];
     });
 }
 
@@ -394,6 +396,14 @@ int timerCount = 0;
     });
     
     [self loadingView:@"load" completion:^{
+        
+        if(takePictureFlag == false)
+        {
+            PhotoViewerInstance.iphoneCam = self;
+            SetUpView *viewSet = [[SetUpView alloc]init];
+            [viewSet getValue];
+        }
+        
         if([[NSUserDefaults standardUserDefaults] valueForKey:@"CallingAPI"] != nil)
         {
             timerCount = 50;
@@ -425,9 +435,6 @@ int timerCount = 0;
                     });
                 }
                 else{
-                    dispatch_async( dispatch_get_main_queue(), ^{
-                        [self updateThumbnails];
-                    });
                     loadingCameraFlag = false;
                     _noDataFound.text = @"Loading camera...";
                 }
@@ -448,21 +455,13 @@ int timerCount = 0;
             });
         }
         
-        if(takePictureFlag == false)
-        {
-            PhotoViewerInstance.iphoneCam = self;
-            SetUpView *viewSet = [[SetUpView alloc]init];
-            [viewSet getValue];
-        }
-        
         [[NSUserDefaults standardUserDefaults] setValue:@"secondCall" forKey:@"CallingAPI"];
         [[NSUserDefaults standardUserDefaults] setValue:@"otherPageRedirection" forKey:@"viewFromWhichPage"];
-        
     }];
     backgroundEnterFlag = false;
 }
 
--(void) updateThumbnails
+-(void) updateThumbnailsChannel
 {
     NSString *archiveChanelId = [NSString stringWithFormat:@"%@", [[NSUserDefaults standardUserDefaults] valueForKey:@"archiveId"]];
     GlobalChannelToImageMapping *GlobalChannelToImageMappingObj = [GlobalChannelToImageMapping sharedInstance];
@@ -492,6 +491,26 @@ int timerCount = 0;
                 });
                 
             }
+        }
+    }
+}
+
+-(void) updateThumbnailsStream
+{
+    if(_countLabel.hidden){
+        GlobalStreamList *GlobalStreamListObj = [GlobalStreamList sharedInstance];
+        if(GlobalStreamListObj.GlobalStreamDataSource.count > 0)
+        {
+            UIImage *img = [[UIImage alloc]init];
+            img = GlobalStreamListObj.GlobalStreamDataSource[0][@"thumbImage"];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.latestSharedMediaImage.image = img;
+            });
+        }
+        else{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.latestSharedMediaImage.image = [UIImage imageNamed:@"thumb12"];
+            });
         }
     }
 }
@@ -932,6 +951,91 @@ int timerCount = 0;
     
     NSString * latestSharedURL = [[UrlManager sharedInstance] getMediaURLWithMediaId:[NSString stringWithFormat:@"%@",latestSharedMediaThumbnail]];
     
+    if(takePictureFlag == false){
+        dispatch_async(dispatch_get_global_queue(0,0), ^{
+            NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString: latestMediaURL]];
+            
+            if ( data == nil ){
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self updateThumbnailsChannel];
+                });
+            }
+            else if ([UIImage imageWithData: data] == nil)
+            {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.thumbnailImageView.image = [UIImage imageNamed:@"thumb12"];
+                    [self updateThumbnailsChannel];
+                });
+            }
+            else{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if([latestCapturedMediaType  isEqual: @"video"])
+                    {
+                        self.playiIconView.hidden = NO;
+                    }
+                    else{
+                        self.playiIconView.hidden = YES;
+                    }
+                    self.thumbnailImageView.image = [UIImage imageWithData: data];
+                });
+            }
+        });
+    }
+    else{
+        [self updateThumbnailsChannel];
+    }
+    
+    if([mediaSharedCount  isEqual: @"0"])
+    {
+        dispatch_async(dispatch_get_global_queue(0,0), ^{
+            NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString: latestSharedURL]];
+            if ( data == nil ){
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self updateThumbnailsStream];
+                });
+            }
+            else{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.latestSharedMediaImage.image= [UIImage imageWithData: data];
+                });
+            }
+        });
+    }
+    else{
+        NSString *status = [[NSUserDefaults standardUserDefaults] objectForKey:@"First"];
+        if([status isEqualToString:@"FirstEntry"])
+        {
+            _countLabel.hidden= false;
+            _countLabel.text = mediaSharedCount;
+            [[NSUserDefaults standardUserDefaults] setObject:@"default" forKey:@"First"] ;
+        }
+        NSArray *mediaArray = [[NSUserDefaults standardUserDefaults] objectForKey:@"Shared"];
+        NSInteger count = 0;
+        for (int i=0;i< mediaArray.count;i++)
+        {
+            count = count + [ mediaArray[i][@"total_no_media_shared"] integerValue];
+        }
+        if(count==0)
+        {
+            _countLabel.hidden= true;
+            [self.view bringSubviewToFront:self.latestSharedMediaImage];
+            dispatch_async(dispatch_get_global_queue(0,0), ^{
+                NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString: latestSharedURL]];
+                if ( data == nil )
+                {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self updateThumbnailsStream];
+                    });
+                }
+                else{
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        self.latestSharedMediaImage.image = [UIImage imageWithData: data];
+                    });
+                }
+            });
+        }
+    }
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         _sharedUserCount.text = sharedUserCount;
         if(userImages.count > 0){
@@ -963,86 +1067,6 @@ int timerCount = 0;
             }
         }
     });
-    
-    if(takePictureFlag == false){
-        dispatch_async(dispatch_get_global_queue(0,0), ^{
-            NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString: latestMediaURL]];
-            
-            if ( data == nil ){
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self updateThumbnails];
-                });
-            }
-            else if ([UIImage imageWithData: data] == nil)
-            {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    self.thumbnailImageView.image = [UIImage imageNamed:@"thumb12"];
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self updateThumbnails];
-                    });
-                    
-                });
-            }
-            else{
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if([latestCapturedMediaType  isEqual: @"video"])
-                    {
-                        self.playiIconView.hidden = NO;
-                    }
-                    else{
-                        self.playiIconView.hidden = YES;
-                    }
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        
-                        self.thumbnailImageView.image = [UIImage imageWithData: data];
-                    });
-                });
-            }
-        });
-    }
-    else{
-        [self updateThumbnails];
-    }
-    
-    if([mediaSharedCount  isEqual: @"0"])
-    {
-        dispatch_async(dispatch_get_global_queue(0,0), ^{
-            NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString: latestSharedURL]];
-            if ( data == nil )
-                return;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.latestSharedMediaImage.image= [UIImage imageWithData: data];
-            });
-        });
-    }
-    else{
-        NSString *status = [[NSUserDefaults standardUserDefaults] objectForKey:@"First"];
-        if([status isEqualToString:@"FirstEntry"])
-        {
-            _countLabel.hidden= false;
-            _countLabel.text = mediaSharedCount;
-            [[NSUserDefaults standardUserDefaults] setObject:@"default" forKey:@"First"] ;
-        }
-        NSArray *mediaArray = [[NSUserDefaults standardUserDefaults] objectForKey:@"Shared"];
-        NSInteger count = 0;
-        for (int i=0;i< mediaArray.count;i++)
-        {
-            count = count + [ mediaArray[i][@"total_no_media_shared"] integerValue];
-        }
-        if(count==0)
-        {
-            _countLabel.hidden= true;
-            [self.view bringSubviewToFront:self.latestSharedMediaImage];
-            dispatch_async(dispatch_get_global_queue(0,0), ^{
-                NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString: latestSharedURL]];
-                if ( data == nil )
-                    return;
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    self.latestSharedMediaImage.image = [UIImage imageWithData: data];
-                });
-            });
-        }
-    }
 }
 
 #pragma mark button action
@@ -1758,15 +1782,15 @@ UIImage* rotate(UIImage* src, UIImageOrientation orientation)
                             }
                         }
                     });
-//                    if ([PHAssetResourceCreationOptions class] ) {
-//                        PHAssetResourceCreationOptions *options = [[PHAssetResourceCreationOptions alloc] init];
-//                        options.shouldMoveFile = YES;
-//                        PHAssetCreationRequest *changeRequest = [PHAssetCreationRequest creationRequestForAsset];
-//                        [changeRequest addResourceWithType:PHAssetResourceTypeVideo fileURL:videoUrl options:options];
-//                    }
-//                    else {
-//                        [PHAssetChangeRequest creationRequestForAssetFromVideoAtFileURL:videoUrl];
-//                    }
+                    //                    if ([PHAssetResourceCreationOptions class] ) {
+                    //                        PHAssetResourceCreationOptions *options = [[PHAssetResourceCreationOptions alloc] init];
+                    //                        options.shouldMoveFile = YES;
+                    //                        PHAssetCreationRequest *changeRequest = [PHAssetCreationRequest creationRequestForAsset];
+                    //                        [changeRequest addResourceWithType:PHAssetResourceTypeVideo fileURL:videoUrl options:options];
+                    //                    }
+                    //                    else {
+                    //                        [PHAssetChangeRequest creationRequestForAssetFromVideoAtFileURL:videoUrl];
+                    //                    }
                 } completionHandler:^( BOOL success, NSError *error ) {
                     if ( ! success ) {
                     }

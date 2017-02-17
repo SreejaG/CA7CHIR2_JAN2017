@@ -37,7 +37,7 @@ class OtherChannelViewController: UIViewController  {
     
     var operationQueueObjRedirectionOtherChannel = OperationQueue()
     var operationInRedirectionOtherChannel = BlockOperation()
-
+    
     
     @IBOutlet weak var notificationLabel: UILabel!
     override func viewDidLoad()
@@ -739,13 +739,13 @@ extension OtherChannelViewController : UICollectionViewDataSource,UICollectionVi
                     self.didSelectExtension(indexPathRow: indexPath.row,operation:self.operationInRedirectionOtherChannel)
                 })
                 self.operationQueueObjRedirectionOtherChannel.addOperation(operationInRedirectionOtherChannel)
-//                let backgroundQueue = DispatchQueue(label: "com.app.queue",
-//                                                    qos: .background,
-//                                                    target: nil)
-//                backgroundQueue.async {
-//                    self.didSelectExtension(indexPathRow: indexPath.row)
-//                }
-//                didSelectExtension(indexPathRow: indexPath.row)
+                //                let backgroundQueue = DispatchQueue(label: "com.app.queue",
+                //                                                    qos: .background,
+                //                                                    target: nil)
+                //                backgroundQueue.async {
+                //                    self.didSelectExtension(indexPathRow: indexPath.row)
+                //                }
+                //                didSelectExtension(indexPathRow: indexPath.row)
             }
         }
     }

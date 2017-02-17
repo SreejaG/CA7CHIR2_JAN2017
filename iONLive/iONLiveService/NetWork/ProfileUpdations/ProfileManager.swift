@@ -185,4 +185,32 @@ class ProfileManager: NSObject,URLSessionDelegate,URLSessionTaskDelegate, URLSes
             failure?(error as NSError?, failureErrorCode)
         })
     }
+    
+    
+    //Method to get profile updation notification details, success and failure block
+    func getUpdationProfileImage(userName: String, accessToken: String, success: ((_ response: AnyObject?)->())?, failure: ((_ error: NSError?, _ code: String)->())?)
+    {
+        let requestManager = RequestManager.sharedInstance
+        requestManager.httpManager().get(UrlManager.sharedInstance.getProfileUpdationNotificationAPIUrl(userName: userName, accessToken: accessToken), parameters: nil, success: { (operation, response) -> Void in
+            if let responseObject = response as? [String:AnyObject]
+            {
+                success?(responseObject as AnyObject?)
+            }
+            else
+            {
+                //The response did not match the form we expected, error/fail
+                failure?(NSError(domain: "Response error", code: 1, userInfo: nil), "ResponseInvalid")
+            }
+            
+        }, failure: { (operation, error) -> Void in
+            var failureErrorCode:String = ""
+            //get the error code from API if any
+            if let errorCode = requestManager.getFailureErrorCodeFromResponse(error: error as NSError?)
+            {
+                failureErrorCode = errorCode
+            }
+            //The credentials were wrong or the network call failed
+            failure?(error as NSError?, failureErrorCode)
+        })
+    }
 }

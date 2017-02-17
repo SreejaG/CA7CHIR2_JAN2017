@@ -59,9 +59,9 @@ class SnapCamSelectViewController: UIViewController {
         case 5:
             snapCamMode = .iPhone
             break
-//        case 6:
-//            snapCamMode = .TestAPI
-//            break
+            //        case 6:
+            //            snapCamMode = .TestAPI
+        //            break
         default :
             break
         }
@@ -133,9 +133,9 @@ extension SnapCamSelectViewController:UITableViewDataSource,UITableViewDelegate
             }
             break
             
-//        case 6:
-//            loadAPITestView()
-//            break
+            //        case 6:
+            //            loadAPITestView()
+            //            break
             
         default :
             let cameraViewStoryboard = UIStoryboard(name:"IPhoneCameraView" , bundle: nil)
@@ -392,9 +392,9 @@ extension SnapCamSelectViewController
         case 5:
             changeSelectedSnapCamMode(selectedMode: .iPhone)
             break
-//        case 6:
-//            changeSelectedSnapCamMode(selectedMode: .TestAPI)
-//            break
+            //        case 6:
+            //            changeSelectedSnapCamMode(selectedMode: .TestAPI)
+        //            break
         default :
             break
         }
@@ -430,7 +430,9 @@ extension SnapCamSelectViewController
     {
         let cameraViewStoryboard = UIStoryboard(name:"IPhoneCameraView" , bundle: nil)
         let iPhoneCameraViewController = cameraViewStoryboard.instantiateViewController(withIdentifier: "IPhoneCameraViewController") as! IPhoneCameraViewController
-        self.present(iPhoneCameraViewController, animated: false) { () -> Void in
+        let navController = UINavigationController(rootViewController: iPhoneCameraViewController)
+        navController.isNavigationBarHidden = true
+        self.present(navController, animated: false) { () -> Void in
         }
     }
     

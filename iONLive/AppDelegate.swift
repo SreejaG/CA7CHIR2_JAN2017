@@ -27,8 +27,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIApplication.shared.registerUserNotificationSettings(settings)
         UIApplication.shared.registerForRemoteNotifications()
         
-//        UserDefaults.standard.set(0, forKey: "badgeCount")
-//        UIApplication.shared.applicationIconBadgeNumber = UserDefaults.standard.integer(forKey: "badgeCount")
+        //        UserDefaults.standard.set(0, forKey: "badgeCount")
+        //        UIApplication.shared.applicationIconBadgeNumber = UserDefaults.standard.integer(forKey: "badgeCount")
         
         let documentsPath = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0] + "/GCSCA7CH"
         if(FileManager.default.fileExists(atPath: documentsPath))
@@ -92,8 +92,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationWillEnterForeground(_ application: UIApplication) {
-//        UserDefaults.standard.set(0, forKey: "badgeCount")
-//        UIApplication.shared.applicationIconBadgeNumber = 0
+        //        UserDefaults.standard.set(0, forKey: "badgeCount")
+        //        UIApplication.shared.applicationIconBadgeNumber = 0
         
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "enterBackground"), object:nil)
         if UserDefaults.standard.value(forKey: "notificationArrived") != nil{
@@ -124,7 +124,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.saveContext()
         UserDefaults.standard.setValue("0", forKey: "notificationArrived")
         
-//        UIApplication.shared.applicationIconBadgeNumber = UserDefaults.standard.integer(forKey: "badgeCount")
+        //        UIApplication.shared.applicationIconBadgeNumber = UserDefaults.standard.integer(forKey: "badgeCount")
     }
     
     func initialViewController()
@@ -259,14 +259,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
-//        if(application.applicationState == .inactive || application.applicationState == .background)
-//        {
-//            let olderBadgeCount =  UserDefaults.standard.integer(forKey: "badgeCount")
-//            let badgeTotalCount = olderBadgeCount + 1
-//            UserDefaults.standard.set(badgeTotalCount, forKey: "badgeCount")
-//            UIApplication.shared.applicationIconBadgeNumber = badgeTotalCount
-//        }
-    
+        //        if(application.applicationState == .inactive || application.applicationState == .background)
+        //        {
+        //            let olderBadgeCount =  UserDefaults.standard.integer(forKey: "badgeCount")
+        //            let badgeTotalCount = olderBadgeCount + 1
+        //            UserDefaults.standard.set(badgeTotalCount, forKey: "badgeCount")
+        //            UIApplication.shared.applicationIconBadgeNumber = badgeTotalCount
+        //        }
+        
         let result = userInfo["messageFrom"] as? NSDictionary
         let defaults = UserDefaults.standard
         var checkFlag : Bool = false
@@ -369,6 +369,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 defaults.setValue("0", forKey: "notificationArrived")
             }
         }
+        else if  (result?["type"] as! NSString == "profileImageUpdation")
+        {
+            let userName: String = result?["userName"] as! String
+            updateUserProfile(userName: userName)
+        }
+    }
+    
+    func updateUserProfile(userName: String){
+        let defaults = UserDefaults.standard
+        let userId: String = defaults.value(forKey: userLoginIdKey) as! String
+        let accessToken: String = defaults.value(forKey: userAccessTockenKey) as! String
+        let profileImageName = UrlManager.sharedInstance.getUserProfileImageBaseURL() + userId + "/" + accessToken + "/" + userName
+        let profileImage: UIImage = FileManagerViewController.sharedInstance.getProfileImage(profileNameURL: profileImageName)
+        let profileImageData = UIImageJPEGRepresentation(profileImage, 0.5)
+        let profileImageDataAsNsdata = (profileImageData as NSData?)!
+        let imageFromDefault = UIImageJPEGRepresentation(UIImage(named: "dummyUser")!, 0.5)
+        let imageFromDefaultAsNsdata = (imageFromDefault as NSData?)!
+        if(profileImageDataAsNsdata.isEqual(imageFromDefaultAsNsdata)){
+        }
+        else{
+            let savingPath = "\(userName)Profile"
+            _ =
+                FileManagerViewController.sharedInstance.saveImageToFilePath(mediaName: savingPath, mediaImage: profileImage)
+        }
+        
     }
     
     func myDayCleanUpChannel(channelId : String)
