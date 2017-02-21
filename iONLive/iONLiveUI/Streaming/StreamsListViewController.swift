@@ -920,6 +920,14 @@ class StreamsListViewController: UIViewController{
         DispatchQueue.main.async {
             self.mediaAndLiveArray.removeAll()
             
+            if(GlobalStreamList.sharedInstance.GlobalStreamDataSource.count > 0){
+                GlobalStreamList.sharedInstance.GlobalStreamDataSource.sort(by: { p1, p2 in
+                    let time1 = p1[stream_mediaIdKey] as! String
+                    let time2 = p2[stream_mediaIdKey] as! String
+                    return time1 > time2
+                })
+            }
+            
             let dummy: [[String:Any]] = GlobalStreamList.sharedInstance.GlobalStreamDataSource
             for i in 0  ..< dummy.count
             {
@@ -991,7 +999,13 @@ class StreamsListViewController: UIViewController{
                 }
                 else{
                     self.mediaAndLiveArray.removeAll()
-                    
+                    if(GlobalStreamList.sharedInstance.GlobalStreamDataSource.count > 0){
+                        GlobalStreamList.sharedInstance.GlobalStreamDataSource.sort(by: { p1, p2 in
+                            let time1 = p1[stream_mediaIdKey] as! String
+                            let time2 = p2[stream_mediaIdKey] as! String
+                            return time1 > time2
+                        })
+                    }
                     let dummy: [[String:Any]] = GlobalStreamList.sharedInstance.GlobalStreamDataSource
                     for i in 0  ..< dummy.count
                     {
