@@ -112,7 +112,7 @@ class AddChannelViewController: UIViewController {
         let defaults = UserDefaults.standard
         let archiveChanelId = "\(defaults.value(forKey: archiveId) as! Int)"
         for element in GlobalDataChannelList.sharedInstance.globalChannelDataSource{
-            let channelId = element[channelIdKey] as! String
+            let channelId = element[MyChannelIdKey] as! String
             if((channelId != selectedChannelId) && (channelId != archiveChanelId))
             {
                 fulldataSource.append(element)
@@ -198,12 +198,12 @@ class AddChannelViewController: UIViewController {
             dateFormatter.timeZone = NSTimeZone(name: "UTC") as TimeZone!
             let localDateStr = dateFormatter.string(from: NSDate() as Date)
             
-            GlobalDataChannelList.sharedInstance.globalChannelDataSource.insert([channelIdKey:channelId, channelNameKey:channelName, totalMediaKey:"0", ChannelCreatedTimeKey: localDateStr,sharedOriginalKey:1, sharedTemporaryKey:1], at: 0)
+            GlobalDataChannelList.sharedInstance.globalChannelDataSource.insert([MyChannelIdKey:channelId, channelNameKey:channelName, totalMediaKey:"0", ChannelCreatedTimeKey: localDateStr,sharedOriginalKey:1, sharedTemporaryKey:1], at: 0)
             
             let imageData = [[String:AnyObject]]()
             GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict.updateValue(imageData, forKey: channelId)
             
-            fulldataSource.insert([channelIdKey:channelId, channelNameKey:channelName, totalMediaKey:"0", ChannelCreatedTimeKey: localDateStr,sharedOriginalKey:1, sharedTemporaryKey:1], at: 0)
+            fulldataSource.insert([MyChannelIdKey:channelId, channelNameKey:channelName, totalMediaKey:"0", ChannelCreatedTimeKey: localDateStr,sharedOriginalKey:1, sharedTemporaryKey:1], at: 0)
             
             addChannelTableView.reloadData()
         }
@@ -219,7 +219,7 @@ class AddChannelViewController: UIViewController {
         {
             if(i < selectedArray.count)
             {
-                let channelSelectedId = fulldataSource[selectedArray[i]][channelIdKey] as! String
+                let channelSelectedId = fulldataSource[selectedArray[i]][MyChannelIdKey] as! String
                 localChannelDict.append(fulldataSource[selectedArray[i]])
                 channelSelected.add(channelSelectedId)
             }

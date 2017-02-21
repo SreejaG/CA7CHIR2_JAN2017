@@ -919,6 +919,22 @@ class StreamsListViewController: UIViewController{
     {
         DispatchQueue.main.async {
             self.mediaAndLiveArray.removeAll()
+            
+            let dummy: [[String:Any]] = GlobalStreamList.sharedInstance.GlobalStreamDataSource
+            for i in 0  ..< dummy.count
+            {
+                for j in i+1 ..< dummy.count
+                {
+                    if(dummy[i][stream_mediaIdKey] as! String == dummy[j][stream_mediaIdKey] as! String)
+                    {
+                        if(dummy[i][channelIdkey] as! String == dummy[j][channelIdkey] as! String)
+                        {
+                            GlobalStreamList.sharedInstance.GlobalStreamDataSource.remove(at: j)
+                        }
+                    }
+                }
+            }
+            
             self.mediaAndLiveArray = self.liveStreamSource +  GlobalStreamList.sharedInstance.GlobalStreamDataSource
             if(self.mediaAndLiveArray.count > 0)
             {
@@ -975,6 +991,22 @@ class StreamsListViewController: UIViewController{
                 }
                 else{
                     self.mediaAndLiveArray.removeAll()
+                    
+                    let dummy: [[String:Any]] = GlobalStreamList.sharedInstance.GlobalStreamDataSource
+                    for i in 0  ..< dummy.count
+                    {
+                        for j in i+1 ..< dummy.count
+                        {
+                            if(dummy[i][stream_mediaIdKey] as! String == dummy[j][stream_mediaIdKey] as! String)
+                            {
+                                if(dummy[i][channelIdkey] as! String == dummy[j][channelIdkey] as! String)
+                                {
+                                    GlobalStreamList.sharedInstance.GlobalStreamDataSource.remove(at: j)
+                                }
+                            }
+                        }
+                    }
+
                     self.mediaAndLiveArray = GlobalStreamList.sharedInstance.GlobalStreamDataSource
                     self.NoDatalabel.removeFromSuperview()
                     if(self.mediaAndLiveArray.count == 0)

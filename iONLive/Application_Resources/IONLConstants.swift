@@ -22,7 +22,7 @@ let apiDeveloperFailureMessage = "developerMsg"
 let vowzaIp = "104.196.159.90" //IR3
 
 //channel details
-let channelIdKey = "channel_detail_id"
+let MyChannelIdKey = "channel_detail_id"
 let channelNameKey = "channel_name"
 let totalMediaKey = "total_no_media_shared"
 let ChannelCreatedTimeKey = "last_updated_time_stamp"

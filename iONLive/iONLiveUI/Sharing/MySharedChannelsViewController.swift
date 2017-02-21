@@ -170,7 +170,7 @@ class MySharedChannelsViewController: UIViewController {
         {
             if i < dataSource.count
             {
-                let channelid = dataSource[i][channelIdKey] as! String
+                let channelid = dataSource[i][MyChannelIdKey] as! String
                 let selectionValue : Int = dataSource[i][sharedTemporaryKey] as! Int
                 if(selectionValue == 1){
                     addChannelArray.add(channelid)
@@ -367,12 +367,12 @@ class MySharedChannelsViewController: UIViewController {
                 searchDataSource[indexpath][sharedTemporaryKey] = 1
             }
             
-            let selectedChannelId =  searchDataSource[indexpath][channelIdKey] as! String
+            let selectedChannelId =  searchDataSource[indexpath][MyChannelIdKey] as! String
             for i in 0 ..< dataSource.count
             {
                 if i < dataSource.count
                 {
-                    let dataSourceChannelId = dataSource[i][channelIdKey] as! String
+                    let dataSourceChannelId = dataSource[i][MyChannelIdKey] as! String
                     if(selectedChannelId == dataSourceChannelId)
                     {
                         dataSource[i][sharedTemporaryKey] = searchDataSource[indexpath][sharedTemporaryKey]
@@ -500,7 +500,7 @@ extension MySharedChannelsViewController: UITableViewDelegate, UITableViewDataSo
         if(!searchActive){
             if dataSource.count > indexPath.row
             {
-                (channelDetailVC as! MyChannelDetailViewController).channelId = dataSource[indexPath.row][channelIdKey] as! String
+                (channelDetailVC as! MyChannelDetailViewController).channelId = dataSource[indexPath.row][MyChannelIdKey] as! String
                 (channelDetailVC as! MyChannelDetailViewController).channelName = dataSource[indexPath.row][channelNameKey] as! String
                 (channelDetailVC as! MyChannelDetailViewController).totalMediaCount = Int(dataSource[indexPath.row][totalMediaKey]! as! String)!
             }
@@ -508,7 +508,7 @@ extension MySharedChannelsViewController: UITableViewDelegate, UITableViewDataSo
         else{
             if searchDataSource.count > indexPath.row
             {
-                (channelDetailVC as! MyChannelDetailViewController).channelId = searchDataSource[indexPath.row][channelIdKey] as! String
+                (channelDetailVC as! MyChannelDetailViewController).channelId = searchDataSource[indexPath.row][MyChannelIdKey] as! String
                 (channelDetailVC as! MyChannelDetailViewController).channelName = searchDataSource[indexPath.row][channelNameKey] as! String
                 (channelDetailVC as! MyChannelDetailViewController).totalMediaCount = Int(searchDataSource[indexPath.row][totalMediaKey]! as! String)!
             }

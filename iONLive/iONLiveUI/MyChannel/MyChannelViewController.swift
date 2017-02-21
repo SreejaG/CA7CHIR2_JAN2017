@@ -151,7 +151,7 @@ class MyChannelViewController: UIViewController,UIScrollViewDelegate, UITextFiel
                 if(!searchActive){
                     if GlobalDataChannelList.sharedInstance.globalChannelDataSource.count > swipedIndexPath.row
                     {
-                        channelItemListVC.channelId = GlobalDataChannelList.sharedInstance.globalChannelDataSource[swipedIndexPath.row][channelIdKey] as! String
+                        channelItemListVC.channelId = GlobalDataChannelList.sharedInstance.globalChannelDataSource[swipedIndexPath.row][MyChannelIdKey] as! String
                         channelItemListVC.channelName = GlobalDataChannelList.sharedInstance.globalChannelDataSource[swipedIndexPath.row][channelNameKey] as! String
                         channelItemListVC.totalMediaCount = Int(GlobalDataChannelList.sharedInstance.globalChannelDataSource[swipedIndexPath.row][totalMediaKey]! as! String)!
                     }
@@ -159,7 +159,7 @@ class MyChannelViewController: UIViewController,UIScrollViewDelegate, UITextFiel
                 else{
                     if searchDataSource.count > swipedIndexPath.row
                     {
-                        channelItemListVC.channelId = searchDataSource[swipedIndexPath.row][channelIdKey] as! String
+                        channelItemListVC.channelId = searchDataSource[swipedIndexPath.row][MyChannelIdKey] as! String
                         channelItemListVC.channelName = searchDataSource[swipedIndexPath.row][channelNameKey] as! String
                         channelItemListVC.totalMediaCount = Int(searchDataSource[swipedIndexPath.row][totalMediaKey]! as! String)!
                     }
@@ -241,12 +241,12 @@ class MyChannelViewController: UIViewController,UIScrollViewDelegate, UITextFiel
             var chanelId : String = String()
             if(searchFlagForUpdateChannel){
                 if(longPressIndexPathRow < searchDataSource.count){
-                    chanelId = searchDataSource[longPressIndexPathRow][channelIdKey] as! String
+                    chanelId = searchDataSource[longPressIndexPathRow][MyChannelIdKey] as! String
                 }
             }
             else{
                 if(longPressIndexPathRow < GlobalDataChannelList.sharedInstance.globalChannelDataSource.count){
-                    chanelId = GlobalDataChannelList.sharedInstance.globalChannelDataSource[longPressIndexPathRow][channelIdKey] as! String
+                    chanelId = GlobalDataChannelList.sharedInstance.globalChannelDataSource[longPressIndexPathRow][MyChannelIdKey] as! String
                 }
             }
             if(chanelId != ""){
@@ -271,12 +271,12 @@ class MyChannelViewController: UIViewController,UIScrollViewDelegate, UITextFiel
         {
             if(searchFlagForUpdateChannel){
                 searchDataSource[longPressIndexPathRow][channelNameKey] = cellChannelUpdatedNameStr
-                let chaId = searchDataSource[longPressIndexPathRow][channelIdKey] as! String
+                let chaId = searchDataSource[longPressIndexPathRow][MyChannelIdKey] as! String
                 for i in 0 ..< GlobalDataChannelList.sharedInstance.globalChannelDataSource.count
                 {
                     if i < GlobalDataChannelList.sharedInstance.globalChannelDataSource.count
                     {
-                        if(GlobalDataChannelList.sharedInstance.globalChannelDataSource[i][channelIdKey] as! String == chaId)
+                        if(GlobalDataChannelList.sharedInstance.globalChannelDataSource[i][MyChannelIdKey] as! String == chaId)
                         {
                             GlobalDataChannelList.sharedInstance.globalChannelDataSource[i][channelNameKey] = cellChannelUpdatedNameStr
                         }
@@ -392,7 +392,7 @@ class MyChannelViewController: UIViewController,UIScrollViewDelegate, UITextFiel
             dateFormatter.timeZone = NSTimeZone(name: "UTC") as TimeZone!
             let localDateStr = dateFormatter.string(from: NSDate() as Date)
             
-            GlobalDataChannelList.sharedInstance.globalChannelDataSource.insert([channelIdKey:channelId!, channelNameKey:channelName, totalMediaKey:"0", ChannelCreatedTimeKey: localDateStr, sharedOriginalKey:1, sharedTemporaryKey:1], at: 0)
+            GlobalDataChannelList.sharedInstance.globalChannelDataSource.insert([MyChannelIdKey:channelId!, channelNameKey:channelName, totalMediaKey:"0", ChannelCreatedTimeKey: localDateStr, sharedOriginalKey:1, sharedTemporaryKey:1], at: 0)
             
             let imageData = [[String:AnyObject]]()
             GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict.updateValue(imageData, forKey: channelId!)
@@ -448,7 +448,7 @@ class MyChannelViewController: UIViewController,UIScrollViewDelegate, UITextFiel
             let status = json["status"] as! Int
             if(status == 1){
                 if(searchActive){
-                    let channelId = searchDataSource[index][channelIdKey] as! String
+                    let channelId = searchDataSource[index][MyChannelIdKey] as! String
                     searchDataSource.remove(at: index)
                     
                     var deleteIndexOfI : Int = Int()
@@ -458,7 +458,7 @@ class MyChannelViewController: UIViewController,UIScrollViewDelegate, UITextFiel
                     {
                         if i < GlobalDataChannelList.sharedInstance.globalChannelDataSource.count
                         {
-                            let orgChannel = GlobalDataChannelList.sharedInstance.globalChannelDataSource[i][channelIdKey] as! String
+                            let orgChannel = GlobalDataChannelList.sharedInstance.globalChannelDataSource[i][MyChannelIdKey] as! String
                             if(orgChannel == channelId){
                                 deleteFlag = true
                                 deleteIndexOfI = i
@@ -834,10 +834,10 @@ extension MyChannelViewController: UITableViewDelegate, UITableViewDataSource
         if (editingStyle == UITableViewCellEditingStyle.delete) {
             var deletedChannelId : String = String()
             if(searchActive){
-                deletedChannelId = self.searchDataSource[indexPath.row][channelIdKey] as! String
+                deletedChannelId = self.searchDataSource[indexPath.row][MyChannelIdKey] as! String
             }
             else{
-                deletedChannelId = GlobalDataChannelList.sharedInstance.globalChannelDataSource[indexPath.row][channelIdKey] as! String
+                deletedChannelId = GlobalDataChannelList.sharedInstance.globalChannelDataSource[indexPath.row][MyChannelIdKey] as! String
             }
             generateWaytoSendAlert(channelId: deletedChannelId, indexPath: indexPath.row)
         }

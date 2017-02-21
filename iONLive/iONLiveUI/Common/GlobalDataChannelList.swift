@@ -80,7 +80,7 @@ class GlobalDataChannelList: NSObject {
     {
         globalChannelDataSource.removeAll()
         for element in channelDetailsDict{
-            let channelId = "\(element[channelIdKey]!)"
+            let channelId = "\(element[MyChannelIdKey]!)"
             var mediaId = String()
             if let _ = element[latestMediaIdKey] as? Int
             {
@@ -94,7 +94,7 @@ class GlobalDataChannelList: NSObject {
             let createdTime = element[ChannelCreatedTimeKey] as! String
             let sharedBool = (element[chanelSharedIndicatorKey] as! Bool).hashValue
             
-            self.globalChannelDataSource.append([channelIdKey: channelId,channelNameKey: channelName,mediaIdKey: mediaId,totalMediaKey: mediaSharedCount,ChannelCreatedTimeKey: createdTime,sharedOriginalKey: sharedBool,sharedTemporaryKey: sharedBool])
+            self.globalChannelDataSource.append([MyChannelIdKey: channelId,channelNameKey: channelName,mediaIdKey: mediaId,totalMediaKey: mediaSharedCount,ChannelCreatedTimeKey: createdTime,sharedOriginalKey: sharedBool,sharedTemporaryKey: sharedBool])
         }
         
         if(self.globalChannelDataSource.count > 0){
@@ -223,12 +223,12 @@ class GlobalDataChannelList: NSObject {
     func enableDisableChannelList(dataSource : [[String:Any]])  {
         for element in dataSource
         {
-            let channelIdChk = element[channelIdKey] as! String
+            let channelIdChk = element[MyChannelIdKey] as! String
             let sharedIndicator = element[sharedTemporaryKey] as! Int
             for i in 0 ..< globalChannelDataSource.count
             {
                 if(i < globalChannelDataSource.count){
-                    let chanelId = globalChannelDataSource[i][channelIdKey] as! String
+                    let chanelId = globalChannelDataSource[i][MyChannelIdKey] as! String
                     if channelIdChk == chanelId
                     {
                         globalChannelDataSource[i][sharedOriginalKey] = sharedIndicator

@@ -74,6 +74,7 @@ class GlobalStreamList: NSObject {
                 imageDataSource.append([stream_mediaIdKey:mediaId, mediaUrlKey:mediaUrlBeforeNullChk, stream_mediaTypeKey:mediaType,actualImageKey:actualUrlBeforeNullChk,notificationKey:notificationType,userIdKey:userid,timestamp:time,stream_channelNameKey:channelName, pullTorefreshKey : pulltorefreshId, channelIdkey:channelIdSelected,"createdTime":time,videoDurationKey:vDuration])
             }
             if(imageDataSource.count > 0){
+                operation2.cancel()
                 operation2 = BlockOperation (block: {
                     self.downloadMediaFromGCS()
                 })
@@ -155,6 +156,9 @@ class GlobalStreamList: NSObject {
             {
                 if imageDataSource[i][stream_mediaIdKey] != nil
                 {
+                    if operation2.isCancelled{
+                        return
+                    }
                     var imageForMedia : UIImage = UIImage()
                     let mediaIdForFilePathStr = self.imageDataSource[i][stream_mediaIdKey] as! String
                     let mediaIdForFilePath = mediaIdForFilePathStr + "thumb"
@@ -210,6 +214,7 @@ class GlobalStreamList: NSObject {
                 }
             }
         }
+        
         if(GlobalStreamDataSource.count > 0){
             GlobalStreamDataSource.sort(by: { p1, p2 in
                 let time1 = p1[timestamp] as! String
@@ -217,6 +222,20 @@ class GlobalStreamList: NSObject {
                 return time1 > time2
             })
         }
+//        let dummy: [[String:Any]] = GlobalStreamList.sharedInstance.GlobalStreamDataSource
+//        for i in 0  ..< dummy.count
+//        {
+//            for j in i+1 ..< dummy.count
+//            {
+//                if(dummy[i][stream_mediaIdKey] as! String == dummy[j][stream_mediaIdKey] as! String)
+//                {
+//                    if(dummy[i][channelIdkey] as! String == dummy[j][channelIdkey] as! String)
+//                    {
+//                        GlobalStreamList.sharedInstance.GlobalStreamDataSource.remove(at: j)
+//                    }
+//                }
+//            }
+//        }
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "stream"), object:"success")
     }
     

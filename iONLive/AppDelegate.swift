@@ -329,7 +329,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         let channame = GlobalDataChannelList.sharedInstance.globalChannelDataSource[i][channelNameKey] as! String
                         if channame == "My Day"
                         {
-                            let chanId = GlobalDataChannelList.sharedInstance.globalChannelDataSource[i][channelIdKey] as! String
+                            let chanId = GlobalDataChannelList.sharedInstance.globalChannelDataSource[i][MyChannelIdKey] as! String
                             if(chid == chanId){
                                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "myDayCleanNotif"), object:result)
                                 break

@@ -444,7 +444,7 @@ class uploadMediaToGCS: UIViewController, URLSessionDelegate, URLSessionTaskDele
         
         for i in 0  ..< channelScrollsDict.count
         {
-            let chanelIdChk : String = String(describing: channelScrollsDict[i][channelIdKey]!)
+            let chanelIdChk : String = String(describing: channelScrollsDict[i][MyChannelIdKey]!)
             let chanelMediaId : String = String(describing: channelScrollsDict[i][channelMediaIdKey]!)
             var indexOfJ = 0
             var chkFlag = false
