@@ -487,8 +487,8 @@ class OtherChannelViewController: UIViewController  {
         }
         if(subIdArray.count > 0)
         {
-            let subid = subIdArray.min()!
-            let channelSelectedMediaId =  "\(subid)"
+//            let subid = subIdArray.min()!
+            let channelSelectedMediaId =  "\(subIdArray.min()!)"
             let userId = UserDefaults.standard.value(forKey: userLoginIdKey) as! String
             if let ch = UserDefaults.standard.value(forKey: "channelForInfinite")
             {

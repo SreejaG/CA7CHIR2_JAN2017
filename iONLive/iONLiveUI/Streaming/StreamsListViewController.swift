@@ -430,9 +430,9 @@ class StreamsListViewController: UIViewController{
                 }
                 if(subIdArray.count > 0)
                 {
-                    let subid = subIdArray.min()!
+//                    let subid: Int = subIdArray.min()!
                     self.downloadCompleteFlagStream = "start"
-                    GlobalStreamList.sharedInstance.getMediaByOffset(subId: "\(subid)")
+                    GlobalStreamList.sharedInstance.getMediaByOffset(subId: "\(subIdArray.min()!)")
                     DispatchQueue.main.async {
                         self.customView.removeFromSuperview()
                         self.streamListCollectionView.isUserInteractionEnabled = false

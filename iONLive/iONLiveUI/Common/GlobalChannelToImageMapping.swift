@@ -119,9 +119,26 @@ class GlobalChannelToImageMapping: NSObject {
                     return time1! > time2!
                 })
                 GlobalChannelImageDict.updateValue(imageDataSource, forKey: channelDetailId)
-                
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "success"), object:channelDetailId)
             }
+            else{
+                imageDataSource.removeAll()
+                GlobalChannelImageDict.updateValue(imageDataSource, forKey: channelDetailId)
+            }
+            
+            for i in 0 ..< GlobalDataChannelList.sharedInstance.globalChannelDataSource.count
+            {
+                let chanelId = GlobalDataChannelList.sharedInstance.globalChannelDataSource[i][channelIdKey] as! String
+                if chanelId == channelDetailId
+                {
+                    GlobalDataChannelList.sharedInstance.globalChannelDataSource[i][totalMediaKey] = "\(imageDataSource.count)"
+                }
+            }
+            
+            print("chanleId in image mapping  \(channelDetailId)")
+            print("globalChannelDataSource in imagemapping \(GlobalDataChannelList.sharedInstance.globalChannelDataSource)")
+            print("globalchannel image datasource in imagemapping \(GlobalDataChannelList.sharedInstance.globalChannelDataSource)")
+            
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "success"), object:channelDetailId)
         }
     }
     
