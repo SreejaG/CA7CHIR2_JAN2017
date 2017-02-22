@@ -511,7 +511,7 @@ class ChannelManager: NSObject {
     func getOffsetMediaDetails(userName: String, accessToken: String, timestamp: String,success: ((_ response: AnyObject?)->())?, failure: ((_ error: NSError?, _ code: String)->())?)
     {
         let requestManager = RequestManager.sharedInstance
-        requestManager.httpManager().get(UrlManager.sharedInstance.getOffsetDetails(userName: userName, accessToken: accessToken), parameters:["channelMediaId":timestamp, "limit": "20"], success: { (operation, response) -> Void in
+        requestManager.httpManager().get(UrlManager.sharedInstance.getOffsetDetails(userName: userName, accessToken: accessToken), parameters:["channelMediaId":timestamp, "limit": "10"], success: { (operation, response) -> Void in
             
             //Get and parse the response
             if let responseObject = response as? [String:AnyObject]

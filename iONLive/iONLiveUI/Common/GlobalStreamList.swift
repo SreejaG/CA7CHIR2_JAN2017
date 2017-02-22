@@ -43,6 +43,8 @@ class GlobalStreamList: NSObject {
     {
         if let json = response as? [String: Any]
         {
+            operation2.cancel()
+            imageDataSource.removeAll()
             let responseArr = json["objectJson"] as! [AnyObject]
             if(responseArr.count == 0)
             {
@@ -74,7 +76,20 @@ class GlobalStreamList: NSObject {
                 imageDataSource.append([stream_mediaIdKey:mediaId, mediaUrlKey:mediaUrlBeforeNullChk, stream_mediaTypeKey:mediaType,actualImageKey:actualUrlBeforeNullChk,notificationKey:notificationType,userIdKey:userid,timestamp:time,stream_channelNameKey:channelName, pullTorefreshKey : pulltorefreshId, channelIdkey:channelIdSelected,"createdTime":time,videoDurationKey:vDuration])
             }
             if(imageDataSource.count > 0){
-                operation2.cancel()
+                print("imagedatasource -========> \(imageDataSource)")
+                var dummySource: [[String:Any]] = [[String:Any]]()
+                dummySource = imageDataSource
+                for i in 0 ..< dummySource.count
+                {
+                    for j in i+1 ..< dummySource.count
+                    {
+                        if((dummySource[i][stream_mediaIdKey] as! String == dummySource[j][stream_mediaIdKey] as! String) && (dummySource[i][channelIdkey] as! String == dummySource[j][channelIdkey] as! String))
+                        {
+                           imageDataSource.remove(at: j)
+                        }
+                    }
+                }
+                dummySource.removeAll()
                 operation2 = BlockOperation (block: {
                     self.downloadMediaFromGCS()
                 })
@@ -127,6 +142,11 @@ class GlobalStreamList: NSObject {
     {
         var mediaImage : UIImage = UIImage()
         do {
+            if operation2.isCancelled
+            {
+                return
+            }
+
             let data = try NSData(contentsOf: downloadURL as URL,options: NSData.ReadingOptions())
             if let imageData = data as NSData? {
                 if let mediaImage1 = UIImage(data: imageData as Data)
@@ -156,86 +176,93 @@ class GlobalStreamList: NSObject {
             {
                 if imageDataSource[i][stream_mediaIdKey] != nil
                 {
-                    if operation2.isCancelled{
+                    
+                    if operation2.isCancelled
+                    {
                         return
                     }
-                    var imageForMedia : UIImage = UIImage()
-                    let mediaIdForFilePathStr = self.imageDataSource[i][stream_mediaIdKey] as! String
-                    let mediaIdForFilePath = mediaIdForFilePathStr + "thumb"
-                    let parentPath = FileManagerViewController.sharedInstance.getParentDirectoryPath().absoluteString
-                    let savingPath = parentPath! + "/" + mediaIdForFilePath
-                    let fileExistFlag = FileManagerViewController.sharedInstance.fileExist(mediaPath: savingPath)
-                    if fileExistFlag == true{
-                        let mediaImageFromFile = FileManagerViewController.sharedInstance.getImageFromFilePath(mediaPath: savingPath)
-                        imageForMedia = mediaImageFromFile!
-                        if imageDataSource.count > 0 && imageDataSource.count > i
+                    
+                    var chkFlag : Bool = false
+                    if GlobalStreamDataSource.count > 0
+                    {
+                        for ele in GlobalStreamDataSource
                         {
-                            self.GlobalStreamDataSource.append([stream_mediaIdKey:self.imageDataSource[i][stream_mediaIdKey]!, mediaUrlKey:imageForMedia,stream_thumbImageKey:imageForMedia ,stream_streamTockenKey:"",actualImageKey:self.imageDataSource[i][actualImageKey]!,userIdKey:self.imageDataSource[i][userIdKey]!,notificationKey:self.imageDataSource[i][notificationKey]!,timestamp :self.imageDataSource[i][timestamp]!,stream_mediaTypeKey:self.imageDataSource[i][stream_mediaTypeKey]!,stream_channelNameKey:self.imageDataSource[i][stream_channelNameKey]!,channelIdkey:self.imageDataSource[i][channelIdkey]!,pullTorefreshKey:self.imageDataSource[i][pullTorefreshKey] as! String,"createdTime":self.imageDataSource[i]["createdTime"] as! String,videoDurationKey:self.imageDataSource[i][videoDurationKey] as! String])
+                            if((imageDataSource[i][stream_mediaIdKey] as! String == ele[stream_mediaIdKey] as! String) && (imageDataSource[i][channelIdkey] as! String == ele[channelIdkey] as! String))
+                            {
+                                chkFlag = true
+                                break
+                            }
                         }
                     }
                     else{
-                        if imageDataSource.count > 0 && imageDataSource.count > i
-                        {
-                            let mediaUrl = imageDataSource[i][mediaUrlKey] as! String
-                            if(mediaUrl != ""){
-                                let url: NSURL = convertStringtoURL(url: mediaUrl)
-                                downloadMedia(downloadURL: url, key: "ThumbImage", completion: { (result) -> Void in
-                                    if(result != UIImage()){
-                                        let imageDataFromresult = UIImageJPEGRepresentation(result, 0.5)
-                                        if imageDataFromresult != nil
-                                        {
-                                            let imageDataFromresultAsNsdata = (imageDataFromresult as NSData?)!
-                                            let imageDataFromDefault = UIImageJPEGRepresentation(UIImage(named: "thumb12")!, 0.5)
-                                            let imageDataFromDefaultAsNsdata = (imageDataFromDefault as NSData?)!
-                                            if(imageDataFromresultAsNsdata.isEqual(imageDataFromDefaultAsNsdata)){
+                        chkFlag = false
+                    }
+                    
+                    if chkFlag == false
+                    {
+                        var imageForMedia : UIImage = UIImage()
+                        let mediaIdForFilePathStr = self.imageDataSource[i][stream_mediaIdKey] as! String
+                        let mediaIdForFilePath = mediaIdForFilePathStr + "thumb"
+                        let parentPath = FileManagerViewController.sharedInstance.getParentDirectoryPath().absoluteString
+                        let savingPath = parentPath! + "/" + mediaIdForFilePath
+                        let fileExistFlag = FileManagerViewController.sharedInstance.fileExist(mediaPath: savingPath)
+                        if fileExistFlag == true{
+                            let mediaImageFromFile = FileManagerViewController.sharedInstance.getImageFromFilePath(mediaPath: savingPath)
+                            imageForMedia = mediaImageFromFile!
+                            if imageDataSource.count > 0 && imageDataSource.count > i
+                            {
+                                self.GlobalStreamDataSource.append([stream_mediaIdKey:self.imageDataSource[i][stream_mediaIdKey]!, mediaUrlKey:imageForMedia,stream_thumbImageKey:imageForMedia ,stream_streamTockenKey:"",actualImageKey:self.imageDataSource[i][actualImageKey]!,userIdKey:self.imageDataSource[i][userIdKey]!,notificationKey:self.imageDataSource[i][notificationKey]!,timestamp :self.imageDataSource[i][timestamp]!,stream_mediaTypeKey:self.imageDataSource[i][stream_mediaTypeKey]!,stream_channelNameKey:self.imageDataSource[i][stream_channelNameKey]!,channelIdkey:self.imageDataSource[i][channelIdkey]!,pullTorefreshKey:self.imageDataSource[i][pullTorefreshKey] as! String,"createdTime":self.imageDataSource[i]["createdTime"] as! String,videoDurationKey:self.imageDataSource[i][videoDurationKey] as! String])
+                            }
+                        }
+                        else{
+                            if imageDataSource.count > 0 && imageDataSource.count > i
+                            {
+                                let mediaUrl = imageDataSource[i][mediaUrlKey] as! String
+                                if(mediaUrl != ""){
+                                    let url: NSURL = convertStringtoURL(url: mediaUrl)
+                                    downloadMedia(downloadURL: url, key: "ThumbImage", completion: { (result) -> Void in
+                                        if(result != UIImage()){
+                                            let imageDataFromresult = UIImageJPEGRepresentation(result, 0.5)
+                                            if imageDataFromresult != nil
+                                            {
+                                                let imageDataFromresultAsNsdata = (imageDataFromresult as NSData?)!
+                                                let imageDataFromDefault = UIImageJPEGRepresentation(UIImage(named: "thumb12")!, 0.5)
+                                                let imageDataFromDefaultAsNsdata = (imageDataFromDefault as NSData?)!
+                                                if(imageDataFromresultAsNsdata.isEqual(imageDataFromDefaultAsNsdata)){
+                                                }
+                                                else{
+                                                    imageForMedia = result
+                                                    if imageDataSource.count > 0 && imageDataSource.count > i
+                                                    {
+                                                        self.GlobalStreamDataSource.append([stream_mediaIdKey:self.imageDataSource[i][stream_mediaIdKey]!, mediaUrlKey:imageForMedia, stream_thumbImageKey:imageForMedia ,stream_streamTockenKey:"",actualImageKey:self.imageDataSource[i][actualImageKey]!,userIdKey:self.imageDataSource[i][userIdKey]!,notificationKey:self.imageDataSource[i][notificationKey]!,timestamp :self.imageDataSource[i][timestamp]!,stream_mediaTypeKey:self.imageDataSource[i][stream_mediaTypeKey]!,stream_channelNameKey:self.imageDataSource[i][stream_channelNameKey]!,channelIdkey:self.imageDataSource[i][channelIdkey]!,pullTorefreshKey:self.imageDataSource[i][pullTorefreshKey] as! String,"createdTime":self.imageDataSource[i]["createdTime"] as! String,videoDurationKey:self.imageDataSource[i][videoDurationKey] as! String])
+                                                    }
+                                                    
+                                                    _ = FileManagerViewController.sharedInstance.saveImageToFilePath(mediaName: mediaIdForFilePath, mediaImage: result)
+                                                }
+                                                imageForMedia = result
                                             }
                                             else{
-                                                imageForMedia = result
-                                                if imageDataSource.count > 0 && imageDataSource.count > i
-                                                {
-                                                    self.GlobalStreamDataSource.append([stream_mediaIdKey:self.imageDataSource[i][stream_mediaIdKey]!, mediaUrlKey:imageForMedia, stream_thumbImageKey:imageForMedia ,stream_streamTockenKey:"",actualImageKey:self.imageDataSource[i][actualImageKey]!,userIdKey:self.imageDataSource[i][userIdKey]!,notificationKey:self.imageDataSource[i][notificationKey]!,timestamp :self.imageDataSource[i][timestamp]!,stream_mediaTypeKey:self.imageDataSource[i][stream_mediaTypeKey]!,stream_channelNameKey:self.imageDataSource[i][stream_channelNameKey]!,channelIdkey:self.imageDataSource[i][channelIdkey]!,pullTorefreshKey:self.imageDataSource[i][pullTorefreshKey] as! String,"createdTime":self.imageDataSource[i]["createdTime"] as! String,videoDurationKey:self.imageDataSource[i][videoDurationKey] as! String])
-                                                }
-                                                
-                                                _ = FileManagerViewController.sharedInstance.saveImageToFilePath(mediaName: mediaIdForFilePath, mediaImage: result)
+                                                imageForMedia = UIImage(named: "thumb12")!
                                             }
-                                            imageForMedia = result
                                         }
                                         else{
                                             imageForMedia = UIImage(named: "thumb12")!
                                         }
-                                    }
-                                    else{
-                                        imageForMedia = UIImage(named: "thumb12")!
-                                    }
-                                })
+                                    })
+                                }
                             }
                         }
                     }
                 }
             }
         }
-        
         if(GlobalStreamDataSource.count > 0){
             GlobalStreamDataSource.sort(by: { p1, p2 in
-                let time1 = p1[timestamp] as! String
-                let time2 = p2[timestamp] as! String
+                let time1 = p1[stream_mediaIdKey] as! String
+                let time2 = p2[stream_mediaIdKey] as! String
                 return time1 > time2
             })
         }
-//        let dummy: [[String:Any]] = GlobalStreamList.sharedInstance.GlobalStreamDataSource
-//        for i in 0  ..< dummy.count
-//        {
-//            for j in i+1 ..< dummy.count
-//            {
-//                if(dummy[i][stream_mediaIdKey] as! String == dummy[j][stream_mediaIdKey] as! String)
-//                {
-//                    if(dummy[i][channelIdkey] as! String == dummy[j][channelIdkey] as! String)
-//                    {
-//                        GlobalStreamList.sharedInstance.GlobalStreamDataSource.remove(at: j)
-//                    }
-//                }
-//            }
-//        }
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "stream"), object:"success")
     }
     

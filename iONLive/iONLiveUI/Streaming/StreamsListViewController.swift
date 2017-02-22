@@ -24,7 +24,7 @@ class StreamsListViewController: UIViewController{
     var pullToRefreshActive = false
     var  liveStreamSource: [[String:Any]] = [[String:Any]]()
     var count : Int = 0
-    var limit : Int = 27
+    var limit : Int = 21
     var scrollObj = UIScrollView()
     @IBOutlet weak var sharedNewMediaLabel: UILabel!
     var downloadCompleteFlagStream : String = "start"
@@ -51,8 +51,8 @@ class StreamsListViewController: UIViewController{
         self.refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
         self.streamListCollectionView.alwaysBounceVertical = true
         
-        let stream = Notification.Name("stream")
-        NotificationCenter.default.addObserver(self, selector:#selector(StreamsListViewController.streamUpdate(notif:)), name: stream, object: nil)
+//        let stream = Notification.Name("stream")
+//        NotificationCenter.default.addObserver(self, selector:#selector(StreamsListViewController.streamUpdate(notif:)), name: stream, object: nil)
         
         let MediaDelete = Notification.Name("MediaDelete")
         NotificationCenter.default.addObserver(self, selector:#selector(StreamsListViewController.mediaDeletePushNotification(notif:)), name: MediaDelete, object: nil)
@@ -66,7 +66,10 @@ class StreamsListViewController: UIViewController{
         getAllLiveStreams()
         showOverlay()
         createScrollViewAnimations()
+        
         //          _ = NSTimer.scheduledTimerWithTimeInterval(60.0, target: self, selector: #selector(StreamsListViewController.test(_:)), userInfo: nil, repeats: true)
+        
+        
         if GlobalStreamList.sharedInstance.GlobalStreamDataSource.count == 0
         {
             GlobalStreamList.sharedInstance.initialiseCloudData(startOffset: count ,endValueLimit: limit)
@@ -96,10 +99,13 @@ class StreamsListViewController: UIViewController{
     override func viewWillAppear(_ animated: Bool) {
         isMovieView = false
         super.viewWillAppear(true)
+        let stream = Notification.Name("stream")
+        NotificationCenter.default.addObserver(self, selector:#selector(StreamsListViewController.streamUpdate(notif:)), name: stream, object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name("stream"), object: nil)
         UserDefaults.standard.set(1, forKey: "SelectedTab")
         GlobalStreamList.sharedInstance.cancelOperationQueue()
         self.customView.removeFromSuperview()
@@ -343,7 +349,6 @@ class StreamsListViewController: UIViewController{
             if (channelIdValue == "\(channelId)")
             {
                 selectedArray.append(i)
-                
             }
         }
         
@@ -417,32 +422,33 @@ class StreamsListViewController: UIViewController{
     
     func getMediaWhileDeleted()
     {
-        if(mediaAndLiveArray.count <  18 && mediaAndLiveArray.count != 0)
-        {
-            if(!self.pullToRefreshActive)
-            {
-                let sortList : Array = self.mediaAndLiveArray
-                var subIdArray : [Int] = [Int]()
-                
-                for i in 0  ..< sortList.count
-                {
-                    subIdArray.append(Int(sortList[i]["channel_media_detail_id"] as! String)!)
-                }
-                if(subIdArray.count > 0)
-                {
-//                    let subid: Int = subIdArray.min()!
-                    self.downloadCompleteFlagStream = "start"
-                    GlobalStreamList.sharedInstance.getMediaByOffset(subId: "\(subIdArray.min()!)")
-                    DispatchQueue.main.async {
-                        self.customView.removeFromSuperview()
-                        self.streamListCollectionView.isUserInteractionEnabled = false
-                        self.customView  = CustomInfiniteIndicator(frame: CGRect(x:(self.streamListCollectionView.layer.frame.width/2 - 20), y:(self.streamListCollectionView.layer.frame.height - 100), width:40, height:40))
-                        self.streamListCollectionView.addSubview(self.customView)
-                        self.customView.startAnimating()
-                    }
-                }
-            }
-        }
+//        if(mediaAndLiveArray.count <  18 && mediaAndLiveArray.count != 0)
+//        {
+//            if(!self.pullToRefreshActive)
+//            {
+//                let sortList : Array = self.mediaAndLiveArray
+//                var subIdArray : [Int] = [Int]()
+//                
+//                for i in 0  ..< sortList.count
+//                {
+//                    subIdArray.append(Int(sortList[i]["channel_media_detail_id"] as! String)!)
+//                }
+//                if(subIdArray.count > 0)
+//                {
+//                    let subid = subIdArray.min()!
+//                    self.downloadCompleteFlagStream = "start"
+//                    GlobalStreamList.sharedInstance.getMediaByOffset(subId: "\(subid)")
+//                    DispatchQueue.main.async {
+//                        self.scrollObj.finishInfiniteScroll()
+//                        self.customView.removeFromSuperview()
+//                        self.streamListCollectionView.isUserInteractionEnabled = false
+//                        self.customView  = CustomInfiniteIndicator(frame: CGRect(x:(self.streamListCollectionView.layer.frame.width/2 - 20), y:(self.streamListCollectionView.layer.frame.height - 100), width:40, height:40))
+//                        self.streamListCollectionView.addSubview(self.customView)
+//                        self.customView.startAnimating()
+//                    }
+//                }
+//            }
+//        }
     }
     
     func getUpdateIndexChannel(channelIdValue : String , isCountArray : Bool) -> Int
@@ -919,30 +925,6 @@ class StreamsListViewController: UIViewController{
     {
         DispatchQueue.main.async {
             self.mediaAndLiveArray.removeAll()
-            
-            if(GlobalStreamList.sharedInstance.GlobalStreamDataSource.count > 0){
-                GlobalStreamList.sharedInstance.GlobalStreamDataSource.sort(by: { p1, p2 in
-                    let time1 = p1[stream_mediaIdKey] as! String
-                    let time2 = p2[stream_mediaIdKey] as! String
-                    return time1 > time2
-                })
-            }
-            
-            let dummy: [[String:Any]] = GlobalStreamList.sharedInstance.GlobalStreamDataSource
-            for i in 0  ..< dummy.count
-            {
-                for j in i+1 ..< dummy.count
-                {
-                    if(dummy[i][stream_mediaIdKey] as! String == dummy[j][stream_mediaIdKey] as! String)
-                    {
-                        if(dummy[i][channelIdkey] as! String == dummy[j][channelIdkey] as! String)
-                        {
-                            GlobalStreamList.sharedInstance.GlobalStreamDataSource.remove(at: j)
-                        }
-                    }
-                }
-            }
-            
             self.mediaAndLiveArray = self.liveStreamSource +  GlobalStreamList.sharedInstance.GlobalStreamDataSource
             if(self.mediaAndLiveArray.count > 0)
             {
@@ -999,28 +981,6 @@ class StreamsListViewController: UIViewController{
                 }
                 else{
                     self.mediaAndLiveArray.removeAll()
-                    if(GlobalStreamList.sharedInstance.GlobalStreamDataSource.count > 0){
-                        GlobalStreamList.sharedInstance.GlobalStreamDataSource.sort(by: { p1, p2 in
-                            let time1 = p1[stream_mediaIdKey] as! String
-                            let time2 = p2[stream_mediaIdKey] as! String
-                            return time1 > time2
-                        })
-                    }
-                    let dummy: [[String:Any]] = GlobalStreamList.sharedInstance.GlobalStreamDataSource
-                    for i in 0  ..< dummy.count
-                    {
-                        for j in i+1 ..< dummy.count
-                        {
-                            if(dummy[i][stream_mediaIdKey] as! String == dummy[j][stream_mediaIdKey] as! String)
-                            {
-                                if(dummy[i][channelIdkey] as! String == dummy[j][channelIdkey] as! String)
-                                {
-                                    GlobalStreamList.sharedInstance.GlobalStreamDataSource.remove(at: j)
-                                }
-                            }
-                        }
-                    }
-
                     self.mediaAndLiveArray = GlobalStreamList.sharedInstance.GlobalStreamDataSource
                     self.NoDatalabel.removeFromSuperview()
                     if(self.mediaAndLiveArray.count == 0)
