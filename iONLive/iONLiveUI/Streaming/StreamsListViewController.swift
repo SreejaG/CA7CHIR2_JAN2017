@@ -70,6 +70,39 @@ class StreamsListViewController: UIViewController{
         //          _ = NSTimer.scheduledTimerWithTimeInterval(60.0, target: self, selector: #selector(StreamsListViewController.test(_:)), userInfo: nil, repeats: true)
         
         
+//        if GlobalStreamList.sharedInstance.GlobalStreamDataSource.count == 0
+//        {
+//            GlobalStreamList.sharedInstance.initialiseCloudData(startOffset: count ,endValueLimit: limit)
+//            self.refreshControl.addTarget(self, action: #selector(StreamsListViewController.pullToRefresh), for: UIControlEvents.valueChanged)
+//            self.streamListCollectionView.addSubview(self.refreshControl)
+//        }
+//        else
+//        {
+//            DispatchQueue.main.async {
+//                self.removeOverlay()
+//                self.setSourceByAppendingMediaAndLive()
+//                self.refreshControl.addTarget(self, action: #selector(StreamsListViewController.pullToRefresh), for: UIControlEvents.valueChanged)
+//                self.streamListCollectionView.addSubview(self.refreshControl)
+//                self.streamListCollectionView.reloadData()
+//            }
+//        }
+        if UserDefaults.standard.object(forKey: "NotificationText") != nil{
+            if(UserDefaults.standard.object(forKey: "NotificationText") as! String != "")
+            {
+                self.sharedNewMediaLabel.isHidden = false
+                self.sharedNewMediaLabel.text = "Pull to get new media"
+            }
+            UserDefaults.standard.set("", forKey: "NotificationText")
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        isMovieView = false
+        super.viewWillAppear(true)
+        let stream = Notification.Name("stream")
+        NotificationCenter.default.addObserver(self, selector:#selector(StreamsListViewController.streamUpdate(notif:)), name: stream, object: nil)
+        
+        self.refreshControl.removeTarget(self, action: #selector(StreamsListViewController.pullToRefresh), for: UIControlEvents.valueChanged)
         if GlobalStreamList.sharedInstance.GlobalStreamDataSource.count == 0
         {
             GlobalStreamList.sharedInstance.initialiseCloudData(startOffset: count ,endValueLimit: limit)
@@ -86,21 +119,6 @@ class StreamsListViewController: UIViewController{
                 self.streamListCollectionView.reloadData()
             }
         }
-        if UserDefaults.standard.object(forKey: "NotificationText") != nil{
-            if(UserDefaults.standard.object(forKey: "NotificationText") as! String != "")
-            {
-                self.sharedNewMediaLabel.isHidden = false
-                self.sharedNewMediaLabel.text = "Pull to get new media"
-            }
-            UserDefaults.standard.set("", forKey: "NotificationText")
-        }
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        isMovieView = false
-        super.viewWillAppear(true)
-        let stream = Notification.Name("stream")
-        NotificationCenter.default.addObserver(self, selector:#selector(StreamsListViewController.streamUpdate(notif:)), name: stream, object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
