@@ -202,6 +202,7 @@ class GlobalStreamList: NSObject {
                     {
                         var imageForMedia : UIImage = UIImage()
                         let mediaIdForFilePathStr = self.imageDataSource[i][stream_mediaIdKey] as! String
+                        print("mediaId=======> \(mediaIdForFilePathStr)")
                         let mediaIdForFilePath = mediaIdForFilePathStr + "thumb"
                         let parentPath = FileManagerViewController.sharedInstance.getParentDirectoryPath().absoluteString
                         let savingPath = parentPath! + "/" + mediaIdForFilePath
@@ -217,6 +218,10 @@ class GlobalStreamList: NSObject {
                         else{
                             if imageDataSource.count > 0 && imageDataSource.count > i
                             {
+                                if operation2.isCancelled
+                                {
+                                    return
+                                }
                                 let mediaUrl = imageDataSource[i][mediaUrlKey] as! String
                                 if(mediaUrl != ""){
                                     let url: NSURL = convertStringtoURL(url: mediaUrl)
