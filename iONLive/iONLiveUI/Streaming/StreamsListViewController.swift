@@ -637,34 +637,37 @@ class StreamsListViewController: UIViewController{
             
             for i in 0  ..< GlobalStreamList.sharedInstance.GlobalStreamDataSource.count
             {
-                let channelIdValue = GlobalStreamList.sharedInstance.GlobalStreamDataSource[i][channelIdkey] as! String
-                var foundFlag : Bool = false
-                
-                if ( channelIdValue == "\(channel)")
+                if i < GlobalStreamList.sharedInstance.GlobalStreamDataSource.count
                 {
-                    if(i < GlobalStreamList.sharedInstance.GlobalStreamDataSource.count)
+                    let channelIdValue = GlobalStreamList.sharedInstance.GlobalStreamDataSource[i][channelIdkey] as! String
+                    var foundFlag : Bool = false
+                    
+                    if ( channelIdValue == "\(channel)")
                     {
-                        var  count : Int = 0
-                        let mediaId = GlobalStreamList.sharedInstance.GlobalStreamDataSource[i][stream_mediaIdKey] as! String
-                        
-                        for mediaArrayCount in 0  ..< mediaArrayData.count
+                        if(i < GlobalStreamList.sharedInstance.GlobalStreamDataSource.count)
                         {
-                            if("\(mediaArrayData[mediaArrayCount])" == mediaId)
+                            var  count : Int = 0
+                            let mediaId = GlobalStreamList.sharedInstance.GlobalStreamDataSource[i][stream_mediaIdKey] as! String
+                            
+                            for mediaArrayCount in 0  ..< mediaArrayData.count
                             {
-                                count = count + 1
-                                foundFlag = true
-                                break;
+                                if("\(mediaArrayData[mediaArrayCount])" == mediaId)
+                                {
+                                    count = count + 1
+                                    foundFlag = true
+                                    break;
+                                }
                             }
                         }
-                    }
-                    
-                    if(foundFlag)
-                    {
-                        foundFlag = false
-                        selectedArray.append(i)
+                        
+                        if(foundFlag)
+                        {
+                            foundFlag = false
+                            selectedArray.append(i)
+                        }
                     }
                 }
-            }
+        }
         }
         selectedArray =  selectedArray.sorted()
         for i in 0  ..< selectedArray.count
