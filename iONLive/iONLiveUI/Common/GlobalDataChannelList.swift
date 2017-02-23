@@ -99,7 +99,6 @@ class GlobalDataChannelList: NSObject {
         
         if(self.globalChannelDataSource.count > 0){
             sortChannelList()
-            print("globalChannelDataSource \(self.globalChannelDataSource)")
             operationInChannelList  = BlockOperation (block: {
                 self.downloadMediaFromGCS()
             })
@@ -108,7 +107,6 @@ class GlobalDataChannelList: NSObject {
     }
     
     func downloadMediaFromGCS(){
-        //        var url: NSURL = NSURL()
         for i in 0 ..< globalChannelDataSource.count
         {
             if operationInChannelList.isCancelled

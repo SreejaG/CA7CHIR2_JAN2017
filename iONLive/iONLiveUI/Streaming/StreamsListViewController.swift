@@ -51,8 +51,8 @@ class StreamsListViewController: UIViewController{
         self.refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
         self.streamListCollectionView.alwaysBounceVertical = true
         
-//        let stream = Notification.Name("stream")
-//        NotificationCenter.default.addObserver(self, selector:#selector(StreamsListViewController.streamUpdate(notif:)), name: stream, object: nil)
+        //        let stream = Notification.Name("stream")
+        //        NotificationCenter.default.addObserver(self, selector:#selector(StreamsListViewController.streamUpdate(notif:)), name: stream, object: nil)
         
         let MediaDelete = Notification.Name("MediaDelete")
         NotificationCenter.default.addObserver(self, selector:#selector(StreamsListViewController.mediaDeletePushNotification(notif:)), name: MediaDelete, object: nil)
@@ -70,22 +70,22 @@ class StreamsListViewController: UIViewController{
         //          _ = NSTimer.scheduledTimerWithTimeInterval(60.0, target: self, selector: #selector(StreamsListViewController.test(_:)), userInfo: nil, repeats: true)
         
         
-//        if GlobalStreamList.sharedInstance.GlobalStreamDataSource.count == 0
-//        {
-//            GlobalStreamList.sharedInstance.initialiseCloudData(startOffset: count ,endValueLimit: limit)
-//            self.refreshControl.addTarget(self, action: #selector(StreamsListViewController.pullToRefresh), for: UIControlEvents.valueChanged)
-//            self.streamListCollectionView.addSubview(self.refreshControl)
-//        }
-//        else
-//        {
-//            DispatchQueue.main.async {
-//                self.removeOverlay()
-//                self.setSourceByAppendingMediaAndLive()
-//                self.refreshControl.addTarget(self, action: #selector(StreamsListViewController.pullToRefresh), for: UIControlEvents.valueChanged)
-//                self.streamListCollectionView.addSubview(self.refreshControl)
-//                self.streamListCollectionView.reloadData()
-//            }
-//        }
+        //        if GlobalStreamList.sharedInstance.GlobalStreamDataSource.count == 0
+        //        {
+        //            GlobalStreamList.sharedInstance.initialiseCloudData(startOffset: count ,endValueLimit: limit)
+        //            self.refreshControl.addTarget(self, action: #selector(StreamsListViewController.pullToRefresh), for: UIControlEvents.valueChanged)
+        //            self.streamListCollectionView.addSubview(self.refreshControl)
+        //        }
+        //        else
+        //        {
+        //            DispatchQueue.main.async {
+        //                self.removeOverlay()
+        //                self.setSourceByAppendingMediaAndLive()
+        //                self.refreshControl.addTarget(self, action: #selector(StreamsListViewController.pullToRefresh), for: UIControlEvents.valueChanged)
+        //                self.streamListCollectionView.addSubview(self.refreshControl)
+        //                self.streamListCollectionView.reloadData()
+        //            }
+        //        }
         if UserDefaults.standard.object(forKey: "NotificationText") != nil{
             if(UserDefaults.standard.object(forKey: "NotificationText") as! String != "")
             {
@@ -440,33 +440,33 @@ class StreamsListViewController: UIViewController{
     
     func getMediaWhileDeleted()
     {
-//        if(mediaAndLiveArray.count <  18 && mediaAndLiveArray.count != 0)
-//        {
-//            if(!self.pullToRefreshActive)
-//            {
-//                let sortList : Array = GlobalStreamList.sharedInstance.GlobalStreamDataSource
-//                var subIdArray : [Int] = [Int]()
-//                
-//                for i in 0  ..< sortList.count
-//                {
-//                    subIdArray.append(Int(sortList[i]["channel_media_detail_id"] as! String)!)
-//                }
-//                if(subIdArray.count > 0)
-//                {
-//                    let subid = subIdArray.min()!
-//                    self.downloadCompleteFlagStream = "start"
-//                    GlobalStreamList.sharedInstance.getMediaByOffset(subId: "\(subid)")
-//                    DispatchQueue.main.async {
-//                        self.scrollObj.finishInfiniteScroll()
-//                        self.customView.removeFromSuperview()
-//                        self.streamListCollectionView.isUserInteractionEnabled = false
-//                        self.customView  = CustomInfiniteIndicator(frame: CGRect(x:(self.streamListCollectionView.layer.frame.width/2 - 20), y:(self.streamListCollectionView.layer.frame.height - 100), width:40, height:40))
-//                        self.streamListCollectionView.addSubview(self.customView)
-//                        self.customView.startAnimating()
-//                    }
-//                }
-//            }
-//        }
+        //        if(mediaAndLiveArray.count <  18 && mediaAndLiveArray.count != 0)
+        //        {
+        //            if(!self.pullToRefreshActive)
+        //            {
+        //                let sortList : Array = GlobalStreamList.sharedInstance.GlobalStreamDataSource
+        //                var subIdArray : [Int] = [Int]()
+        //
+        //                for i in 0  ..< sortList.count
+        //                {
+        //                    subIdArray.append(Int(sortList[i]["channel_media_detail_id"] as! String)!)
+        //                }
+        //                if(subIdArray.count > 0)
+        //                {
+        //                    let subid = subIdArray.min()!
+        //                    self.downloadCompleteFlagStream = "start"
+        //                    GlobalStreamList.sharedInstance.getMediaByOffset(subId: "\(subid)")
+        //                    DispatchQueue.main.async {
+        //                        self.scrollObj.finishInfiniteScroll()
+        //                        self.customView.removeFromSuperview()
+        //                        self.streamListCollectionView.isUserInteractionEnabled = false
+        //                        self.customView  = CustomInfiniteIndicator(frame: CGRect(x:(self.streamListCollectionView.layer.frame.width/2 - 20), y:(self.streamListCollectionView.layer.frame.height - 100), width:40, height:40))
+        //                        self.streamListCollectionView.addSubview(self.customView)
+        //                        self.customView.startAnimating()
+        //                    }
+        //                }
+        //            }
+        //        }
     }
     
     func getUpdateIndexChannel(channelIdValue : String , isCountArray : Bool) -> Int
@@ -685,7 +685,7 @@ class StreamsListViewController: UIViewController{
                         }
                     }
                 }
-        }
+            }
         }
         selectedArray =  selectedArray.sorted()
         for i in 0  ..< selectedArray.count
@@ -1502,13 +1502,6 @@ extension StreamsListViewController:UICollectionViewDataSource,UICollectionViewD
                     self.didSelectExtension(indexPathRow: indexPath.row,operation:self.operationInRedirection)
                 })
                 self.operationQueueObjRedirection.addOperation(operationInRedirection)
-                
-                //                let backgroundQueue = DispatchQueue(label: "com.app.queue",
-                //                                                    qos: .background,
-                //                                                    target: nil)
-                //                backgroundQueue.async {
-                //                    self.didSelectExtension(indexPathRow: indexPath.row)
-                //                }
             }
         }
     }

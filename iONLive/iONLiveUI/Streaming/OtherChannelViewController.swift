@@ -84,7 +84,6 @@ class OtherChannelViewController: UIViewController  {
         {
             channelTitleLabel.text = channelName.uppercased()
         }
-     //   UserDefaults.standard.setValue(channelId, forKey: "channelForInfinite")
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -487,7 +486,6 @@ class OtherChannelViewController: UIViewController  {
         }
         if(subIdArray.count > 0)
         {
-//            let subid = subIdArray.min()!
             let channelSelectedMediaId =  "\(subIdArray.min()!)"
             let userId = UserDefaults.standard.value(forKey: userLoginIdKey) as! String
             if let ch = UserDefaults.standard.value(forKey: "channelForInfinite")
@@ -743,13 +741,6 @@ extension OtherChannelViewController : UICollectionViewDataSource,UICollectionVi
                     self.didSelectExtension(indexPathRow: indexPath.row,operation:self.operationInRedirectionOtherChannel)
                 })
                 self.operationQueueObjRedirectionOtherChannel.addOperation(operationInRedirectionOtherChannel)
-                //                let backgroundQueue = DispatchQueue(label: "com.app.queue",
-                //                                                    qos: .background,
-                //                                                    target: nil)
-                //                backgroundQueue.async {
-                //                    self.didSelectExtension(indexPathRow: indexPath.row)
-                //                }
-                //                didSelectExtension(indexPathRow: indexPath.row)
             }
         }
     }

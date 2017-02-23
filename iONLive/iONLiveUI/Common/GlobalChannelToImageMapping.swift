@@ -133,11 +133,6 @@ class GlobalChannelToImageMapping: NSObject {
                     GlobalDataChannelList.sharedInstance.globalChannelDataSource[i][totalMediaKey] = "\(imageDataSource.count)"
                 }
             }
-            
-            print("chanleId in image mapping  \(channelDetailId)")
-            print("globalChannelDataSource in imagemapping \(GlobalDataChannelList.sharedInstance.globalChannelDataSource)")
-            print("globalchannel image datasource in imagemapping \(GlobalDataChannelList.sharedInstance.globalChannelDataSource)")
-            
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "success"), object:channelDetailId)
         }
     }

@@ -84,12 +84,12 @@ class GlobalStreamList: NSObject {
                     {
                         if((dummySource[i][stream_mediaIdKey] as! String == dummySource[j][stream_mediaIdKey] as! String) && (dummySource[i][channelIdkey] as! String == dummySource[j][channelIdkey] as! String))
                         {
-                           imageDataSource.remove(at: j)
+                            imageDataSource.remove(at: j)
                         }
                     }
                 }
                 dummySource.removeAll()
-
+                
                 operation2 = BlockOperation (block: {
                     self.downloadMediaFromGCS()
                 })
@@ -146,7 +146,7 @@ class GlobalStreamList: NSObject {
             {
                 return
             }
-
+            
             let data = try NSData(contentsOf: downloadURL as URL,options: NSData.ReadingOptions())
             if let imageData = data as NSData? {
                 if let mediaImage1 = UIImage(data: imageData as Data)
@@ -202,7 +202,6 @@ class GlobalStreamList: NSObject {
                     {
                         var imageForMedia : UIImage = UIImage()
                         let mediaIdForFilePathStr = self.imageDataSource[i][stream_mediaIdKey] as! String
-                        print("mediaId=======> \(mediaIdForFilePathStr)")
                         let mediaIdForFilePath = mediaIdForFilePathStr + "thumb"
                         let parentPath = FileManagerViewController.sharedInstance.getParentDirectoryPath().absoluteString
                         let savingPath = parentPath! + "/" + mediaIdForFilePath
