@@ -444,7 +444,7 @@ class StreamsListViewController: UIViewController{
 //        {
 //            if(!self.pullToRefreshActive)
 //            {
-//                let sortList : Array = self.mediaAndLiveArray
+//                let sortList : Array = GlobalStreamList.sharedInstance.GlobalStreamDataSource
 //                var subIdArray : [Int] = [Int]()
 //                
 //                for i in 0  ..< sortList.count

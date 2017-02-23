@@ -76,7 +76,6 @@ class GlobalStreamList: NSObject {
                 imageDataSource.append([stream_mediaIdKey:mediaId, mediaUrlKey:mediaUrlBeforeNullChk, stream_mediaTypeKey:mediaType,actualImageKey:actualUrlBeforeNullChk,notificationKey:notificationType,userIdKey:userid,timestamp:time,stream_channelNameKey:channelName, pullTorefreshKey : pulltorefreshId, channelIdkey:channelIdSelected,"createdTime":time,videoDurationKey:vDuration])
             }
             if(imageDataSource.count > 0){
-                print("imagedatasource -========> \(imageDataSource)")
                 var dummySource: [[String:Any]] = [[String:Any]]()
                 dummySource = imageDataSource
                 for i in 0 ..< dummySource.count
@@ -90,6 +89,7 @@ class GlobalStreamList: NSObject {
                     }
                 }
                 dummySource.removeAll()
+
                 operation2 = BlockOperation (block: {
                     self.downloadMediaFromGCS()
                 })

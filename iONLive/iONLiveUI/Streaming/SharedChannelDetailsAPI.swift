@@ -333,7 +333,6 @@ class SharedChannelDetailsAPI: NSObject {
                 })
             }
         }
-        print("image single array   ======> \(imageDataSource)")
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "SharedChannelMediaDetail"), object:"success")
     }
 }
