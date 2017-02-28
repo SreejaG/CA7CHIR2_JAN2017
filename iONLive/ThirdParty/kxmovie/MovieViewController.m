@@ -238,6 +238,7 @@ NSBlockOperation *likeOper;
 {
     self = [super initWithNibName:@"MovieViewController" bundle:nil];
     if (self) {
+        [UIApplication sharedApplication].idleTimerDisabled = YES;
         UIGraphicsBeginImageContext(CGSizeMake(self.view.bounds.size.width, (self.view.bounds.size.height+67.0)));
         [[UIImage imageNamed:@"live_stream_blur.png"] drawInRect:CGRectMake(self.view.bounds.origin.x, self.view.bounds.origin.y, self.view.bounds.size.width, (self.view.bounds.size.height+67.0))];
         UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
@@ -245,6 +246,7 @@ NSBlockOperation *likeOper;
         glView.backgroundColor = [UIColor colorWithPatternImage:image];
         [self.view bringSubviewToFront:glView];
         
+        likeTapFlag = false;
         if(live){
             _liveVideo = live;
             rtspFilePath = path;
@@ -1442,6 +1444,7 @@ NSBlockOperation *likeOper;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChangedForFullscreenMedia:) name:UIDeviceOrientationDidChangeNotification object:[UIDevice currentDevice]];
     
     [self setGuiBasedOnOrientation];
+    likeTapFlag = false;
     if (_liveVideo) {
         activityImageView.image =  [UIImage animatedImageNamed:@"loader-" duration:1.0f];
         [super viewWillAppear:animated];

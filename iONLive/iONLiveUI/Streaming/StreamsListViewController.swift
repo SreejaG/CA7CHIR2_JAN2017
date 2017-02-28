@@ -423,6 +423,7 @@ class StreamsListViewController: UIViewController{
         }
         if checkFlag
         {
+            self.liveStreamSource.removeAll()
             mediaAndLiveArray.remove(at: removeIndex)
             DispatchQueue.main.async {
                 if(self.mediaAndLiveArray.count == 0)

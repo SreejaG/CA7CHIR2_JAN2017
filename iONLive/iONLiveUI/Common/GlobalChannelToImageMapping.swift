@@ -475,11 +475,23 @@ class GlobalChannelToImageMapping: NSObject {
         mediaIds = mediaIds.sorted()
         if channelId == "\(archiveChannelId)"
         {
-            deleteMediasFromAllChannels(chanelId: channelId, mediaIds: mediaIds)
+            if mediaIds.count == GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[channelId]?.count
+            {
+                deleteAllMediasFromAllChannels(chanelId: channelId, mediaIds: mediaIds)
+            }
+            else{
+                deleteMediasFromAllChannels(chanelId: channelId, mediaIds: mediaIds)
+            }
             deleteMediaFromCache(mediaIds:mediaIds)
         }
         else{
-            deleteMediaFromParticularChannel(chanelId: channelId,mediaIds:mediaIds)
+            if mediaIds.count == GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[channelId]?.count
+            {
+                deleteAllMediaFromParticularChannel(chanelId: channelId, mediaIds: mediaIds)
+            }
+            else{
+                deleteMediaFromParticularChannel(chanelId: channelId,mediaIds:mediaIds)
+            }
         }
     }
     
@@ -572,6 +584,58 @@ class GlobalChannelToImageMapping: NSObject {
         })
     }
     
+    // delete medias from channel completely
+    func deleteAllMediaFromParticularChannel(chanelId : String,mediaIds: [String])
+    {
+        let globalChanelId = chanelId
+        GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[globalChanelId]?.removeAll()
+        for p in 0 ..< GlobalDataChannelList.sharedInstance.globalChannelDataSource.count
+        {
+            if(p < GlobalDataChannelList.sharedInstance.globalChannelDataSource.count){
+                let chanIdChk = GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][MyChannelIdKey] as! String
+                if globalChanelId == chanIdChk
+                {
+                    GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][tImageKey] = UIImage(named: "thumb12")
+                    GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][latestMediaIdKey] = ""
+                    GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][totalMediaKey] = "\(GlobalChannelImageDict[globalChanelId]!.count)"
+                }
+            }
+        }
+        GlobalDataChannelList.sharedInstance.globalChannelDataSource.sort(by: { p1, p2 in
+            let time1 = p1[ChannelCreatedTimeKey] as! String
+            let time2 = p2[ChannelCreatedTimeKey] as! String
+            return time1 > time2
+        })
+    }
+
+    //deleting from archive needs to delete medias from all channels completely
+    func deleteAllMediasFromAllChannels(chanelId : String,mediaIds: [String])
+    {
+        let globalchannelIdList : Array = Array(GlobalChannelImageDict.keys)
+        for i in 0 ..< globalchannelIdList.count
+        {
+            let globalChanelId = globalchannelIdList[i]
+            GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[globalChanelId]?.removeAll()
+            for p in 0 ..< GlobalDataChannelList.sharedInstance.globalChannelDataSource.count
+            {
+                if(p < GlobalDataChannelList.sharedInstance.globalChannelDataSource.count){
+                    let chanIdChk = GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][MyChannelIdKey] as! String
+                    if globalChanelId == chanIdChk
+                    {
+                        GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][tImageKey] = UIImage(named: "thumb12")
+                        GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][latestMediaIdKey] = ""
+                        GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][totalMediaKey] = "\(GlobalChannelImageDict[globalChanelId]!.count)"
+                    }
+                }
+            }
+        }
+        GlobalDataChannelList.sharedInstance.globalChannelDataSource.sort(by: { p1, p2 in
+            let time1 = p1[ChannelCreatedTimeKey] as! String
+            let time2 = p2[ChannelCreatedTimeKey] as! String
+            return time1 > time2
+        })
+        UserDefaults.standard.set(0, forKey: ArchiveCount)
+    }
     
     //deleting from archive needs to delete medias from all channels
     func deleteMediasFromAllChannels(chanelId : String,mediaIds: [String])
@@ -586,10 +650,12 @@ class GlobalChannelToImageMapping: NSObject {
         }
         UserDefaults.standard.set(GlobalChannelImageDict[chanelId]!.count, forKey: ArchiveCount)
     }
-    func getFilteredCount() -> Int
-    {
-        return self.filteredcount
-    }
+    
+//    func getFilteredCount() -> Int
+//    {
+//        return self.filteredcount
+//    }
+    
     func setFilteredCount( count : Int)
     {
         self.filteredcount = count

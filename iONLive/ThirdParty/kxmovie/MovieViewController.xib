@@ -139,10 +139,10 @@
                                             </connections>
                                         </button>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2sq-TW-cXt" userLabel="CloseButton">
-                                            <rect key="frame" x="262" y="12" width="50" height="50"/>
+                                            <rect key="frame" x="255" y="12" width="60" height="60"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="50" id="XHg-3r-mpc"/>
-                                                <constraint firstAttribute="height" constant="50" id="rUC-WG-BAc"/>
+                                                <constraint firstAttribute="width" constant="60" id="XHg-3r-mpc"/>
+                                                <constraint firstAttribute="height" constant="60" id="rUC-WG-BAc"/>
                                             </constraints>
                                             <state key="normal" image="close"/>
                                             <connections>
@@ -213,9 +213,9 @@
                                         <constraint firstItem="lME-9O-IZZ" firstAttribute="leading" secondItem="BB9-od-AqJ" secondAttribute="leading" constant="13" id="EN0-9m-7cf"/>
                                         <constraint firstAttribute="height" constant="64" id="Ej2-3X-7lc"/>
                                         <constraint firstAttribute="bottom" secondItem="L40-1V-WGS" secondAttribute="bottom" constant="5" id="GPJ-Hc-k89"/>
-                                        <constraint firstAttribute="trailing" secondItem="2sq-TW-cXt" secondAttribute="trailing" constant="8" id="KE4-do-HiM"/>
+                                        <constraint firstAttribute="trailing" secondItem="2sq-TW-cXt" secondAttribute="trailing" constant="5" id="KE4-do-HiM"/>
                                         <constraint firstItem="lME-9O-IZZ" firstAttribute="top" secondItem="BB9-od-AqJ" secondAttribute="top" constant="18" id="QcA-zg-qca"/>
-                                        <constraint firstItem="2sq-TW-cXt" firstAttribute="centerY" secondItem="BB9-od-AqJ" secondAttribute="centerY" constant="5" id="TS5-v6-FgA"/>
+                                        <constraint firstItem="2sq-TW-cXt" firstAttribute="centerY" secondItem="BB9-od-AqJ" secondAttribute="centerY" constant="10" id="TS5-v6-FgA"/>
                                         <constraint firstItem="Kpa-gM-M7F" firstAttribute="leading" secondItem="L40-1V-WGS" secondAttribute="trailing" id="gPS-qL-7se"/>
                                         <constraint firstAttribute="bottom" secondItem="Kpa-gM-M7F" secondAttribute="bottom" constant="4" id="x5R-tN-xt6"/>
                                     </constraints>
