@@ -122,70 +122,80 @@ class PhotoViewerViewController: UIViewController,UIGestureRecognizerDelegate,UR
         }
         else if(GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict.count > 0)
         {
-            var channelKeys = Array(GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict.keys)
-            if(channelKeys.contains(archiveChanelId)){
-                let filteredData = GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[archiveChanelId]!.filter(thumbExists)
-                totalCount = filteredData.count
-                GlobalChannelToImageMapping.sharedInstance.setFilteredCount(count: totalCount)
-            }
-            channelKeys.removeAll()
-            if totalCount > 0
+            if((GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[archiveChanelId]?.count)! <= 0)
             {
-                removeOverlay()
-                
-                let dict = GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[archiveChanelId]![selectedItem]
-                downloadFullImageWhenTapThumb(imageDict: dict, indexpaths: selectedItem,gestureIdentifier: 0)
-                DispatchQueue.main.async {
-                    self.addToButton.isHidden = false
-                    self.deletButton.isHidden = false
-                    self.photoThumpCollectionView.reloadData()
-                }
-                if(GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[archiveChanelId]!.count > totalCount){
-                    if(totalCount < 9 && totalCount > 0){
-                        DispatchQueue.main.async {
-                            self.customView.stopAnimationg()
-                            self.customView.removeFromSuperview()
-                            self.customView = CustomInfiniteIndicator(frame: CGRect(x:(self.photoThumpCollectionView.layer.frame.width - 50), y:(self.photoThumpCollectionView.layer.frame.height/2 - 12), width:30, height:30))
-                            self.photoThumpCollectionView.addSubview(self.customView)
-                            self.customView.startAnimating()
-                        }
-                    }
-                    else if(totalCount == 0){
-                        DispatchQueue.main.async {
-                            self.showOverlay()
-                            self.customView.stopAnimationg()
-                            self.customView.removeFromSuperview()
-                            self.fullScrenImageView.image = UIImage()
-                            self.fullScreenZoomView.image = UIImage()
-                            self.deletButton.isHidden = true
-                            self.addToButton.isHidden = true
-                        }
-                    }
-                    else{
-                        DispatchQueue.main.async {
-                            self.removeOverlay()
-                            self.customView.stopAnimationg()
-                            self.customView.removeFromSuperview()
-                            self.deletButton.isHidden = false
-                            self.addToButton.isHidden = false
-                        }
-                    }
-                }
+                self.removeOverlay()
+                addNoDataLabel()
+                self.addToButton.isHidden = true
+                self.deletButton.isHidden = true
+                self.fullScreenZoomView.image = UIImage()
+                self.fullScrenImageView.image = UIImage()
             }
-            else if totalCount <= 0
-            {
-                DispatchQueue.main.async {
-                    self.addToButton.isHidden = true
-                    self.deletButton.isHidden = true
-                    self.mediaTimeLabel.text = ""
-                    self.fullScreenZoomView.image = UIImage()
-                    self.fullScrenImageView.image = UIImage()
-                    self.photoThumpCollectionView.reloadData()
+            else{
+                var channelKeys = Array(GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict.keys)
+                if(channelKeys.contains(archiveChanelId)){
+                    let filteredData = GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[archiveChanelId]!.filter(thumbExists)
+                    totalCount = filteredData.count
+                    GlobalChannelToImageMapping.sharedInstance.setFilteredCount(count: totalCount)
                 }
+                channelKeys.removeAll()
+                if totalCount > 0
+                {
+                    removeOverlay()
+                    
+                    let dict = GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[archiveChanelId]![selectedItem]
+                    downloadFullImageWhenTapThumb(imageDict: dict, indexpaths: selectedItem,gestureIdentifier: 0)
+                    DispatchQueue.main.async {
+                        self.addToButton.isHidden = false
+                        self.deletButton.isHidden = false
+                        self.photoThumpCollectionView.reloadData()
+                    }
+                    if(GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[archiveChanelId]!.count > totalCount){
+                        if(totalCount < 9 && totalCount > 0){
+                            DispatchQueue.main.async {
+                                self.customView.stopAnimationg()
+                                self.customView.removeFromSuperview()
+                                self.customView = CustomInfiniteIndicator(frame: CGRect(x:(self.photoThumpCollectionView.layer.frame.width - 50), y:(self.photoThumpCollectionView.layer.frame.height/2 - 12), width:30, height:30))
+                                self.photoThumpCollectionView.addSubview(self.customView)
+                                self.customView.startAnimating()
+                            }
+                        }
+                        else if(totalCount == 0){
+                            DispatchQueue.main.async {
+                                self.showOverlay()
+                                self.customView.stopAnimationg()
+                                self.customView.removeFromSuperview()
+                                self.fullScrenImageView.image = UIImage()
+                                self.fullScreenZoomView.image = UIImage()
+                                self.deletButton.isHidden = true
+                                self.addToButton.isHidden = true
+                            }
+                        }
+                        else{
+                            DispatchQueue.main.async {
+                                self.removeOverlay()
+                                self.customView.stopAnimationg()
+                                self.customView.removeFromSuperview()
+                                self.deletButton.isHidden = false
+                                self.addToButton.isHidden = false
+                            }
+                        }
+                    }
+                }
+                else if totalCount <= 0
+                {
+                    DispatchQueue.main.async {
+                        self.addToButton.isHidden = true
+                        self.deletButton.isHidden = true
+                        self.mediaTimeLabel.text = ""
+                        self.fullScreenZoomView.image = UIImage()
+                        self.fullScrenImageView.image = UIImage()
+                        self.photoThumpCollectionView.reloadData()
+                    }
+                }
+                downloadImagesFromGlobalChannelImageMapping(limit: 21)
             }
-            downloadImagesFromGlobalChannelImageMapping(limit: 21)
         }
-        
         fullScreenScrollView.delegate = self
         fullScreenScrollView.minimumZoomScale = 1.0
         fullScreenScrollView.maximumZoomScale = 10.0
