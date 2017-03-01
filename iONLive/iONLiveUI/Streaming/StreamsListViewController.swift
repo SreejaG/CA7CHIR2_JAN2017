@@ -36,10 +36,11 @@ class StreamsListViewController: UIViewController{
     var customView = CustomInfiniteIndicator()
     let isWatched = "isWatched"
     
-    
     var operationQueueObjRedirection = OperationQueue()
     var operationInRedirection = BlockOperation()
     
+//    var operationQueueObjLive = OperationQueue()
+//    var operationInLive = BlockOperation()
     
     @IBOutlet weak var streamListCollectionView: UICollectionView!
     override func viewDidLoad() {
@@ -411,6 +412,7 @@ class StreamsListViewController: UIViewController{
         let livStreamId = info ["liveStreamId"] as! Int
         var  checkFlag : Bool = false
         var removeIndex : Int = Int()
+                
         for (index, element) in mediaAndLiveArray.enumerated() {
             if element[channelIdkey] as? String == "\(channelId)"
             {
@@ -423,8 +425,8 @@ class StreamsListViewController: UIViewController{
         }
         if checkFlag
         {
-            self.liveStreamSource.removeAll()
             mediaAndLiveArray.remove(at: removeIndex)
+            self.liveStreamSource.remove(at: removeIndex)
             DispatchQueue.main.async {
                 if(self.mediaAndLiveArray.count == 0)
                 {
@@ -1119,7 +1121,7 @@ class StreamsListViewController: UIViewController{
     //PRAGMA MARK:- API Handlers
     func getAllLiveStreams()
     {
-        liveStreamSource.removeAll()
+        self.liveStreamSource.removeAll()
         let userDefault = UserDefaults.standard
         let loginId = userDefault.object(forKey: userLoginIdKey)
         let accessTocken = userDefault.object(forKey: userAccessTockenKey)
@@ -1273,6 +1275,92 @@ class StreamsListViewController: UIViewController{
         }
     }
     
+    
+//    func getAllStreamSuccessHandler(response:AnyObject?)
+//    {
+//        if let json = response as? [String: AnyObject]
+//        {
+//            let responseArrLive = json["liveStreams"] as! [[String:AnyObject]]
+//            self.liveStreamSource.removeAll()
+//            if (responseArrLive.count != 0)
+//            {
+//                for element in responseArrLive{
+//                    let stremTockn = element[stream_streamTockenKey] as! String
+//                    let userId = element[userIdKey] as! String
+//                    let channelIdSelected = element["channel_detail_id"]?.stringValue
+//                    let channelname = element[stream_channelNameKey] as! String
+//                    let mediaId = element["live_stream_detail_id"]?.stringValue
+//                    let pulltorefresh = element["channel_live_stream_detail_id"]?.stringValue
+//                    let notificationType : String = ""
+//                    
+//                    
+//                    let dateFormatter = DateFormatter()
+//                    dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+//                    dateFormatter.timeZone = NSTimeZone(name: "UTC") as TimeZone!
+//                    let currentDate = dateFormatter.string(from: NSDate() as Date)
+//                    self.liveStreamSource.append([stream_mediaIdKey:mediaId!, mediaUrlKey:"", timestamp :currentDate ,stream_streamTockenKey:stremTockn,actualImageKey:"",userIdKey:userId,notificationKey:notificationType,stream_mediaTypeKey:"live",timeKey:currentDate,stream_channelNameKey:channelname, channelIdkey: channelIdSelected!,"createdTime":currentDate,pullTorefreshKey :pulltorefresh!])
+//                }
+//                
+//                if self.liveStreamSource.count > 0
+//                {
+//                    operationInLive.cancel()
+//                    operationInLive  = BlockOperation (block: {
+//                        self.downloadMediaLive(oper: self.operationInLive)
+//                    })
+//                    self.operationQueueObjLive.addOperation(operationInLive)
+//                }
+//            }
+//        }
+//        else
+//        {
+//            ErrorManager.sharedInstance.inValidResponseError()
+//        }
+//    }
+//
+//    func downloadMediaLive(oper:BlockOperation){
+//        for i in 0 ..< self.liveStreamSource.count
+//        {
+//            if i < self.liveStreamSource.count
+//            {
+//                if oper.isCancelled{
+//                    return
+//                }
+//                let thumbUrlBeforeNullChk =  UrlManager.sharedInstance.getLiveThumbUrlApi(liveStreamId: self.liveStreamSource[i][stream_mediaIdKey] as! String)
+//                var imageForMedia : UIImage = UIImage()
+//                let thumbUrl = nullToNil(value: thumbUrlBeforeNullChk)
+//                if("\(thumbUrl)" != ""){
+//                    let url: NSURL = convertStringtoURL(url: thumbUrl! as! String)
+//                    downloadMedia(downloadURL: url, key: "ThumbImage", completion: { (result) -> Void in
+//                        if(result != UIImage()){
+//                            imageForMedia = result
+//                        }
+//                    })
+//                }
+//                else{
+//                    imageForMedia = UIImage(named: "thumb12")!
+//                }
+//                self.liveStreamSource[i][stream_thumbImageKey] = imageForMedia
+//            }
+//        }
+//        DispatchQueue.main.async {
+//            if(self.mediaAndLiveArray.count == 0)
+//            {
+//                if(self.liveStreamSource.count > 0)
+//                {
+//                    self.setSourceByAppendingMediaAndLive()
+//                }
+//            }
+//            else
+//            {
+//                if(self.liveStreamSource.count > 0)
+//                {
+//                    self.setSourceByAppendingMediaAndLive()
+//                }
+//            }
+//            self.streamListCollectionView.reloadData()
+//        }
+//    }
+    
     func loadStaticImagesOnly()
     {
         self.streamListCollectionView.reloadData()
@@ -1399,7 +1487,7 @@ class StreamsListViewController: UIViewController{
         }
         self.removeOverlay()
         streamListCollectionView.alpha = 1.0
-        let index = indexPathRow - liveStreamSource.count
+        let index = indexPathRow - self.liveStreamSource.count
         if (mediaAndLiveArray.count > 0)
         {
             let type = mediaAndLiveArray[indexPathRow][stream_mediaTypeKey] as! String

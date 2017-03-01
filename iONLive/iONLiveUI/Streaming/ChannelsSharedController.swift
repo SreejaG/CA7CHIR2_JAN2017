@@ -261,6 +261,13 @@ class ChannelsSharedController: UIViewController,UIScrollViewDelegate  {
                 let itemToMove = ChannelSharedListAPI.sharedInstance.SharedChannelListDataSource[index]
                 ChannelSharedListAPI.sharedInstance.SharedChannelListDataSource.remove(at: index)
                 ChannelSharedListAPI.sharedInstance.SharedChannelListDataSource.insert(itemToMove, at: totalCount)
+                ChannelSharedListAPI.sharedInstance.SharedChannelListDataSource.sort(by: { p1, p2 in
+                    
+                    let time1 = p1[liveStreamStatus] as! String
+                    let time2 = p2[liveStreamStatus] as! String
+                    return time1 > time2
+                })
+
                 self.ChannelSharedTableView.reloadData()
             }
         }

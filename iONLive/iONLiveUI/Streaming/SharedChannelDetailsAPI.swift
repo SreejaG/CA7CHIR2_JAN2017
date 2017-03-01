@@ -111,6 +111,7 @@ class SharedChannelDetailsAPI: NSObject {
         if let json = response as? [String: Any]
         {
             let responseArr = json["MediaDetail"] as! [AnyObject]
+//            print("response array in stream ======> \(responseArr)")
             for index in 0 ..< responseArr.count
             {
                 let mediaId = String(responseArr[index]["media_detail_id"] as! Int)

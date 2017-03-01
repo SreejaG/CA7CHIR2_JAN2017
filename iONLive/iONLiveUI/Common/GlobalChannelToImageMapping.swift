@@ -95,6 +95,8 @@ class GlobalChannelToImageMapping: NSObject {
         {
             imageDataSource.removeAll()
             let responseArr = json["MediaDetail"] as! [AnyObject]
+//            print("response array in My channel ======> \(responseArr)")
+
             for index in 0 ..< responseArr.count
             {
                 let mediaId = String(responseArr[index][mediaIdKey] as! Int)
