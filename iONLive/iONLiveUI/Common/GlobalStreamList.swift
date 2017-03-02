@@ -140,7 +140,7 @@ class GlobalStreamList: NSObject {
         return searchURL
     }
     
-    func downloadMedia(downloadURL : NSURL ,key : String , completion: (_ result: UIImage) -> Void)
+    func downloadMedia(downloadURL : NSURL ,key : String , mediaIDStr: String, completion: (_ result: UIImage, _ mediaId: String) -> Void)
     {
         var mediaImage : UIImage = UIImage()
         do {
@@ -159,15 +159,15 @@ class GlobalStreamList: NSObject {
                     
                     mediaImage = UIImage(named: "thumb12")!
                 }
-                completion(mediaImage)
+                completion(mediaImage,mediaIDStr)
             }
             else
             {
-                completion(UIImage(named: "thumb12")!)
+                completion(UIImage(named: "thumb12")!,mediaIDStr)
             }
             
         } catch {
-            completion(UIImage(named: "thumb12")!)
+            completion(UIImage(named: "thumb12")!,mediaIDStr)
         }
     }
     
@@ -226,8 +226,12 @@ class GlobalStreamList: NSObject {
                                 let mediaUrl = imageDataSource[i][mediaUrlKey] as! String
                                 if(mediaUrl != ""){
                                     let url: NSURL = convertStringtoURL(url: mediaUrl)
-                                    downloadMedia(downloadURL: url, key: "ThumbImage", completion: { (result) -> Void in
+                                    downloadMedia(downloadURL: url, key: "ThumbImage", mediaIDStr: imageDataSource[i][stream_mediaIdKey] as! String, completion: { (result,mediaResultId) -> Void in
                                         if(result != UIImage()){
+                                            if i < imageDataSource.count
+                                            {
+                                            if mediaResultId == imageDataSource[i][stream_mediaIdKey] as! String
+                                            {
                                             let imageDataFromresult = UIImageJPEGRepresentation(result, 0.5)
                                             if imageDataFromresult != nil
                                             {
@@ -245,15 +249,18 @@ class GlobalStreamList: NSObject {
                                                     
                                                     _ = FileManagerViewController.sharedInstance.saveImageToFilePath(mediaName: mediaIdForFilePath, mediaImage: result)
                                                 }
-                                                imageForMedia = result
-                                            }
-                                            else{
-                                                imageForMedia = UIImage(named: "thumb12")!
+//                                                imageForMedia = result
+//                                            }
+//                                            else{
+//                                                imageForMedia = UIImage(named: "thumb12")!
+//                                            }
                                             }
                                         }
-                                        else{
-                                            imageForMedia = UIImage(named: "thumb12")!
                                         }
+                                        }
+//                                        else{
+//                                            imageForMedia = UIImage(named: "thumb12")!
+//                                        }
                                     })
                                 }
                             }

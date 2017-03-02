@@ -130,27 +130,27 @@ class SharedChannelDetailsAPI: NSObject {
                     vDuration = ""
                 }
                 
-                var chkFlag : Bool = false
-                if selectedSharedChannelMediaSource.count > 0
-                {
-                    for ele in selectedSharedChannelMediaSource
-                    {
-                        if(mediaId == ele[stream_mediaIdKey] as! String)
-                        {
-                            chkFlag = true
-                            break
-                        }
-                    }
-                }
-                else{
-                    chkFlag = false
-                }
-              
-                if chkFlag == false
-                {
+//                var chkFlag : Bool = false
+//                if selectedSharedChannelMediaSource.count > 0
+//                {
+//                    for ele in selectedSharedChannelMediaSource
+//                    {
+//                        if(mediaId == ele[stream_mediaIdKey] as! String)
+//                        {
+//                            chkFlag = true
+//                            break
+//                        }
+//                    }
+//                }
+//                else{
+//                    chkFlag = false
+//                }
+//              
+//                if chkFlag == false
+//                {
                 
                     imageDataSource.append([stream_mediaIdKey:mediaId, mediaUrlKey:mediaUrl, stream_mediaTypeKey:mediaType,actualImageKey:actualUrl,infiniteScrollIdKey: infiniteScrollId,notificationKey:notificationType,"createdTime":time,videoDurationKey:vDuration])
-                }
+//                }
             }
             
             let responseArrLive = json["LiveDetail"] as! [AnyObject]
@@ -169,7 +169,7 @@ class SharedChannelDetailsAPI: NSObject {
                 vDuration = ""
                 if(mediaUrl != ""){
                     let url: NSURL = convertStringtoURL(url: mediaUrl)
-                    downloadMedia(downloadURL: url, key: "ThumbImage", completion: { (result) -> Void in
+                    downloadMedia(downloadURL: url, key: "ThumbImage", mediaIDStr:mediaId, completion: { (result,mediaResultId) -> Void in
                         if(self.selectedSharedChannelMediaSource.count > 0)
                         {
                             if (self.selectedSharedChannelMediaSource[0][stream_mediaTypeKey] as! String != "live")
@@ -189,6 +189,20 @@ class SharedChannelDetailsAPI: NSObject {
                 if(self.selectedSharedChannelMediaSource.count > 0)
                 {
                 }
+                
+                var dummySource: [[String:Any]] = [[String:Any]]()
+                dummySource = imageDataSource
+                for i in 0 ..< dummySource.count
+                {
+                    for j in i+1 ..< dummySource.count
+                    {
+                        if(dummySource[i][stream_mediaIdKey] as! String == dummySource[j][stream_mediaIdKey] as! String)
+                        {
+                            imageDataSource.remove(at: j)
+                        }
+                    }
+                }
+                dummySource.removeAll()
                 
                 let operation2 : BlockOperation = BlockOperation (block: {
                     self.downloadMediaFromGCS()
@@ -231,7 +245,7 @@ class SharedChannelDetailsAPI: NSObject {
         }
     }
     
-    func downloadMedia(downloadURL : NSURL ,key : String , completion: (_ result: UIImage) -> Void)
+    func downloadMedia(downloadURL : NSURL ,key : String , mediaIDStr: String, completion: (_ result: UIImage, _ mediaId: String) -> Void)
     {
         var mediaImage : UIImage = UIImage()
         
@@ -242,7 +256,7 @@ class SharedChannelDetailsAPI: NSObject {
                 if let mediaImage1 = UIImage(data: imageData as Data)
                 {
                     mediaImage = mediaImage1
-                    completion(mediaImage)
+                    completion(mediaImage,mediaIDStr)
                 }
                 else{
                     let failedString = String(data: imageData as Data, encoding: String.Encoding.utf8)
@@ -263,11 +277,11 @@ class SharedChannelDetailsAPI: NSObject {
             }
             else
             {
-                completion(UIImage(named: "thumb12")!)
+                completion(UIImage(named: "thumb12")!,mediaIDStr)
             }
             
         } catch {
-            completion(UIImage(named: "thumb12")!)
+            completion(UIImage(named: "thumb12")!,mediaIDStr)
         }
     }
     
@@ -285,6 +299,24 @@ class SharedChannelDetailsAPI: NSObject {
             var imageForMedia : UIImage = UIImage()
             if(imageDataSource.count > 0 && imageDataSource.count > i)
             {
+                var chkFlag : Bool = false
+                if selectedSharedChannelMediaSource.count > 0
+                {
+                    for ele in selectedSharedChannelMediaSource
+                    {
+                        if(imageDataSource[i][stream_mediaIdKey] as! String == ele[stream_mediaIdKey] as! String)
+                        {
+                            chkFlag = true
+                            break
+                        }
+                    }
+                }
+                else{
+                    chkFlag = false
+                }
+                
+                if chkFlag == false
+                {
                 let mediaidStrFile = imageDataSource[i][stream_mediaIdKey] as! String
                 let mediaIdForFilePath = mediaidStrFile + "thumb"
                 let parentPath = FileManagerViewController.sharedInstance.getParentDirectoryPath().absoluteString
@@ -298,8 +330,12 @@ class SharedChannelDetailsAPI: NSObject {
                     let mediaUrl = imageDataSource[i][mediaUrlKey] as! String
                     if(mediaUrl != ""){
                         let url: NSURL = convertStringtoURL(url: mediaUrl)
-                        downloadMedia(downloadURL: url, key: "ThumbImage", completion: { (result) -> Void in
+                        downloadMedia(downloadURL: url, key: "ThumbImage", mediaIDStr: imageDataSource[i][stream_mediaIdKey] as! String, completion: { (result,mediaResultId) -> Void in
                             if(result != UIImage()){
+                                if i < imageDataSource.count
+                                {
+                                if mediaResultId == imageDataSource[i][stream_mediaIdKey] as! String
+                                {
                                 let imageDataFromresult = UIImageJPEGRepresentation(result, 0.5)
                                 if(imageDataFromresult != nil){
                                     let imageDataFromresultAsNsdata = (imageDataFromresult as NSData?)!
@@ -316,11 +352,14 @@ class SharedChannelDetailsAPI: NSObject {
                                     imageForMedia = UIImage(named: "thumb12")!
                                 }
                             }
+                            }
+                            }
                             else{
                                 imageForMedia = UIImage(named: "thumb12")!
                             }
                         })
                     }
+                }
                 }
             }
             
