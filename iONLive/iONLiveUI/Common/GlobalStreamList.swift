@@ -50,6 +50,8 @@ class GlobalStreamList: NSObject {
             {
                 UserDefaults.standard.setValue("Empty", forKey: "EmptyMedia")
             }
+            print("response array in stream ======> \(responseArr)")
+
             for index in 0 ..< responseArr.count
             {
                 UserDefaults.standard.setValue("NotEmpty", forKey: "EmptyMedia")

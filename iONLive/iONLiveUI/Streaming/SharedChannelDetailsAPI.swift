@@ -111,7 +111,7 @@ class SharedChannelDetailsAPI: NSObject {
         if let json = response as? [String: Any]
         {
             let responseArr = json["MediaDetail"] as! [AnyObject]
-//            print("response array in stream ======> \(responseArr)")
+            print("response array in stream channel ======> \(responseArr)")
             for index in 0 ..< responseArr.count
             {
                 let mediaId = String(responseArr[index]["media_detail_id"] as! Int)
@@ -129,7 +129,28 @@ class SharedChannelDetailsAPI: NSObject {
                 else{
                     vDuration = ""
                 }
-                imageDataSource.append([stream_mediaIdKey:mediaId, mediaUrlKey:mediaUrl, stream_mediaTypeKey:mediaType,actualImageKey:actualUrl,infiniteScrollIdKey: infiniteScrollId,notificationKey:notificationType,"createdTime":time,videoDurationKey:vDuration])
+                
+                var chkFlag : Bool = false
+                if selectedSharedChannelMediaSource.count > 0
+                {
+                    for ele in selectedSharedChannelMediaSource
+                    {
+                        if(mediaId == ele[stream_mediaIdKey] as! String)
+                        {
+                            chkFlag = true
+                            break
+                        }
+                    }
+                }
+                else{
+                    chkFlag = false
+                }
+              
+                if chkFlag == false
+                {
+                
+                    imageDataSource.append([stream_mediaIdKey:mediaId, mediaUrlKey:mediaUrl, stream_mediaTypeKey:mediaType,actualImageKey:actualUrl,infiniteScrollIdKey: infiniteScrollId,notificationKey:notificationType,"createdTime":time,videoDurationKey:vDuration])
+                }
             }
             
             let responseArrLive = json["LiveDetail"] as! [AnyObject]
