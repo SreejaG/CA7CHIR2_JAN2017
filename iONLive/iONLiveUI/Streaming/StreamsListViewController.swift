@@ -1219,6 +1219,7 @@ class StreamsListViewController: UIViewController{
     {
         if let json = response as? [String: AnyObject]
         {
+            self.liveStreamSource.removeAll()
             let responseArrLive = json["liveStreams"] as! [[String:AnyObject]]
             if (responseArrLive.count != 0)
             {
@@ -1233,22 +1234,42 @@ class StreamsListViewController: UIViewController{
                     let thumbUrlBeforeNullChk =  UrlManager.sharedInstance.getLiveThumbUrlApi(liveStreamId: mediaId!)
                     var imageForMedia : UIImage = UIImage()
                     let thumbUrl = nullToNil(value: thumbUrlBeforeNullChk)
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+                    dateFormatter.timeZone = NSTimeZone(name: "UTC") as TimeZone!
+                    let currentDate = dateFormatter.string(from: NSDate() as Date)
                     if("\(thumbUrl)" != ""){
                         let url: NSURL = convertStringtoURL(url: thumbUrl! as! String)
                         downloadMedia(downloadURL: url, key: "ThumbImage", completion: { (result) -> Void in
                             if(result != UIImage()){
                                 imageForMedia = result
+                                var chkFlag : Bool = false
+                                if liveStreamSource.count > 0
+                                {
+                                    for ele in liveStreamSource
+                                    {
+                                        if((mediaId == ele[stream_mediaIdKey] as? String) && (channelIdSelected == ele[channelIdkey] as? String))
+                                        {
+                                            chkFlag = true
+                                            break
+                                        }
+                                    }
+                                }
+                                else{
+                                    chkFlag = false
+                                }
+                                
+                                if chkFlag == false
+                                {
+                                    liveStreamSource.append([stream_mediaIdKey:mediaId!, mediaUrlKey:"", timestamp :currentDate,stream_thumbImageKey:imageForMedia ,stream_streamTockenKey:stremTockn,actualImageKey:"",userIdKey:userId,notificationKey:notificationType,stream_mediaTypeKey:"live",timeKey:currentDate,stream_channelNameKey:channelname, channelIdkey: channelIdSelected!,"createdTime":currentDate,pullTorefreshKey :pulltorefresh!])
+                                }
+
                             }
                         })
                     }
-                    else{
-                        imageForMedia = UIImage(named: "thumb12")!
-                    }
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-                    dateFormatter.timeZone = NSTimeZone(name: "UTC") as TimeZone!
-                    let currentDate = dateFormatter.string(from: NSDate() as Date)
-                    liveStreamSource.append([stream_mediaIdKey:mediaId!, mediaUrlKey:"", timestamp :currentDate,stream_thumbImageKey:imageForMedia ,stream_streamTockenKey:stremTockn,actualImageKey:"",userIdKey:userId,notificationKey:notificationType,stream_mediaTypeKey:"live",timeKey:currentDate,stream_channelNameKey:channelname, channelIdkey: channelIdSelected!,"createdTime":currentDate,pullTorefreshKey :pulltorefresh!])
+//                   else{
+//                         imageForMedia = UIImage(named: "thumb12")!
+//                    }
                 }
                 DispatchQueue.main.async {
                     if(self.mediaAndLiveArray.count == 0)

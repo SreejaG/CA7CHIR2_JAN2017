@@ -130,27 +130,27 @@ class SharedChannelDetailsAPI: NSObject {
                     vDuration = ""
                 }
                 
-//                var chkFlag : Bool = false
-//                if selectedSharedChannelMediaSource.count > 0
-//                {
-//                    for ele in selectedSharedChannelMediaSource
-//                    {
-//                        if(mediaId == ele[stream_mediaIdKey] as! String)
-//                        {
-//                            chkFlag = true
-//                            break
-//                        }
-//                    }
-//                }
-//                else{
-//                    chkFlag = false
-//                }
-//              
-//                if chkFlag == false
-//                {
+                //                var chkFlag : Bool = false
+                //                if selectedSharedChannelMediaSource.count > 0
+                //                {
+                //                    for ele in selectedSharedChannelMediaSource
+                //                    {
+                //                        if(mediaId == ele[stream_mediaIdKey] as! String)
+                //                        {
+                //                            chkFlag = true
+                //                            break
+                //                        }
+                //                    }
+                //                }
+                //                else{
+                //                    chkFlag = false
+                //                }
+                //
+                //                if chkFlag == false
+                //                {
                 
-                    imageDataSource.append([stream_mediaIdKey:mediaId, mediaUrlKey:mediaUrl, stream_mediaTypeKey:mediaType,actualImageKey:actualUrl,infiniteScrollIdKey: infiniteScrollId,notificationKey:notificationType,"createdTime":time,videoDurationKey:vDuration])
-//                }
+                imageDataSource.append([stream_mediaIdKey:mediaId, mediaUrlKey:mediaUrl, stream_mediaTypeKey:mediaType,actualImageKey:actualUrl,infiniteScrollIdKey: infiniteScrollId,notificationKey:notificationType,"createdTime":time,videoDurationKey:vDuration])
+                //                }
             }
             
             let responseArrLive = json["LiveDetail"] as! [AnyObject]
@@ -317,57 +317,63 @@ class SharedChannelDetailsAPI: NSObject {
                 
                 if chkFlag == false
                 {
-                let mediaidStrFile = imageDataSource[i][stream_mediaIdKey] as! String
-                let mediaIdForFilePath = mediaidStrFile + "thumb"
-                let parentPath = FileManagerViewController.sharedInstance.getParentDirectoryPath().absoluteString
-                let savingPath = parentPath! + "/" + mediaIdForFilePath
-                let fileExistFlag = FileManagerViewController.sharedInstance.fileExist(mediaPath: savingPath)
-                if fileExistFlag == true{
-                    let mediaImageFromFile = FileManagerViewController.sharedInstance.getImageFromFilePath(mediaPath: savingPath)
-                    imageForMedia = mediaImageFromFile!
-                }
-                else{
-                    let mediaUrl = imageDataSource[i][mediaUrlKey] as! String
-                    if(mediaUrl != ""){
-                        let url: NSURL = convertStringtoURL(url: mediaUrl)
-                        downloadMedia(downloadURL: url, key: "ThumbImage", mediaIDStr: imageDataSource[i][stream_mediaIdKey] as! String, completion: { (result,mediaResultId) -> Void in
-                            if(result != UIImage()){
-                                if i < imageDataSource.count
-                                {
-                                if mediaResultId == imageDataSource[i][stream_mediaIdKey] as! String
-                                {
-                                let imageDataFromresult = UIImageJPEGRepresentation(result, 0.5)
-                                if(imageDataFromresult != nil){
-                                    let imageDataFromresultAsNsdata = (imageDataFromresult as NSData?)!
-                                    let imageDataFromDefault = UIImageJPEGRepresentation(UIImage(named: "thumb12")!, 0.5)
-                                    let imageDataFromDefaultAsNsdata = (imageDataFromDefault as NSData?)!
-                                    if(imageDataFromresultAsNsdata.isEqual(imageDataFromDefaultAsNsdata)){
-                                    }
-                                    else{
-                                        _ = FileManagerViewController.sharedInstance.saveImageToFilePath(mediaName: mediaIdForFilePath, mediaImage: result)
-                                    }
-                                    imageForMedia = result
-                                }
-                                else{
-                                    imageForMedia = UIImage(named: "thumb12")!
-                                }
+                    let mediaidStrFile = imageDataSource[i][stream_mediaIdKey] as! String
+                    let mediaIdForFilePath = mediaidStrFile + "thumb"
+                    let parentPath = FileManagerViewController.sharedInstance.getParentDirectoryPath().absoluteString
+                    let savingPath = parentPath! + "/" + mediaIdForFilePath
+                    let fileExistFlag = FileManagerViewController.sharedInstance.fileExist(mediaPath: savingPath)
+                    if fileExistFlag == true{
+                        let mediaImageFromFile = FileManagerViewController.sharedInstance.getImageFromFilePath(mediaPath: savingPath)
+                        imageForMedia = mediaImageFromFile!
+                        if(imageDataSource.count > 0 )
+                        {
+                            if(i < imageDataSource.count)
+                            {
+                                self.selectedSharedChannelMediaSource.append([stream_mediaIdKey:self.imageDataSource[i][stream_mediaIdKey]!, mediaUrlKey:imageForMedia,stream_mediaTypeKey:self.imageDataSource[i][stream_mediaTypeKey]!,stream_thumbImageKey:imageForMedia,actualImageKey:self.imageDataSource[i][actualImageKey]!,infiniteScrollIdKey: self.imageDataSource[i][infiniteScrollIdKey]!,stream_streamTockenKey:"",notificationKey:self.imageDataSource[i][notificationKey]!,"createdTime":self.imageDataSource[i]["createdTime"] as! String,                videoDurationKey:self.imageDataSource[i][videoDurationKey] as! String])
                             }
-                            }
-                            }
-                            else{
-                                imageForMedia = UIImage(named: "thumb12")!
-                            }
-                        })
+                        }
                     }
-                }
-                }
-            }
-            
-            if(imageDataSource.count > 0 )
-            {
-                if(i < imageDataSource.count)
-                {
-                    self.selectedSharedChannelMediaSource.append([stream_mediaIdKey:self.imageDataSource[i][stream_mediaIdKey]!, mediaUrlKey:imageForMedia,stream_mediaTypeKey:self.imageDataSource[i][stream_mediaTypeKey]!,stream_thumbImageKey:imageForMedia,actualImageKey:self.imageDataSource[i][actualImageKey]!,infiniteScrollIdKey: self.imageDataSource[i][infiniteScrollIdKey]!,stream_streamTockenKey:"",notificationKey:self.imageDataSource[i][notificationKey]!,"createdTime":self.imageDataSource[i]["createdTime"] as! String,                videoDurationKey:self.imageDataSource[i][videoDurationKey] as! String])
+                    else{
+                        let mediaUrl = imageDataSource[i][mediaUrlKey] as! String
+                        if(mediaUrl != ""){
+                            let url: NSURL = convertStringtoURL(url: mediaUrl)
+                            downloadMedia(downloadURL: url, key: "ThumbImage", mediaIDStr: imageDataSource[i][stream_mediaIdKey] as! String, completion: { (result,mediaResultId) -> Void in
+                                if(result != UIImage()){
+                                    if i < imageDataSource.count
+                                    {
+                                        if mediaResultId == imageDataSource[i][stream_mediaIdKey] as! String
+                                        {
+                                            let imageDataFromresult = UIImageJPEGRepresentation(result, 0.5)
+                                            if(imageDataFromresult != nil){
+                                                let imageDataFromresultAsNsdata = (imageDataFromresult as NSData?)!
+                                                let imageDataFromDefault = UIImageJPEGRepresentation(UIImage(named: "thumb12")!, 0.5)
+                                                let imageDataFromDefaultAsNsdata = (imageDataFromDefault as NSData?)!
+                                                if(imageDataFromresultAsNsdata.isEqual(imageDataFromDefaultAsNsdata)){
+                                                }
+                                                else{
+                                                    _ = FileManagerViewController.sharedInstance.saveImageToFilePath(mediaName: mediaIdForFilePath, mediaImage: result)
+                                                }
+                                                imageForMedia = result
+                                                if(imageDataSource.count > 0 )
+                                                {
+                                                    if(i < imageDataSource.count)
+                                                    {
+                                                        self.selectedSharedChannelMediaSource.append([stream_mediaIdKey:self.imageDataSource[i][stream_mediaIdKey]!, mediaUrlKey:imageForMedia,stream_mediaTypeKey:self.imageDataSource[i][stream_mediaTypeKey]!,stream_thumbImageKey:imageForMedia,actualImageKey:self.imageDataSource[i][actualImageKey]!,infiniteScrollIdKey: self.imageDataSource[i][infiniteScrollIdKey]!,stream_streamTockenKey:"",notificationKey:self.imageDataSource[i][notificationKey]!,"createdTime":self.imageDataSource[i]["createdTime"] as! String,                videoDurationKey:self.imageDataSource[i][videoDurationKey] as! String])
+                                                    }
+                                                }
+                                            }
+                                            //                                else{
+                                            //                                    imageForMedia = UIImage(named: "thumb12")!
+                                            //                                }
+                                        }
+                                    }
+                                }
+                                //                            else{
+                                //                                imageForMedia = UIImage(named: "thumb12")!
+                                //                            }
+                            })
+                        }
+                    }
                 }
             }
         }
