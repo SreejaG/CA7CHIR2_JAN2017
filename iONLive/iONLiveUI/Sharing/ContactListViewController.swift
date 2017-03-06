@@ -25,8 +25,8 @@ class ContactListViewController: UIViewController
     let channelManager = ChannelManager.sharedInstance
     let contactManagers = contactManager.sharedInstance
     
+    var dummySource :[[String:Any]] = [[String:Any]]()
     var dataSource:[[String:Any]] = [[String:Any]]()
-//    var dummySource:[[String:Any]] = [[String:Any]]()
     var searchDataSource:[[String:Any]] = [[String:Any]]()
     
     let defaults = UserDefaults.standard
@@ -50,9 +50,10 @@ class ContactListViewController: UIViewController
     
     var NoDatalabelFormySharingImageList : UILabel = UILabel()
     
+    //for ir3 code
     //Pull to refresh
-//    var refreshControl:UIRefreshControl!
-//    var pullToRefreshActive = false
+    //    var refreshControl:UIRefreshControl!
+    //    var pullToRefreshActive = false
     
     var operationQueueObjInSharingContactList = OperationQueue()
     var operationInSharingContactList = BlockOperation()
@@ -70,10 +71,11 @@ class ContactListViewController: UIViewController
         
         contactAuthorizationAlert()
         
-//        self.refreshControl = UIRefreshControl()
-//        self.refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
-//        self.refreshControl.addTarget(self, action: #selector(ContactListViewController.pullToRefresh), for: .valueChanged)
-//        self.contactListTableView.addSubview(self.refreshControl)
+        //for ir3 code
+        //        self.refreshControl = UIRefreshControl()
+        //        self.refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        //        self.refreshControl.addTarget(self, action: #selector(ContactListViewController.pullToRefresh), for: .valueChanged)
+        //        self.contactListTableView.addSubview(self.refreshControl)
     }
     
     override func didReceiveMemoryWarning() {
@@ -118,25 +120,26 @@ class ContactListViewController: UIViewController
         }
     }
     
-//    func pullToRefresh()
-//    {
-//        if(!pullToRefreshActive){
-//            pullToRefreshActive = true
-//            operationInSharingContactList.cancel()
-//            self.contactListSearchBar.text = ""
-//            self.contactListSearchBar.resignFirstResponder()
-//            searchActive = false
-//            self.getPullToRefreshData()
-//        }
-//        else
-//        {
-//        }
-//    }
-//    
-//    func getPullToRefreshData()
-//    {
-//        initialise()
-//    }
+    //for ir3 code
+    //    func pullToRefresh()
+    //    {
+    //        if(!pullToRefreshActive){
+    //            pullToRefreshActive = true
+    //            operationInSharingContactList.cancel()
+    //            self.contactListSearchBar.text = ""
+    //            self.contactListSearchBar.resignFirstResponder()
+    //            searchActive = false
+    //            self.getPullToRefreshData()
+    //        }
+    //        else
+    //        {
+    //        }
+    //    }
+    //
+    //    func getPullToRefreshData()
+    //    {
+    //        initialise()
+    //    }
     
     @IBAction func didTapBackButton(_ sender: Any) {
         if(doneButton.isHidden == false){
@@ -240,7 +243,8 @@ class ContactListViewController: UIViewController
         case .denied, .restricted:
             generateContactSynchronizeAlert()
         case .authorized:
-//            dataSource.removeAll()
+            //for ir3 code
+            //            dataSource.removeAll()
             self.initialise()
         case .notDetermined:
             promptForAddressBookRequestAccess()
@@ -265,7 +269,8 @@ class ContactListViewController: UIViewController
             if !granted {
                 self.generateContactSynchronizeAlert()
             } else {
-//                self.dataSource.removeAll()
+                //for ir3 code
+                //                self.dataSource.removeAll()
                 self.initialise()
             }
             }
@@ -288,9 +293,10 @@ class ContactListViewController: UIViewController
     }
     
     func displayContacts(){
-//        if(!pullToRefreshActive){
-            showOverlay()
-//        }
+        //for ir3 code
+        //        if(!pullToRefreshActive){
+        showOverlay()
+        //        }
         contactPhoneNumbers.removeAll()
         let defaults = UserDefaults.standard
         let phoneCode = defaults.value(forKey: "countryCode") as! String
@@ -343,13 +349,14 @@ class ContactListViewController: UIViewController
             addContactDetails(contactPhoneNumbers: self.contactPhoneNumbers as NSArray)
         }
         else{
-//            if(!pullToRefreshActive){
-                self.removeOverlay()
-//            }
-//            else{
-//                self.refreshControl.endRefreshing()
-//                self.pullToRefreshActive = false
-//            }
+            //for ir3 code
+            //            if(!pullToRefreshActive){
+            self.removeOverlay()
+            //            }
+            //            else{
+            //                self.refreshControl.endRefreshing()
+            //                self.pullToRefreshActive = false
+            //            }
             addNoDataLabel()
         }
     }
@@ -391,13 +398,14 @@ class ContactListViewController: UIViewController
     
     func authenticationFailureHandlerAdd(error: NSError?, code: String)
     {
-     //   if(!pullToRefreshActive){
-            self.removeOverlay()
-//        }
-//        else{
-//            self.refreshControl.endRefreshing()
-//            self.pullToRefreshActive = false
-//        }
+        //for ir3 code
+        //   if(!pullToRefreshActive){
+        self.removeOverlay()
+        //        }
+        //        else{
+        //            self.refreshControl.endRefreshing()
+        //            self.pullToRefreshActive = false
+        //        }
         addNoDataLabel()
         if !self.requestManager.validConnection() {
             ErrorManager.sharedInstance.noNetworkConnection()
@@ -469,62 +477,65 @@ class ContactListViewController: UIViewController
     
     func authenticationSuccessHandler(response:AnyObject?)
     {
-      //  if(!pullToRefreshActive){
-            self.removeOverlay()
-//        }
-//        else{
-//            self.refreshControl.endRefreshing()
-//            self.pullToRefreshActive = false
-//        }
+        //for ir3 code
+        //  if(!pullToRefreshActive){
+        self.removeOverlay()
+        //        }
+        //        else{
+        //            self.refreshControl.endRefreshing()
+        //            self.pullToRefreshActive = false
+        //        }
         
         if let json = response as? [String: AnyObject]
         {
-//            if dataSource.count > 0
-//            {
-//                for ele in dataSource{
-//                    dummySource.append(ele)
-//                }
-//            }
+            //for ir3 code
+            //            if dataSource.count > 0
+            //            {
+            //                for ele in dataSource{
+            //                    dummySource.append(ele)
+            //                }
+            //            }
             dataSource.removeAll()
             let responseArr = json["contactList"] as! [AnyObject]
             for element in responseArr{
                 let userName = element["user_name"] as! String
-//                var dummyFlag = false
-//                if dummySource.count > 0
-//                {
-//                    for ele in dummySource
-//                    {
-//                        let dummyName = ele[userNameKey] as! String
-//                        if dummyName == userName
-//                        {
-//                            dummyFlag = true
-//                            break
-//                        }
-//                        else{
-//                            dummyFlag = false
-//                        }
-//                    }
-//                }
-//                if dummyFlag == false{
-                    let thumbUrl = UrlManager.sharedInstance.getUserProfileImageBaseURL() + userId + "/" + accessToken + "/" + userName
-                    
-                    var profileImage : UIImage?
-                    
-                    let savingPath = "\(userName)Profile"
-                    let parentPath = FileManagerViewController.sharedInstance.getParentDirectoryPath().absoluteString
-                    let profileImagePath = parentPath! + "/" + savingPath
-                    let fileExistFlag = FileManagerViewController.sharedInstance.fileExist(mediaPath: profileImagePath)
-                    
-                    if fileExistFlag == true{
-                        let profileImageFromFile = FileManagerViewController.sharedInstance.getImageFromFilePath(mediaPath: profileImagePath)
-                        profileImage = profileImageFromFile!
-                    }
-                    else{
-                        profileImage = UIImage(named: "dummyUser")
-                    }
-                    dataSource.append([userNameKey:userName, profileImageUrlKey: thumbUrl, sharedTemporaryKey: 0, sharedOriginalKey : 0, profileImageKey : profileImage!, "profileFlag" : fileExistFlag])
+                //for ir3 code
+                //                var dummyFlag = false
+                //                if dummySource.count > 0
+                //                {
+                //                    for ele in dummySource
+                //                    {
+                //                        let dummyName = ele[userNameKey] as! String
+                //                        if dummyName == userName
+                //                        {
+                //                            dummyFlag = true
+                //                            break
+                //                        }
+                //                        else{
+                //                            dummyFlag = false
+                //                        }
+                //                    }
+                //                }
+                //                if dummyFlag == false{
+                let thumbUrl = UrlManager.sharedInstance.getUserProfileImageBaseURL() + userId + "/" + accessToken + "/" + userName
+                
+                var profileImage : UIImage?
+                
+                let savingPath = "\(userName)Profile"
+                let parentPath = FileManagerViewController.sharedInstance.getParentDirectoryPath().absoluteString
+                let profileImagePath = parentPath! + "/" + savingPath
+                let fileExistFlag = FileManagerViewController.sharedInstance.fileExist(mediaPath: profileImagePath)
+                
+                if fileExistFlag == true{
+                    let profileImageFromFile = FileManagerViewController.sharedInstance.getImageFromFilePath(mediaPath: profileImagePath)
+                    profileImage = profileImageFromFile!
                 }
-//            }
+                else{
+                    profileImage = UIImage(named: "dummyUser")
+                }
+                dataSource.append([userNameKey:userName, profileImageUrlKey: thumbUrl, sharedTemporaryKey: 0, sharedOriginalKey : 0, profileImageKey : profileImage!, "profileFlag" : fileExistFlag])
+            }
+            //            }
             
             self.contactListTableView.reloadData()
             
@@ -535,18 +546,19 @@ class ContactListViewController: UIViewController
                 self.operationQueueObjInSharingContactList.addOperation(operationInSharingContactList)
             }
             else{
-//                if dummySource.count > 0
-//                {
-//                    for ele in dummySource
-//                    {
-//                        dataSource.append(ele)
-//                    }
-//                    dummySource.removeAll()
-//                    self.contactListTableView.reloadData()
-//                }
-//                else{
-                    addNoDataLabel()
-//                }
+                //for ir3 code
+                //                if dummySource.count > 0
+                //                {
+                //                    for ele in dummySource
+                //                    {
+                //                        dataSource.append(ele)
+                //                    }
+                //                    dummySource.removeAll()
+                //                    self.contactListTableView.reloadData()
+                //                }
+                //                else{
+                addNoDataLabel()
+                //                }
             }
         }
         else
@@ -558,14 +570,15 @@ class ContactListViewController: UIViewController
     
     func downloadMediaFromGCS(operationObj: BlockOperation){
         var localArray = [[String:Any]]()
-//        if dummySource.count > 0
-//        {
-//            for ele in dummySource
-//            {
-//                dataSource.append(ele)
-//            }
-//        }
-//        dummySource.removeAll()
+        //for ir3 code
+        //        if dummySource.count > 0
+        //        {
+        //            for ele in dummySource
+        //            {
+        //                dataSource.append(ele)
+        //            }
+        //        }
+        //        dummySource.removeAll()
         
         for i in 0 ..< dataSource.count
         {
@@ -635,13 +648,14 @@ class ContactListViewController: UIViewController
     
     func authenticationFailureHandler(error: NSError?, code: String)
     {
-//        if(!pullToRefreshActive){
-            self.removeOverlay()
-//        }
-//        else{
-//            self.refreshControl.endRefreshing()
-//            self.pullToRefreshActive = false
-//        }
+        //for ir3 code
+        //        if(!pullToRefreshActive){
+        self.removeOverlay()
+        //        }
+        //        else{
+        //            self.refreshControl.endRefreshing()
+        //            self.pullToRefreshActive = false
+        //        }
         
         if !self.requestManager.validConnection() {
             ErrorManager.sharedInstance.noNetworkConnection()
@@ -779,7 +793,7 @@ class ContactListViewController: UIViewController
         else{
             doneButton.isHidden = true
         }
-
+        
         contactListTableView.reloadData()
     }
     

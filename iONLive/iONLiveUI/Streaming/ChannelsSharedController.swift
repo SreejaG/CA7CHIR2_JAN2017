@@ -19,6 +19,7 @@ class ChannelsSharedController: UIViewController,UIScrollViewDelegate  {
     var timer : Timer = Timer()
     var customViewForStreamChannelFlag : Bool = false
     var customViewForStreamChannel = CustomInfiniteIndicator()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         newShareAvailabellabel.layer.cornerRadius = 5
@@ -43,10 +44,10 @@ class ChannelsSharedController: UIViewController,UIScrollViewDelegate  {
         let iPhoneCameraVC = cameraViewStoryboard.instantiateViewController(withIdentifier: "IPhoneCameraViewController") as! IPhoneCameraViewController
         iPhoneCameraVC.navigationController?.isNavigationBarHidden = true
         self.navigationController?.pushViewController(iPhoneCameraVC, animated: false)
-        
     }
+    
+    //timer to check global dictionary on every 5sec
     func timerFunc(timer:Timer!) {
-        
         if(ChannelSharedListAPI.sharedInstance.SharedChannelListDataSource.count == 0)
         {
             DispatchQueue.main.async {
@@ -85,6 +86,7 @@ class ChannelsSharedController: UIViewController,UIScrollViewDelegate  {
         ChannelSharedListAPI.sharedInstance.cancelOperationQueue()
     }
     
+    //initialsing push notifications and call API for getting subscribed channels
     func initialise()
     {
         self.refreshControl = UIRefreshControl()
@@ -155,7 +157,6 @@ class ChannelsSharedController: UIViewController,UIScrollViewDelegate  {
         }
     }
     
-    
     // channel delete push notification handler
     func channelDeletionPushNotification(info:  [String : AnyObject])
     {
@@ -178,6 +179,7 @@ class ChannelsSharedController: UIViewController,UIScrollViewDelegate  {
         }
     }
     
+    //handling push notifications of livestream started/stopped
     func channelPushNotificationLiveStarted(info: [String : AnyObject])
     {
         let subType = info["subType"] as! String
@@ -196,6 +198,7 @@ class ChannelsSharedController: UIViewController,UIScrollViewDelegate  {
         }
     }
     
+    //handling live stream started case by adding live to global array
     func updateLiveStreamStartedEntry(info:[String : Any])
     {
         let channelId = info["channelId"] as! Int
@@ -245,6 +248,7 @@ class ChannelsSharedController: UIViewController,UIScrollViewDelegate  {
         return item[liveStreamStatus] as! String == "1"
     }
     
+    //Handling live stream stop by removing it from global array
     func updateLiveStreamStoppeddEntry(info:[String : AnyObject])
     {
         let channelId = info["channelId"] as! Int
@@ -267,12 +271,13 @@ class ChannelsSharedController: UIViewController,UIScrollViewDelegate  {
                     let time2 = p2[liveStreamStatus] as! String
                     return time1 > time2
                 })
-
+                
                 self.ChannelSharedTableView.reloadData()
             }
         }
     }
     
+    //handling push notifications when new channel is added or live started in a channel
     func pushNotificationUpdate(notif: NSNotification)
     {
         let info = notif.object as! [String : AnyObject]
@@ -360,6 +365,7 @@ class ChannelsSharedController: UIViewController,UIScrollViewDelegate  {
         return indexOfRow
     }
     
+    //API response for getting channel details
     func updateChannelList(notif : NSNotification)
     {
         UserDefaults.standard.set(ChannelSharedListAPI.sharedInstance.SharedChannelListDataSource.count, forKey: "streamChannelCount")
@@ -430,6 +436,7 @@ class ChannelsSharedController: UIViewController,UIScrollViewDelegate  {
         }
     }
     
+    //handling pull to refresh for getting new channel details
     func pullToRefresh()
     {
         newShareAvailabellabel.isHidden = true
@@ -474,6 +481,7 @@ class ChannelsSharedController: UIViewController,UIScrollViewDelegate  {
         }
     }
     
+    //API response fro pull to refresh
     func pullToRefreshUpdate(notif : NSNotification)
     {
         DispatchQueue.main.async {
@@ -542,6 +550,7 @@ class ChannelsSharedController: UIViewController,UIScrollViewDelegate  {
     }
 }
 
+//table view delegates handling
 extension ChannelsSharedController:UITableViewDataSource, UITableViewDelegate
 {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int

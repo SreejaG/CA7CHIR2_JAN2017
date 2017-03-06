@@ -39,10 +39,8 @@ class StreamsListViewController: UIViewController{
     var operationQueueObjRedirection = OperationQueue()
     var operationInRedirection = BlockOperation()
     
-//    var operationQueueObjLive = OperationQueue()
-//    var operationInLive = BlockOperation()
-    
     @IBOutlet weak var streamListCollectionView: UICollectionView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         UserDefaults.standard.setValue("0", forKey: "notificationArrived")
@@ -51,9 +49,6 @@ class StreamsListViewController: UIViewController{
         self.refreshControl = UIRefreshControl()
         self.refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
         self.streamListCollectionView.alwaysBounceVertical = true
-        
-        //        let stream = Notification.Name("stream")
-        //        NotificationCenter.default.addObserver(self, selector:#selector(StreamsListViewController.streamUpdate(notif:)), name: stream, object: nil)
         
         let MediaDelete = Notification.Name("MediaDelete")
         NotificationCenter.default.addObserver(self, selector:#selector(StreamsListViewController.mediaDeletePushNotification(notif:)), name: MediaDelete, object: nil)
@@ -87,6 +82,7 @@ class StreamsListViewController: UIViewController{
         //                self.streamListCollectionView.reloadData()
         //            }
         //        }
+        
         if UserDefaults.standard.object(forKey: "NotificationText") != nil{
             if(UserDefaults.standard.object(forKey: "NotificationText") as! String != "")
             {
@@ -136,11 +132,13 @@ class StreamsListViewController: UIViewController{
         }
     }
     
+    //when media deleted, and user is in full screen mode of media, giving a notification that it ie deleted by subscriber
     func closeMovieView(notif : NSNotification)
     {
         vc.closeView()
     }
     
+    //infinte scroll handling
     func createScrollViewAnimations()  {
         streamListCollectionView.infiniteScrollIndicatorView = CustomInfiniteIndicator(frame: CGRect(x:0, y:0, width:40, height:40))
         streamListCollectionView.infiniteScrollIndicatorMargin = 50
@@ -168,6 +166,7 @@ class StreamsListViewController: UIViewController{
         }
     }
     
+    //handling push notifcations for live stream/ new channel medias/ myday clean up
     func pushNotificationUpdateStream(notif: NSNotification)
     {
         let info = notif.object as! [String : AnyObject]
@@ -231,6 +230,7 @@ class StreamsListViewController: UIViewController{
     //
     //    }
     
+    //handling channel my day of subscriber cleaning when it expires after 1 day
     func myDayCleanUpChannel(channelId : String)
     {
         let index  = getUpdateIndexChannelList(channelIdValue: channelId, isCountArray: true)
@@ -412,7 +412,7 @@ class StreamsListViewController: UIViewController{
         let livStreamId = info ["liveStreamId"] as! Int
         var  checkFlag : Bool = false
         var removeIndex : Int = Int()
-                
+        
         for (index, element) in mediaAndLiveArray.enumerated() {
             if element[channelIdkey] as? String == "\(channelId)"
             {
@@ -441,6 +441,7 @@ class StreamsListViewController: UIViewController{
         }
     }
     
+    //for IR3 code
     func getMediaWhileDeleted()
     {
         //        if(mediaAndLiveArray.count <  18 && mediaAndLiveArray.count != 0)
@@ -898,7 +899,6 @@ class StreamsListViewController: UIViewController{
             }
         }
         getMediaWhileDeleted()
-        
     }
     
     func remove(pathArray : NSArray) {
@@ -994,7 +994,7 @@ class StreamsListViewController: UIViewController{
                 }
             }
         }
-        else
+        else if(success == "failure")
         {
             DispatchQueue.main.async {
                 self.removeOverlay()
@@ -1263,13 +1263,10 @@ class StreamsListViewController: UIViewController{
                                 {
                                     liveStreamSource.append([stream_mediaIdKey:mediaId!, mediaUrlKey:"", timestamp :currentDate,stream_thumbImageKey:imageForMedia ,stream_streamTockenKey:stremTockn,actualImageKey:"",userIdKey:userId,notificationKey:notificationType,stream_mediaTypeKey:"live",timeKey:currentDate,stream_channelNameKey:channelname, channelIdkey: channelIdSelected!,"createdTime":currentDate,pullTorefreshKey :pulltorefresh!])
                                 }
-
+                                
                             }
                         })
                     }
-//                   else{
-//                         imageForMedia = UIImage(named: "thumb12")!
-//                    }
                 }
                 DispatchQueue.main.async {
                     if(self.mediaAndLiveArray.count == 0)
@@ -1295,92 +1292,6 @@ class StreamsListViewController: UIViewController{
             ErrorManager.sharedInstance.inValidResponseError()
         }
     }
-    
-    
-//    func getAllStreamSuccessHandler(response:AnyObject?)
-//    {
-//        if let json = response as? [String: AnyObject]
-//        {
-//            let responseArrLive = json["liveStreams"] as! [[String:AnyObject]]
-//            self.liveStreamSource.removeAll()
-//            if (responseArrLive.count != 0)
-//            {
-//                for element in responseArrLive{
-//                    let stremTockn = element[stream_streamTockenKey] as! String
-//                    let userId = element[userIdKey] as! String
-//                    let channelIdSelected = element["channel_detail_id"]?.stringValue
-//                    let channelname = element[stream_channelNameKey] as! String
-//                    let mediaId = element["live_stream_detail_id"]?.stringValue
-//                    let pulltorefresh = element["channel_live_stream_detail_id"]?.stringValue
-//                    let notificationType : String = ""
-//                    
-//                    
-//                    let dateFormatter = DateFormatter()
-//                    dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-//                    dateFormatter.timeZone = NSTimeZone(name: "UTC") as TimeZone!
-//                    let currentDate = dateFormatter.string(from: NSDate() as Date)
-//                    self.liveStreamSource.append([stream_mediaIdKey:mediaId!, mediaUrlKey:"", timestamp :currentDate ,stream_streamTockenKey:stremTockn,actualImageKey:"",userIdKey:userId,notificationKey:notificationType,stream_mediaTypeKey:"live",timeKey:currentDate,stream_channelNameKey:channelname, channelIdkey: channelIdSelected!,"createdTime":currentDate,pullTorefreshKey :pulltorefresh!])
-//                }
-//                
-//                if self.liveStreamSource.count > 0
-//                {
-//                    operationInLive.cancel()
-//                    operationInLive  = BlockOperation (block: {
-//                        self.downloadMediaLive(oper: self.operationInLive)
-//                    })
-//                    self.operationQueueObjLive.addOperation(operationInLive)
-//                }
-//            }
-//        }
-//        else
-//        {
-//            ErrorManager.sharedInstance.inValidResponseError()
-//        }
-//    }
-//
-//    func downloadMediaLive(oper:BlockOperation){
-//        for i in 0 ..< self.liveStreamSource.count
-//        {
-//            if i < self.liveStreamSource.count
-//            {
-//                if oper.isCancelled{
-//                    return
-//                }
-//                let thumbUrlBeforeNullChk =  UrlManager.sharedInstance.getLiveThumbUrlApi(liveStreamId: self.liveStreamSource[i][stream_mediaIdKey] as! String)
-//                var imageForMedia : UIImage = UIImage()
-//                let thumbUrl = nullToNil(value: thumbUrlBeforeNullChk)
-//                if("\(thumbUrl)" != ""){
-//                    let url: NSURL = convertStringtoURL(url: thumbUrl! as! String)
-//                    downloadMedia(downloadURL: url, key: "ThumbImage", completion: { (result) -> Void in
-//                        if(result != UIImage()){
-//                            imageForMedia = result
-//                        }
-//                    })
-//                }
-//                else{
-//                    imageForMedia = UIImage(named: "thumb12")!
-//                }
-//                self.liveStreamSource[i][stream_thumbImageKey] = imageForMedia
-//            }
-//        }
-//        DispatchQueue.main.async {
-//            if(self.mediaAndLiveArray.count == 0)
-//            {
-//                if(self.liveStreamSource.count > 0)
-//                {
-//                    self.setSourceByAppendingMediaAndLive()
-//                }
-//            }
-//            else
-//            {
-//                if(self.liveStreamSource.count > 0)
-//                {
-//                    self.setSourceByAppendingMediaAndLive()
-//                }
-//            }
-//            self.streamListCollectionView.reloadData()
-//        }
-//    }
     
     func loadStaticImagesOnly()
     {

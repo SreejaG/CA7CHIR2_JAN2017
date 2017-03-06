@@ -11,11 +11,14 @@ class SharedChannelDetailsAPI: NSObject {
         }
         return Singleton.instance
     }
+    
     var operationQueue = OperationQueue()
     var imageDataSource: [[String:Any]] = [[String:Any]]()
     var selectedSharedChannelMediaSource: [[String:Any]] = [[String:Any]]()
     var userName:String!
     var channelName :String = String()
+    
+    //APi call for getting subscriber channel wise media details
     func getSubscribedChannelData(channelId : String , selectedChannelName : String ,selectedChannelUserName :String , sharedCount : String)
     {
         if(channelName != "")
@@ -67,6 +70,7 @@ class SharedChannelDetailsAPI: NSObject {
         }
     }
     
+    //Api for getting remaining medias of subscriber channel during infinte scroll
     func infiniteScroll(channelId : String , selectedChannelName : String ,selectedChannelUserName :String , channelMediaId : String)
     {
         let defaults = UserDefaults.standard
@@ -95,6 +99,7 @@ class SharedChannelDetailsAPI: NSObject {
         }
     }
     
+    //API for getting new medias when user select pull to refresh in subscriber channel
     func pullToRefresh (channelId : String ,selectedChannelUserName :String , channelMediaId : String)
     {
         let accessToken = UserDefaults .standard.value(forKey: userAccessTockenKey) as! String
@@ -111,7 +116,6 @@ class SharedChannelDetailsAPI: NSObject {
         if let json = response as? [String: Any]
         {
             let responseArr = json["MediaDetail"] as! [AnyObject]
-            print("response array in stream channel ======> \(responseArr)")
             for index in 0 ..< responseArr.count
             {
                 let mediaId = String(responseArr[index]["media_detail_id"] as! Int)
@@ -129,28 +133,7 @@ class SharedChannelDetailsAPI: NSObject {
                 else{
                     vDuration = ""
                 }
-                
-                //                var chkFlag : Bool = false
-                //                if selectedSharedChannelMediaSource.count > 0
-                //                {
-                //                    for ele in selectedSharedChannelMediaSource
-                //                    {
-                //                        if(mediaId == ele[stream_mediaIdKey] as! String)
-                //                        {
-                //                            chkFlag = true
-                //                            break
-                //                        }
-                //                    }
-                //                }
-                //                else{
-                //                    chkFlag = false
-                //                }
-                //
-                //                if chkFlag == false
-                //                {
-                
                 imageDataSource.append([stream_mediaIdKey:mediaId, mediaUrlKey:mediaUrl, stream_mediaTypeKey:mediaType,actualImageKey:actualUrl,infiniteScrollIdKey: infiniteScrollId,notificationKey:notificationType,"createdTime":time,videoDurationKey:vDuration])
-                //                }
             }
             
             let responseArrLive = json["LiveDetail"] as! [AnyObject]
@@ -186,10 +169,6 @@ class SharedChannelDetailsAPI: NSObject {
             }
             
             if(imageDataSource.count > 0){
-                if(self.selectedSharedChannelMediaSource.count > 0)
-                {
-                }
-                
                 var dummySource: [[String:Any]] = [[String:Any]]()
                 dummySource = imageDataSource
                 for i in 0 ..< dummySource.count
@@ -249,7 +228,6 @@ class SharedChannelDetailsAPI: NSObject {
     {
         var mediaImage : UIImage = UIImage()
         
-        // Data object to fetch weather data
         do {
             let data = try NSData(contentsOf: downloadURL as URL,options: NSData.ReadingOptions())
             if let imageData = data as NSData? {
@@ -362,15 +340,9 @@ class SharedChannelDetailsAPI: NSObject {
                                                     }
                                                 }
                                             }
-                                            //                                else{
-                                            //                                    imageForMedia = UIImage(named: "thumb12")!
-                                            //                                }
                                         }
                                     }
                                 }
-                                //                            else{
-                                //                                imageForMedia = UIImage(named: "thumb12")!
-                                //                            }
                             })
                         }
                     }

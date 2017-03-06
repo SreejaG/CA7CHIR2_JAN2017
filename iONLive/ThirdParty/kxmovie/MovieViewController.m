@@ -466,6 +466,7 @@ NSBlockOperation *likeOper;
     {
         oriFlag = false;
         [self removeOverlay];
+        //for ir3 code
         //        durationLabel.text = videoDurationSelected;
         durationLabel.hidden = true;
         //        [glView bringSubviewToFront:durationLabel];
@@ -533,6 +534,7 @@ NSBlockOperation *likeOper;
         progressLabel.text = @" ";
     }
     
+    //for ir3 code
     //    if(!tapHeartDescViewFlag)
     //    {
     //        _photoCollectionView.hidden = false;
@@ -592,6 +594,8 @@ NSBlockOperation *likeOper;
         progressLabel.hidden = true;
         progressLabel.text = @" ";
         scrollViewZoom.alpha = 1.0;
+        
+        //for ir3 code
         //        if(indexForSwipe != -1){
         //            [_photoCollectionView reloadData];
         //            if(screenNumber == 0){
@@ -821,14 +825,9 @@ NSBlockOperation *likeOper;
                 [defaults setValue:accessToken forKey:@"deviceToken"];
                 [defaults setInteger:1 forKey:@"shutterActionMode"];
                 [defaults setValue:@"false" forKey:@"tokenValid"];
-                
-                //                [[ErrorManager sharedInstance] tockenExpired];
-                
                 UIStoryboard  *login = [UIStoryboard storyboardWithName:@"Authentication" bundle:nil];
                 UIViewController *authenticate = [login instantiateViewControllerWithIdentifier:@"AuthenticateNavigationController"];
                 authenticate.navigationController.navigationBarHidden = true;
-                //                [[self navigationController] pushViewController:authenticate animated:false];
-                
                 [self presentViewController:authenticate animated:false completion:^{
                     [[ErrorManager sharedInstance] invalidTockenError];
                 }];
@@ -1293,7 +1292,6 @@ NSBlockOperation *likeOper;
     scrollViewZoom.zoomScale = 1.0;
     [_AVPlayerViewController removeFromParentViewController];
     [self dismissViewControllerAnimated:true completion:nil];
-    //    [self dismissViewControllerAnimated:_AVPlayerViewController completion:nil];
     [playIconView removeFromSuperview];
     playIconView = [[UIImageView alloc]init];
     playIconView.image = [UIImage imageNamed:@"Circled Play"];
@@ -1395,9 +1393,7 @@ NSBlockOperation *likeOper;
 {
     UIGraphicsBeginImageContext(CGSizeMake(self.view.bounds.size.width, (self.view.bounds.size.height+67.0)));
     [[UIImage imageNamed:@""] drawInRect:CGRectMake(self.view.bounds.origin.x, self.view.bounds.origin.y, self.view.bounds.size.width, (self.view.bounds.size.height+67.0))];
-    //  UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    //    glView.backgroundColor = [UIColor colorWithPatternImage:image];
     glView.backgroundColor = [UIColor whiteColor];
 }
 
@@ -1409,6 +1405,8 @@ NSBlockOperation *likeOper;
     totalCount = 0;
     tapHeartDescViewFlag = false;
     tapFromDidSelectFlag = false;
+    
+    //for ir3 code
     //    self.photoCollectionView.delegate = self;
     //    self.photoCollectionView.dataSource = self;
     
@@ -1418,6 +1416,7 @@ NSBlockOperation *likeOper;
     progressLabel.text = @" ";
     oriFlag = false;
     
+    //for ir3 code
     //    [self.view bringSubviewToFront:self.photoCollectionView];
     //    [self.photoCollectionView registerNib:[UINib nibWithNibName:@"photoCell" bundle:nil] forCellWithReuseIdentifier:@"photoViewCell"];
     //    UICollectionViewFlowLayout *flow = [[UICollectionViewFlowLayout alloc] init];
@@ -1518,7 +1517,6 @@ NSBlockOperation *likeOper;
 
 -(void)restartDecoder
 {
-    //    noDataFound.hidden = true;
     if (alertViewTemp.isVisible) {
         [alertViewTemp dismissWithClickedButtonIndex:0 animated:false];
     }
@@ -3056,6 +3054,7 @@ NSBlockOperation *likeOper;
 
 #pragma mark : Collection View Delegates
 
+//for ir3 code
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     //    if (screenNumber == 1 || screenNumber == 2)
     //    {
@@ -3208,7 +3207,7 @@ NSBlockOperation *likeOper;
 //            }];
 //            [mainQueue addOperation:likeOper];
 //        }
-//        
+//
 //        [self setGUIChanges:mediaTypeChk mediaId:mediaIdChk timeDiff:timeDiffChk likeCountStr:likeCountStrChk notifType:notifTypeChk VideoImageUrl:VideoImageUrlChk videoDuration:videoDurationChk];
 //    }
 

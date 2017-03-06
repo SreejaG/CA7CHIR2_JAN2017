@@ -485,6 +485,6 @@ extension MyChannelNotificationViewController: UITableViewDelegate, UITableViewD
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
-//        print(fulldataSource[indexPath.row])
+        //        print(fulldataSource[indexPath.row])
     }
 }

@@ -69,9 +69,12 @@ class OtherChannelViewController: UIViewController  {
         self.refreshControl.addTarget(self, action: #selector(StreamsListViewController.pullToRefresh),for : UIControlEvents.valueChanged)
         self.channelItemsCollectionView.addSubview(self.refreshControl)
         isWatchedTrue()
+        
         createScrollViewAnimations()
         
         showOverlay()
+        
+        //API call for getting media from a subscribed channel
         SharedChannelDetailsAPI.sharedInstance.getSubscribedChannelData(channelId: channelId
             , selectedChannelName: channelName, selectedChannelUserName: userName , sharedCount: totalMediaCount)
     }
@@ -95,6 +98,8 @@ class OtherChannelViewController: UIViewController  {
         NotificationCenter.default.removeObserver(self, name: Notification.Name("SharedChannelMediaDetail"), object: nil)
         UserDefaults.standard.removeObject(forKey: "channelForInfinite")
     }
+    
+    //when user view the media full screen and subscriber deleting media, a notification that media deleted
     func dismissFullView(notif: NSNotification)
     {
         let mediaId = notif.object as! String
@@ -102,6 +107,7 @@ class OtherChannelViewController: UIViewController  {
         obj.callDelete(obj: vc, mediaId: mediaId)
     }
     
+    //when user view a full screen media from My day channel and my day clean up occurs
     func dismissFullViewWhileMyDayCleanUp(notif: NSNotification)
     {
         if UserDefaults.standard.value(forKey: "SharedChannelId") != nil{
@@ -111,6 +117,7 @@ class OtherChannelViewController: UIViewController  {
         }
     }
     
+    //when a push notification arrives of channel shared/deleted or live stream shared/stopped
     func pushNotificationUpdateStream(notif: NSNotification)
     {
         let info = notif.object as! [String : Any]
@@ -131,6 +138,7 @@ class OtherChannelViewController: UIViewController  {
         }
     }
     
+    //deleting the subscriber channel from Global list
     func channelRemoved()
     {
         DispatchQueue.main.async {
@@ -158,6 +166,7 @@ class OtherChannelViewController: UIViewController  {
         }
     }
     
+    //when media shared, inform the owner to get the media by pul to refersh
     func checkCountIncrementInSelectedChannel(notif : NSNotification)
     {
         let channel = notif.object!
@@ -170,6 +179,7 @@ class OtherChannelViewController: UIViewController  {
         }
     }
     
+    //Check live stream started or stopped
     func channelPushNotificationLiveStarted(info: [String : Any])
     {
         let subType = info["subType"] as! String
@@ -193,11 +203,13 @@ class OtherChannelViewController: UIViewController  {
         }
     }
     
+    //live stream shared notification for stream channel screen
     func updateLiveStreamStartedEntry(info:[String : Any])
     {
         ErrorManager.sharedInstance.streamAvailable()
     }
     
+    //remove the livestream details from global once it is stopped
     func updateLiveStreamStoppeddEntry(info:[String : Any])
     {
         if(SharedChannelDetailsAPI.sharedInstance.selectedSharedChannelMediaSource.count > 0)
@@ -222,6 +234,7 @@ class OtherChannelViewController: UIViewController  {
         }
     }
     
+    //infinite scroll for getting new medias
     func createScrollViewAnimations()  {
         channelItemsCollectionView.infiniteScrollIndicatorView = CustomInfiniteIndicator(frame: CGRect(x:0, y:0, width:40, height:40))
         channelItemsCollectionView.infiniteScrollIndicatorMargin = 50
@@ -239,6 +252,7 @@ class OtherChannelViewController: UIViewController  {
         }
     }
     
+    //Handling pull to refresh for getting new medias and live streams
     func pullToRefresh()
     {
         if(!pullToRefreshActive){
@@ -269,6 +283,7 @@ class OtherChannelViewController: UIViewController  {
         }
     }
     
+    //notification handling when medias are deleted from channel
     func ObjectDeleted(notif: NSNotification)
     {
         DispatchQueue.main.async {
@@ -301,6 +316,7 @@ class OtherChannelViewController: UIViewController  {
         }
     }
     
+    //Api response for getting meida details
     func updateChannelMediaList(notif: NSNotification)
     {
         DispatchQueue.main.async {
@@ -353,6 +369,7 @@ class OtherChannelViewController: UIViewController  {
         }
     }
     
+    //invalid token handling
     func  loadInitialViewController(code: String){
         if let tokenValid = UserDefaults.standard.value(forKey: "tokenValid")
         {
@@ -419,6 +436,7 @@ class OtherChannelViewController: UIViewController  {
         self.loadingOverlay?.removeFromSuperview()
     }
     
+    //changing count in stream channel scrren
     func isWatchedTrue(){
         let defaults = UserDefaults.standard
         mediaSharedCountArray = defaults.value(forKey: "Shared") as! NSArray as! [[String : AnyObject]]
@@ -433,6 +451,7 @@ class OtherChannelViewController: UIViewController  {
         }
     }
     
+    //once channel selected, the stream channel screen needs to show latest image
     func setMediaimage()
     {
         let mediaImageKey = "mediaImage"
@@ -471,6 +490,7 @@ class OtherChannelViewController: UIViewController  {
         self.lastContentOffset = scrollView.contentOffset
     }
     
+    //getting remaining images when scrolling or deleting existing medias
     func getInfinteScrollData()
     {
         self.downloadCompleteFlag = "start"
@@ -500,6 +520,7 @@ class OtherChannelViewController: UIViewController  {
         
     }
     
+    //getting media details during pull to refresh
     func getPullToRefreshData()
     {
         if(SharedChannelDetailsAPI.sharedInstance.selectedSharedChannelMediaSource.count >= 2)
@@ -556,6 +577,7 @@ class OtherChannelViewController: UIViewController  {
         }
     }
     
+    //when user taps the thumbnail of media
     func  didSelectExtension(indexPathRow: Int, operation: BlockOperation)
     {
         if(operation.isCancelled){
@@ -564,6 +586,7 @@ class OtherChannelViewController: UIViewController  {
         getLikeCountForSelectedIndex(indexpathRow: indexPathRow, operation: operation)
     }
     
+    //getting the like count of selected media from cloud
     func getLikeCountForSelectedIndex(indexpathRow:Int, operation: BlockOperation)  {
         if(operation.isCancelled){
             return
@@ -572,6 +595,7 @@ class OtherChannelViewController: UIViewController  {
         getLikeCount(mediaId: mediaId, indexpathRow: indexpathRow, operation:operation)
     }
     
+    //API response for like count
     func getLikeCount(mediaId: String,indexpathRow:Int, operation:BlockOperation) {
         if(operation.isCancelled){
             return
@@ -611,6 +635,7 @@ class OtherChannelViewController: UIViewController  {
         loadmovieViewController(indexPathRow: indexPathRow, likeCount: likeCountSelectedIndex,operation:operation)
     }
     
+    //redirect to fullscreen view for displaying media/live
     func loadmovieViewController(indexPathRow:Int,likeCount:String, operation:BlockOperation) {
         self.removeOverlay()
         channelItemsCollectionView.alpha = 1.0
@@ -656,6 +681,7 @@ class OtherChannelViewController: UIViewController  {
     }
 }
 
+//Collection view delegates
 extension OtherChannelViewController : UICollectionViewDataSource,UICollectionViewDelegateFlowLayout, UICollectionViewDelegate
 {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int

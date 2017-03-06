@@ -59,9 +59,6 @@ class SnapCamSelectViewController: UIViewController {
         case 5:
             snapCamMode = .iPhone
             break
-            //        case 6:
-            //            snapCamMode = .TestAPI
-        //            break
         default :
             break
         }
@@ -84,6 +81,7 @@ class SnapCamSelectViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
+    
     deinit {
     }
     
@@ -132,11 +130,6 @@ extension SnapCamSelectViewController:UITableViewDataSource,UITableViewDelegate
                 loadSnapCamViewWithFadeInFadeOutAnimation()
             }
             break
-            
-            //        case 6:
-            //            loadAPITestView()
-            //            break
-            
         default :
             let cameraViewStoryboard = UIStoryboard(name:"IPhoneCameraView" , bundle: nil)
             let iPhoneCameraViewController = cameraViewStoryboard.instantiateViewController(withIdentifier: "IPhoneCameraViewController") as! IPhoneCameraViewController
@@ -299,7 +292,6 @@ extension SnapCamSelectViewController
     
     func changeSnapCamModeForCell(selectedCell:UITableViewCell)
     {
-        //        streamingDelegate?.cameraSelectionMode!(selection: snapCamMode)
         self.snapCamSettingsTableView.reloadData()
     }
     
@@ -392,9 +384,6 @@ extension SnapCamSelectViewController
         case 5:
             changeSelectedSnapCamMode(selectedMode: .iPhone)
             break
-            //        case 6:
-            //            changeSelectedSnapCamMode(selectedMode: .TestAPI)
-        //            break
         default :
             break
         }

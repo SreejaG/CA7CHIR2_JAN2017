@@ -671,7 +671,7 @@ class OtherContactListViewController: UIViewController {
                 doneButton.isHidden = true
             }
         }
-
+        
         ca7chTableView.reloadData()
     }
     

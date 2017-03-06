@@ -95,8 +95,6 @@ class GlobalChannelToImageMapping: NSObject {
         {
             imageDataSource.removeAll()
             let responseArr = json["MediaDetail"] as! [AnyObject]
-//            print("response array in My channel ======> \(responseArr)")
-
             for index in 0 ..< responseArr.count
             {
                 let mediaId = String(responseArr[index][mediaIdKey] as! Int)
@@ -609,7 +607,7 @@ class GlobalChannelToImageMapping: NSObject {
             return time1 > time2
         })
     }
-
+    
     //deleting from archive needs to delete medias from all channels completely
     func deleteAllMediasFromAllChannels(chanelId : String,mediaIds: [String])
     {
@@ -652,11 +650,6 @@ class GlobalChannelToImageMapping: NSObject {
         }
         UserDefaults.standard.set(GlobalChannelImageDict[chanelId]!.count, forKey: ArchiveCount)
     }
-    
-//    func getFilteredCount() -> Int
-//    {
-//        return self.filteredcount
-//    }
     
     func setFilteredCount( count : Int)
     {

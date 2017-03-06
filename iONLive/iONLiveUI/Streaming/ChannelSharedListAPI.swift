@@ -34,6 +34,7 @@ class ChannelSharedListAPI: NSObject {
         operation2.cancel()
     }
     
+    //API for getting subscriber channels
     func getChannelSharedDetails(userName: String, token: String)
     {
         ChannelManager.sharedInstance.getChannelShared(userName: userName, accessToken: token, success: { (response) -> () in

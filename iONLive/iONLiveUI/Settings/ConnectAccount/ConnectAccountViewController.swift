@@ -59,7 +59,7 @@ extension ConnectAccountViewController: UITableViewDelegate, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat
     {
-        return 0.01   
+        return 0.01
     }
     
     func numberOfSections(in tableView: UITableView) -> Int

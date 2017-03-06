@@ -709,6 +709,8 @@ extension MyChannelViewController: UITableViewDelegate, UITableViewDataSource
         {
             let cell = tableView.dequeueReusableCell(withIdentifier: MyChannelCell.identifier, for:indexPath) as! MyChannelCell
             cell.editChanelNameTextField.tag = indexPath.row
+            
+            //for ir3 code
             //            let channleName = dataSourceTmp![indexPath.row][channelNameKey] as? String
             //            if ((channleName == "My Day") || (channleName == "Archive"))
             //            {

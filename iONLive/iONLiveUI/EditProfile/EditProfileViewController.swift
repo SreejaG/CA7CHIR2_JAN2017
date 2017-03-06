@@ -66,6 +66,7 @@ class EditProfileViewController: UIViewController, UINavigationControllerDelegat
     var accessToken: String = String()
     
     @IBOutlet weak var editProfTableView: UITableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         userId = defaults.value(forKey: userLoginIdKey) as! String
@@ -95,6 +96,8 @@ class EditProfileViewController: UIViewController, UINavigationControllerDelegat
         if recognizer.state == UIGestureRecognizerState.ended {
             let swipeLocation = recognizer.location(in: self.editProfTableView)
             if let swipedIndexPath = editProfTableView.indexPathForRow(at: swipeLocation) {
+                
+                //For Ir3 code
                 //                if swipedIndexPath.section == 1 && swipedIndexPath.row == 2
                 //                {
                 //                    let sharingStoryboard = UIStoryboard(name:"EditProfile", bundle: nil)

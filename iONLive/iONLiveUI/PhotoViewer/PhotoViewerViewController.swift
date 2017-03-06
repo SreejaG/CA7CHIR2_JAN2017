@@ -1797,6 +1797,7 @@ extension PhotoViewerViewController:UICollectionViewDelegate,UICollectionViewDel
             self.fullScrenImageView.alpha = 1.0
         }
         
+        //for ir3 code
         //        if  GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[archiveChanelId]!.count > indexPath.row
         //        {
         //            self.mediaIdSelected = Int( GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[archiveChanelId]![indexPath.row][mediaIdKey] as! String)!
@@ -1808,8 +1809,6 @@ extension PhotoViewerViewController:UICollectionViewDelegate,UICollectionViewDel
         //            else if(progres == 4.0 || progres == 4){
         //                MappingFailedImagesOnClick(mediaIDClick: GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[archiveChanelId]![indexPath.row][mediaIdKey] as! String)
         //            }
-        //
-        //
         //        }
     }
     

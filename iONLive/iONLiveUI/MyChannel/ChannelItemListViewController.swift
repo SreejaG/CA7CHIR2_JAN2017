@@ -131,6 +131,8 @@ class ChannelItemListViewController: UIViewController, CAAnimationDelegate {
         }
     }
     
+    //for ir3 code
+    
     //    func cleanMyDay(){
     //        var chanId: String = String()
     //        for i in 0 ..< GlobalDataChannelList.sharedInstance.globalChannelDataSource.count
