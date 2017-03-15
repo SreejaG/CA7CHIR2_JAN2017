@@ -6,7 +6,7 @@
 #import <UIKit/UIKit.h>
 #import "IPhoneCameraViewController.h"
 #import "AAPLPreviewView.h"
-#import "CA7CH-Swift.h"
+#import "CA7CH360-Swift.h"
 #import "VCSimpleSession.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import <AVFoundation/AVFoundation.h>
@@ -14,6 +14,8 @@
 #import <CoreMedia/CoreMedia.h>
 #import <QuartzCore/QuartzCore.h>
 #import "ALAssetsLibrary+CustomPhotoAlbum.h"
+#import <mach/mach.h>
+ #import <mach/mach_host.h>
 
 static void * CapturingStillImageContext = &CapturingStillImageContext;
 static void * SessionRunningContext = &SessionRunningContext;
@@ -23,6 +25,7 @@ int thumbnailSize = 50;
 int deleteCount = 0;
 int flashFlag = 0;
 int timeSec = 0;
+BOOL memeoryHitFlag = false;
 
 typedef NS_ENUM( NSInteger, AVCamSetupResult ) {
     AVCamSetupResultSuccess,
@@ -114,9 +117,16 @@ int timerCount = 0;
     });
 }
 
-
 - (void)didReceiveMemoryWarning
 {
+//    if(memeoryHitFlag == false){
+//        memeoryHitFlag = true;
+//         dispatch_async( dispatch_get_main_queue(), ^{
+//            [self loadViewDuringMemoryCheck];
+//         });
+//    }
+    
+    NSLog(@"MEMORY WARNING CALLED***********************");
     [super didReceiveMemoryWarning];
     self.assetsLibrary = nil;
 }
@@ -959,7 +969,7 @@ int timerCount = 0;
             else if ([UIImage imageWithData: data] == nil)
             {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    self.thumbnailImageView.image = [UIImage imageNamed:@"thumb12"];
+//                    self.thumbnailImageView.image = [UIImage imageNamed:@"thumb12"];
                     [self updateThumbnailsChannel];
                 });
             }
@@ -1147,50 +1157,237 @@ int timerCount = 0;
     }
 }
 
+-(int) appConsumeSpace
+{
+    int memeorySpace = 0;
+    struct task_basic_info info;
+    mach_msg_type_number_t size = sizeof(info);
+    kern_return_t kerr = task_info(mach_task_self(),
+                                   TASK_BASIC_INFO,
+                                   (task_info_t)&info,
+                                   &size);
+    if( kerr == KERN_SUCCESS ) {
+        NSString *memInStr = [NSByteCountFormatter stringFromByteCount:info.resident_size countStyle:NSByteCountFormatterCountStyleBinary];
+        NSArray *splitStr = [memInStr componentsSeparatedByString:@" "];
+        memeorySpace = [splitStr[0] intValue];
+    } else {
+    }
+    return memeorySpace;
+}
+
+//-(int) print_free_memory
+//{
+//    int memeorySpace = 0;
+//    mach_port_t host_port;
+//    mach_msg_type_number_t host_size;
+//    vm_size_t pagesize;
+//    
+//    host_port = mach_host_self();
+//    host_size = sizeof(vm_statistics_data_t) / sizeof(integer_t);
+//    host_page_size(host_port, &pagesize);
+//    
+//    vm_statistics_data_t vm_stat;
+//    
+//    if (host_statistics(host_port, HOST_VM_INFO, (host_info_t)&vm_stat, &host_size) != KERN_SUCCESS) {
+//        NSLog(@"Failed to fetch vm statistics");
+//    }
+//    
+//    /* Stats in bytes */
+//    natural_t mem_used = (vm_stat.active_count +
+//                          vm_stat.inactive_count +
+//                          vm_stat.wire_count) * pagesize;
+//    natural_t mem_free = vm_stat.free_count * pagesize;
+//    natural_t mem_total = mem_used + mem_free;
+//    NSLog(@"used: %@ free: %@", [NSByteCountFormatter stringFromByteCount:mem_used countStyle:NSByteCountFormatterCountStyleBinary],  [NSByteCountFormatter stringFromByteCount:mem_free countStyle:NSByteCountFormatterCountStyleBinary]);
+//    NSString *memInStr = [NSByteCountFormatter stringFromByteCount:mem_free countStyle:NSByteCountFormatterCountStyleBinary];
+//    NSArray *splitStr = [memInStr componentsSeparatedByString:@" "];
+//    memeorySpace = [splitStr[0] intValue];
+//    return memeorySpace;
+//}
+//
+//-(int) get_free_memory {
+//    int memeorySpace = 0;
+//    mach_port_t host_port;
+//    mach_msg_type_number_t host_size;
+//    vm_size_t pagesize;
+//    host_port = mach_host_self();
+//    host_size = sizeof(vm_statistics_data_t) / sizeof(integer_t);
+//    host_page_size(host_port, &pagesize);
+//    vm_statistics_data_t vm_stat;
+//    
+//    if (host_statistics(host_port, HOST_VM_INFO, (host_info_t)&vm_stat, &host_size) != KERN_SUCCESS) {
+//        NSLog(@"Failed to fetch vm statistics");
+//        return 0;
+//    }
+//    
+//    /* Stats in bytes */
+//    natural_t mem_free = vm_stat.free_count * pagesize;
+//    NSString *memInStr = [NSByteCountFormatter stringFromByteCount:mem_free countStyle:NSByteCountFormatterCountStyleBinary];
+//    NSArray *splitStr = [memInStr componentsSeparatedByString:@" "];
+//    memeorySpace = [splitStr[0] intValue];
+////    NSLog(@"Memory ===>%d",memeorySpace);
+//    return memeorySpace;
+//}
+//
+//- (double)totalMemory {
+//    // Find the total amount of memory
+//    @try {
+//        // Set up the variables
+//        double TotalMemory = 0.00;
+//        double AllMemory = [[NSProcessInfo processInfo] physicalMemory];
+//        
+//        // Total Memory (formatted)
+//        TotalMemory = (AllMemory / 1024.0) / 1024.0;
+//        
+//        // Round to the nearest multiple of 256mb - Almost all RAM is a multiple of 256mb (I do believe)
+//        int toNearest = 256;
+//        int remainder = (int)TotalMemory % toNearest;
+//        
+//        if (remainder >= toNearest / 2) {
+//            // Round the final number up
+//            TotalMemory = ((int)TotalMemory - remainder) + 256;
+//        } else {
+//            // Round the final number down
+//            TotalMemory = (int)TotalMemory - remainder;
+//        }
+//        
+//        // Check to make sure it's valid
+//        if (TotalMemory <= 0) {
+//            // Error, invalid memory value
+//            return -1;
+//        }
+//        
+//        // Completed Successfully
+//        return TotalMemory;
+//    }
+//    @catch (NSException *exception) {
+//        // Error
+//        return -1;
+//    }
+//}
+//
+//
+//- (double)usedMemory:(BOOL)inPercent {
+//    // Find the total amount of free memory
+//    @try {
+//        // Set up the variables
+//        double TotalMemory = 0.00;
+//        vm_statistics_data_t vmStats;
+//        mach_msg_type_number_t infoCount = HOST_VM_INFO_COUNT;
+//        kern_return_t kernReturn = host_statistics(mach_host_self(), HOST_VM_INFO, (host_info_t)&vmStats, &infoCount);
+//        
+//        if(kernReturn != KERN_SUCCESS) {
+//            return -1;
+//        }
+//        
+//        // Check if the user wants it in percent
+//        if (inPercent) {
+//            // Percent
+//            // Convert to doubles
+//            double FM = [self totalMemory];
+//            double AM = ((vm_page_size * vmStats.free_count) / 1024.0) / 1024.0;
+//            // Get the percent
+//            TotalMemory = (AM * 100) / FM;
+//        } else {
+//            // Not in percent
+//            // Total Memory (formatted)
+//            TotalMemory = ((vm_page_size * vmStats.free_count) / 1024.0) / 1024.0;
+//        }
+//        
+//        // Check to make sure it's valid
+//        if (TotalMemory <= 0) {
+//            // Error, invalid memory value
+//            return -1;
+//        }
+//        
+//        // Completed Successfully
+//        return TotalMemory;
+//    }
+//    @catch (NSException *exception) {
+//        // Error
+//        return -1;
+//    }
+//}
+
+
 - (IBAction)didTapsCameraActionButton:(id)sender
 {
-    if (shutterActionMode == SnapCamSelectionModePhotos) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            _cameraButton.hidden = false;
-            _playiIconView.hidden = true;
-            if(_flashButton.isHidden) {
+    int memory = [self appConsumeSpace];
+    NSLog(@"Memory in capture button  ===>%d",memory);
+    if(memory < 70)
+    {
+        if (shutterActionMode == SnapCamSelectionModePhotos) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                _cameraButton.hidden = false;
+                _playiIconView.hidden = true;
+                if(_flashButton.isHidden) {
+                    _flashButton.hidden = true;
+                }
+                else{
+                    _flashButton.hidden = false;
+                }
+            });
+            [self takePicture];
+        }
+        else if (shutterActionMode == SnapCamSelectionModeVideo)
+        {
+            [UIApplication sharedApplication].idleTimerDisabled = YES;
+            [self startMovieRecording];
+        }
+        else if (shutterActionMode == SnapCamSelectionModeLiveStream)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
                 _flashButton.hidden = true;
+                _cameraButton.hidden = true;
+            });
+            
+            switch(_liveSteamSession.rtmpSessionState) {
+                case VCSessionStateNone:
+                case VCSessionStatePreviewStarted:
+                case VCSessionStateEnded:
+                case VCSessionStateError:
+                {
+                    [liveStreaming startLiveStreamingWithSession:_liveSteamSession];
+                    [self showProgressBar];
+                    break;
+                }
+                default:
+                    [UIApplication sharedApplication].idleTimerDisabled = NO;
+                    [liveStreaming stopStreamingClicked];
+                    [_liveSteamSession endRtmpSession];
+                    break;
             }
-            else{
-                _flashButton.hidden = false;
-            }
-        });
-        [self takePicture];
-    }
-    else if (shutterActionMode == SnapCamSelectionModeVideo)
-    {
-        [UIApplication sharedApplication].idleTimerDisabled = YES;
-        [self startMovieRecording];
-    }
-    else if (shutterActionMode == SnapCamSelectionModeLiveStream)
-    {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            _flashButton.hidden = true;
-            _cameraButton.hidden = true;
-        });
-        
-        switch(_liveSteamSession.rtmpSessionState) {
-            case VCSessionStateNone:
-            case VCSessionStatePreviewStarted:
-            case VCSessionStateEnded:
-            case VCSessionStateError:
-            {
-                [liveStreaming startLiveStreamingWithSession:_liveSteamSession];
-                [self showProgressBar];
-                break;
-            }
-            default:
-                [UIApplication sharedApplication].idleTimerDisabled = NO;
-                [liveStreaming stopStreamingClicked];
-                [_liveSteamSession endRtmpSession];
-                break;
         }
     }
+    else{
+        dispatch_async( dispatch_get_main_queue(), ^{
+            [self loadViewDuringMemoryCheck];
+        });
+    }
+}
+
+-(void) memoryCheck
+{
+    int memory = [self appConsumeSpace];
+    NSLog(@"Memory in nested memory check  ===>%d",memory);
+    if(memory < 70)
+    {
+        [self hidingView];
+//        memeoryHitFlag = false;
+    }
+    else{
+        [self loadViewDuringMemoryCheck];
+    }
+}
+
+-(void) loadViewDuringMemoryCheck
+{
+    dispatch_async( dispatch_get_main_queue(), ^{
+        _noDataFound.text = @"Uploading Progress...";
+        [self loadingView:@"load" completion:^{
+        }];
+    });
+    [self performSelector:@selector(memoryCheck) withObject:nil afterDelay:7];
 }
 
 #pragma mark take photo

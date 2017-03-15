@@ -264,8 +264,8 @@ class GlobalStreamList: NSObject {
         }
         if(GlobalStreamDataSource.count > 0){
             GlobalStreamDataSource.sort(by: { p1, p2 in
-                let time1 = p1[stream_mediaIdKey] as! String
-                let time2 = p2[stream_mediaIdKey] as! String
+                let time1 = p1["createdTime"] as! String
+                let time2 = p2["createdTime"] as! String
                 return time1 > time2
             })
         }

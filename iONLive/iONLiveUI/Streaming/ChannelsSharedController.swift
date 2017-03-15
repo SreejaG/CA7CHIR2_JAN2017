@@ -86,6 +86,34 @@ class ChannelsSharedController: UIViewController,UIScrollViewDelegate  {
         ChannelSharedListAPI.sharedInstance.cancelOperationQueue()
     }
     
+    func updateUserProfile(notif: NSNotification)
+    {
+        let UpdatedUserName = notif.object as! String
+        for i in 0 ..<  ChannelSharedListAPI.sharedInstance.SharedChannelListDataSource.count
+        {
+            if i <  ChannelSharedListAPI.sharedInstance.SharedChannelListDataSource.count
+            {
+                let subUserId =  ChannelSharedListAPI.sharedInstance.SharedChannelListDataSource[i][usernameKey] as! String
+                if UpdatedUserName == subUserId
+                {
+                    var imageForProfile : UIImage = UIImage()
+                    let parentPath = FileManagerViewController.sharedInstance.getParentDirectoryPath().absoluteString
+                    let profilePath = "\(subUserId)Profile"
+                    let savingPath =  parentPath! + "/" + profilePath
+                    let fileExistFlag = FileManagerViewController.sharedInstance.fileExist(mediaPath: savingPath)
+                    if fileExistFlag == true{
+                        let mediaImageFromFile = FileManagerViewController.sharedInstance.getImageFromFilePath(mediaPath: savingPath)
+                        imageForProfile = mediaImageFromFile!
+                        ChannelSharedListAPI.sharedInstance.SharedChannelListDataSource[i][profileImageKey] = imageForProfile
+                    }
+                }
+            }
+        }
+        DispatchQueue.main.async {
+            self.ChannelSharedTableView.reloadData()
+        }
+    }
+    
     //initialsing push notifications and call API for getting subscribed channels
     func initialise()
     {
@@ -124,6 +152,9 @@ class ChannelsSharedController: UIViewController,UIScrollViewDelegate  {
         
         let PullToRefreshSharedChannelList = Notification.Name("PullToRefreshSharedChannelList")
         NotificationCenter.default.addObserver(self, selector:#selector(ChannelsSharedController.pullToRefreshUpdate(notif:)), name: PullToRefreshSharedChannelList, object: nil)
+        
+        let profileUpdated = Notification.Name("profileUpdated")
+        NotificationCenter.default.addObserver(self, selector:#selector(ChannelsSharedController.updateUserProfile(notif:)), name: profileUpdated, object: nil)
         
         let RemoveOverlay = Notification.Name("RemoveOverlay")
         NotificationCenter.default.addObserver(self, selector:#selector(ChannelsSharedController.removeOverlay), name: RemoveOverlay, object: nil)

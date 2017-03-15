@@ -7,7 +7,7 @@
 #import "KxMovieGLView.h"
 #import "KxLogger.h"
 #import "Connectivity.h"
-#import "CA7CH-Swift.h"
+#import "CA7CH360-Swift.h"
 #import <CFNetwork/CFNetwork.h>
 #import "IPhoneCameraViewController.h"
 #import <SpriteKit/SpriteKit.h>

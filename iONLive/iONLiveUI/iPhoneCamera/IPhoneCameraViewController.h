@@ -11,6 +11,8 @@
 -(UIImage *)thumbnaleImage:(UIImage *)image scaledToFillSize:(CGSize)size;
 -(void) deleteIphoneCameraSnapShots;
 -(void) loggedInDetails:(NSDictionary *) detailArray userImages : (NSArray *) userImages;
+-(int) appConsumeSpace;
+-(void) loadViewDuringMemoryCheck;
 
 @property (weak, nonatomic) IBOutlet UIImageView *latestSharedMediaImage;
 @property (weak, nonatomic) IBOutlet UILabel *countLabel;

@@ -247,9 +247,10 @@ class ChannelSharedListAPI: NSObject {
             if(dataSource.count > 0 && dataSource.count > i)
             {
                 let profileImageName = dataSource[i][profileImageKey] as! String
+                let user = dataSource[i][usernameKey] as! String
                 if(profileImageName != "")
                 {
-                    profileImage = createProfileImage(profileName: profileImageName)
+                    profileImage = createProfileImage(profileName: profileImageName, subUserId: user)
                 }
                 else{
                     profileImage = UIImage(named: "dummyUser")
@@ -384,23 +385,31 @@ class ChannelSharedListAPI: NSObject {
         return mediaImage!
     }
     
-    func createProfileImage(profileName: String) -> UIImage
+    func createProfileImage(profileName: String, subUserId: String) -> UIImage
     {
-        var profileImage : UIImage = UIImage()
-        let url: NSURL = convertStringtoURL(url: profileName)
-        if let data = NSData(contentsOf: url as URL){
-            let imageDetailsData = (data as NSData?)!
-            if let profile = UIImage(data: imageDetailsData as Data){
-                profileImage = profile
-            }
-            else{
-                profileImage = UIImage(named: "dummyUser")!
-            }
+        var imageForProfile : UIImage = UIImage()
+        let parentPath = FileManagerViewController.sharedInstance.getParentDirectoryPath().absoluteString
+        let profilePath = "\(subUserId)Profile"
+        let savingPath =  parentPath! + "/" + profilePath
+        let fileExistFlag = FileManagerViewController.sharedInstance.fileExist(mediaPath: savingPath)
+        if fileExistFlag == true{
+            let mediaImageFromFile = FileManagerViewController.sharedInstance.getImageFromFilePath(mediaPath: savingPath)
+            imageForProfile = mediaImageFromFile!
         }
         else{
-            profileImage = UIImage(named: "dummyUser")!
+            let mediaImageFromFile = FileManagerViewController.sharedInstance.getProfileImage(profileNameURL: profileName)
+            imageForProfile = mediaImageFromFile
+            let profileImageData = UIImageJPEGRepresentation(imageForProfile, 0.5)
+            let profileImageDataAsNsdata = (profileImageData as NSData?)!
+            let imageFromDefault = UIImageJPEGRepresentation(UIImage(named: "dummyUser")!, 0.5)
+            let imageFromDefaultAsNsdata = (imageFromDefault as NSData?)!
+            if(profileImageDataAsNsdata.isEqual(imageFromDefaultAsNsdata)){
+            }
+            else{
+                _ = FileManagerViewController.sharedInstance.saveImageToFilePath(mediaName: profilePath, mediaImage: imageForProfile)
+            }
         }
-        return profileImage
+        return imageForProfile
     }
     
     func callAbsolute(value : Int ) -> Int

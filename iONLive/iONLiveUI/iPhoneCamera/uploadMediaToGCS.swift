@@ -160,6 +160,8 @@ class uploadMediaToGCS: UIViewController, URLSessionDelegate, URLSessionTaskDele
             saveVideoToCahce()
         }
         updateDataToLocalDataSource()
+        let mem = cameraController.appConsumeSpace()
+        print("memory in saveImageToLocalCache  ==>  \(mem)")
     }
     
     func  saveVideoToCahce()  {
@@ -237,6 +239,8 @@ class uploadMediaToGCS: UIViewController, URLSessionDelegate, URLSessionTaskDele
                         if(result == "Success"){
                             self.imageAfterConversionThumbnail = UIImage()
                             GlobalChannelToImageMapping.sharedInstance.removeUploadSuccessMediaDetails(mediaId: self.mediaId)
+                            let mem = self.cameraController.appConsumeSpace()
+                            print("memory in startuploadtogcs  ==>  \(mem)")
                             self.mapMediaToDefaultChannels()
                         }
                         else{
@@ -300,6 +304,12 @@ class uploadMediaToGCS: UIViewController, URLSessionDelegate, URLSessionTaskDele
                 imageOrVideoData = NSData()
             }
         }
+        let mem = cameraController.appConsumeSpace()
+        if mem < 65
+        {
+            cameraController.loadViewDuringMemoryCheck()
+        }
+        print("memory in upload full image  ==>  \(mem)")
     }
     
     //thumb image upload to cloud
@@ -321,6 +331,12 @@ class uploadMediaToGCS: UIViewController, URLSessionDelegate, URLSessionTaskDele
             else {
                 completion("Success")
             }
+        }
+        let mem = cameraController.appConsumeSpace()
+        print("memory in upload thumb image  ==>  \(mem)")
+        if mem < 65
+        {
+            cameraController.loadViewDuringMemoryCheck()
         }
         dataTask.resume()
         imageData = NSData()
@@ -351,6 +367,8 @@ class uploadMediaToGCS: UIViewController, URLSessionDelegate, URLSessionTaskDele
         }
         catch _ as NSError {
         }
+        let mem = cameraController.appConsumeSpace()
+        print("memory in deletion  ==>  \(mem)")
     }
     
     //after uploading map media to channels

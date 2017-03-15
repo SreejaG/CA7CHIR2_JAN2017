@@ -326,7 +326,7 @@
 		1676473A1C6DBFC10076C8C8 /* StreamPickerTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamPickerTableViewCell.swift; sourceTree = "<group>"; };
 		1677FEB81C48BFF900261F59 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		1678D00D1CF4246A0021D805 /* SwiftAlertView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftAlertView.swift; sourceTree = "<group>"; };
-		167AF02B1BFDC1F6003CDF30 /* CA7CH.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CA7CH.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		167AF02B1BFDC1F6003CDF30 /* CA7CH360.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CA7CH360.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		167AF02E1BFDC1F6003CDF30 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		167AF0301BFDC1F6003CDF30 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		167AF0331BFDC1F6003CDF30 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -956,7 +956,7 @@
 		167AF02C1BFDC1F6003CDF30 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				167AF02B1BFDC1F6003CDF30 /* CA7CH.app */,
+				167AF02B1BFDC1F6003CDF30 /* CA7CH360.app */,
 				167AF03F1BFDC1F6003CDF30 /* iONLiveTests.xctest */,
 				167AF04A1BFDC1F6003CDF30 /* iONLiveUITests.xctest */,
 			);
@@ -1588,7 +1588,7 @@
 			);
 			name = iONLive;
 			productName = iONLive;
-			productReference = 167AF02B1BFDC1F6003CDF30 /* CA7CH.app */;
+			productReference = 167AF02B1BFDC1F6003CDF30 /* CA7CH360.app */;
 			productType = "com.apple.product-type.application";
 		};
 		167AF03E1BFDC1F6003CDF30 /* iONLiveTests */ = {
@@ -1639,7 +1639,7 @@
 				TargetAttributes = {
 					167AF02A1BFDC1F6003CDF30 = {
 						CreatedOnToolsVersion = 7.1.1;
-						DevelopmentTeam = 8VJ9G8278X;
+						DevelopmentTeam = 3SG4EU67W3;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -1651,6 +1651,7 @@
 					};
 					167AF03E1BFDC1F6003CDF30 = {
 						CreatedOnToolsVersion = 7.1.1;
+						DevelopmentTeam = T5CRG25QM8;
 						TestTargetID = 167AF02A1BFDC1F6003CDF30;
 					};
 					167AF0491BFDC1F6003CDF30 = {
@@ -2003,7 +2004,8 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Leif Chastaine (XM4FV4QQ99)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Leif Chastaine (XM4FV4QQ99)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -2025,7 +2027,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "ac323c7f-8843-44aa-91e8-8cca51f7cc5f";
+				PROVISIONING_PROFILE = "7e4825b2-d4d2-4112-b2b9-590ad524122b";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "../ionliveiosapp/iONLive/ObjectiveCBridging/iONLive-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -2053,7 +2055,8 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Leif Chastaine (XM4FV4QQ99)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Leif Chastaine (XM4FV4QQ99)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -2068,7 +2071,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "ac323c7f-8843-44aa-91e8-8cca51f7cc5f";
+				PROVISIONING_PROFILE = "7e4825b2-d4d2-4112-b2b9-590ad524122b";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "../ionliveiosapp/iONLive/ObjectiveCBridging/iONLive-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -2085,8 +2088,9 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = iONLive/CA7CH.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Kiran Gopalan (8268S58YKU)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kiran Gopalan (8268S58YKU)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Leif Chastaine (XM4FV4QQ99)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Leif Chastaine (XM4FV4QQ99)";
+				DEVELOPMENT_TEAM = 3SG4EU67W3;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/iONLive/Frameworks",
@@ -2103,9 +2107,10 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/iONLive/ThirdParty/FFmpeg-iOS/lib",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.gadgeon.iONLive;
-				PRODUCT_NAME = CA7CH;
-				PROVISIONING_PROFILE = "9dc399ba-a592-4353-a882-013be46eabf5";
+				PRODUCT_BUNDLE_IDENTIFIER = com.gadgeon.ca7ch360;
+				PRODUCT_NAME = CA7CH360;
+				PROVISIONING_PROFILE = "7e4825b2-d4d2-4112-b2b9-590ad524122b";
+				PROVISIONING_PROFILE_SPECIFIER = ca7ch360DevProf1;
 				SWIFT_OBJC_BRIDGING_HEADER = "../live-ios-app/iONLive/ObjectiveCBridging/iONLive-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0.1;
@@ -2120,8 +2125,9 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = iONLive/CA7CH.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Kiran Gopalan (8268S58YKU)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kiran Gopalan (8268S58YKU)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Leif Chastaine (XM4FV4QQ99)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Leif Chastaine (XM4FV4QQ99)";
+				DEVELOPMENT_TEAM = 3SG4EU67W3;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/iONLive/Frameworks",
@@ -2138,9 +2144,10 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/iONLive/ThirdParty/FFmpeg-iOS/lib",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.gadgeon.iONLive;
-				PRODUCT_NAME = CA7CH;
-				PROVISIONING_PROFILE = "9dc399ba-a592-4353-a882-013be46eabf5";
+				PRODUCT_BUNDLE_IDENTIFIER = com.gadgeon.ca7ch360;
+				PRODUCT_NAME = CA7CH360;
+				PROVISIONING_PROFILE = "7e4825b2-d4d2-4112-b2b9-590ad524122b";
+				PROVISIONING_PROFILE_SPECIFIER = ca7ch360DevProf1;
 				SWIFT_OBJC_BRIDGING_HEADER = "../live-ios-app/iONLive/ObjectiveCBridging/iONLive-Bridging-Header.h";
 				SWIFT_VERSION = 3.0.1;
 			};
@@ -2150,6 +2157,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = T5CRG25QM8;
 				INFOPLIST_FILE = iONLiveTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Gadgeon.iONLiveTests;
@@ -2163,6 +2172,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = T5CRG25QM8;
 				INFOPLIST_FILE = iONLiveTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Gadgeon.iONLiveTests;

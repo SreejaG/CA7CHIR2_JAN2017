@@ -393,7 +393,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             _ =
                 FileManagerViewController.sharedInstance.saveImageToFilePath(mediaName: savingPath, mediaImage: profileImage)
         }
-        
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "profileUpdated"), object:userName)
     }
     
     func myDayCleanUpChannel(channelId : String)
