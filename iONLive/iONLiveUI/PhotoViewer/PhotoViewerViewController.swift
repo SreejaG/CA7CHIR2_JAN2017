@@ -650,27 +650,30 @@ class PhotoViewerViewController: UIViewController,UIGestureRecognizerDelegate,UR
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        if (self.lastContentOffset.x > scrollView.contentOffset.x) {
-            if totalCount > 0
-            {
-                swipeFlag = false
-                if(totalCount < GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[archiveChanelId]!.count)
+        if scrollView.contentOffset.x > 0
+        {
+            if (self.lastContentOffset.x > scrollView.contentOffset.x) {
+                if totalCount > 0
                 {
-                    if self.downloadingFlag == false
+                    swipeFlag = false
+                    if(totalCount < GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[archiveChanelId]!.count)
                     {
-                        if totalCount > 8
+                        if self.downloadingFlag == false
                         {
-                            DispatchQueue.main.async {
-                                let attributes: UICollectionViewLayoutAttributes = self.photoThumpCollectionView.layoutAttributesForItem(at: IndexPath(row: self.totalCount - 1, section: 0))!
-                                self.customView.stopAnimationg()
-                                self.customView.removeFromSuperview()
-                                self.customView = CustomInfiniteIndicator(frame: CGRect(x:(attributes.frame.origin.x + 50), y:(self.photoThumpCollectionView.layer.frame.height/2 - 12), width:30, height:30))
-                                self.photoThumpCollectionView.addSubview(self.customView)
-                                self.customView.startAnimating()
+                            if totalCount > 8
+                            {
+                                DispatchQueue.main.async {
+                                    let attributes: UICollectionViewLayoutAttributes = self.photoThumpCollectionView.layoutAttributesForItem(at: IndexPath(row: self.totalCount - 1, section: 0))!
+                                    self.customView.stopAnimationg()
+                                    self.customView.removeFromSuperview()
+                                    self.customView = CustomInfiniteIndicator(frame: CGRect(x:(attributes.frame.origin.x + 50), y:(self.photoThumpCollectionView.layer.frame.height/2 - 12), width:30, height:30))
+                                    self.photoThumpCollectionView.addSubview(self.customView)
+                                    self.customView.startAnimating()
+                                }
                             }
+                            self.downloadingFlag = true
+                            downloadImagesFromGlobalChannelImageMapping(limit: 12)
                         }
-                        self.downloadingFlag = true
-                        downloadImagesFromGlobalChannelImageMapping(limit: 12)
                     }
                 }
             }
@@ -1362,9 +1365,9 @@ class PhotoViewerViewController: UIViewController,UIGestureRecognizerDelegate,UR
                     if(mediaIdFromData == dictMediaId){
                         GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[archiveChanelId]![i][progressKey] = dictProgress
                     }
-                    DispatchQueue.main.async {
+//                    DispatchQueue.main.async {
                         self.photoThumpCollectionView.reloadData()
-                    }
+//                    }
                 }
             }
         }
