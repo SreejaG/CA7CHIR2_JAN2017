@@ -176,26 +176,15 @@ class MyChannelViewController: UIViewController,UIScrollViewDelegate, UITextFiel
     @IBAction func didTapNotificationButton(_ sender: Any) {
         let notificationStoryboard = UIStoryboard(name:"MyChannel", bundle: nil)
         let channelItemListVC = notificationStoryboard.instantiateViewController(withIdentifier: MyChannelNotificationViewController.identifier) as! MyChannelNotificationViewController
-//        channelItemListVC.navigationController?.isNavigationBarHidden = true
-//        let animation:CATransition = CATransition()
-//        animation.timingFunction = CAMediaTimingFunction(name:
-//            kCAMediaTimingFunctionEaseOut)
-//        animation.type = kCATransitionFade
-//        animation.subtype = kCATransitionFromBottom
-//        animation.fillMode = kCAFillModeRemoved
-//        animation.duration = 0.2
-//        self.view.layer.add(animation, forKey: "animation")
         self.present(channelItemListVC, animated: false, completion: nil)
         CFRunLoopWakeUp(CFRunLoopGetCurrent());
-//        self.navigationController?.view.layer.add(animation, forKey: "animation")
-//        self.navigationController?.pushViewController(channelItemListVC, animated: false)
     }
     
     @IBAction func didtapBackButton(_ sender: Any)
     {
         let cameraViewStoryboard = UIStoryboard(name:"PhotoViewer" , bundle: nil)
         let iPhoneCameraViewController = cameraViewStoryboard.instantiateViewController(withIdentifier: "PhotoViewerViewController") as! PhotoViewerViewController
-       self.present(iPhoneCameraViewController, animated: false, completion: nil)
+        self.present(iPhoneCameraViewController, animated: false, completion: nil)
         CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     

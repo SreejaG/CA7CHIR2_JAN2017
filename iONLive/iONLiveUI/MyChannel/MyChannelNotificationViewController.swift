@@ -83,10 +83,6 @@ class MyChannelNotificationViewController: UIViewController {
             dismiss(animated: false, completion: nil)
             return
         }
-
-//        let storyboard = UIStoryboard(name:"MyChannel", bundle: nil)
-//        let channelVC = storyboard.instantiateViewController(withIdentifier: MyChannelViewController.identifier) as! MyChannelViewController
-//        self.present(channelVC, animated: false, completion: nil)
     }
     
     func initialise(){
@@ -332,7 +328,7 @@ class MyChannelNotificationViewController: UIViewController {
                     if(profileImageName != "")
                     {
                         let profileImageNameUrl = convertStringtoURL(url: profileImageName)
-                        downloadMedia(downloadURL: profileImageNameUrl, key: "ThumbImage", completion: { (result) -> Void in
+                        downloadMedia(downloadURL: profileImageNameUrl, key: "ProfileImage", completion: { (result) -> Void in
                             if(result != UIImage()){
                                 let profileImageData = UIImageJPEGRepresentation(result, 0.5)
                                 let profileImageDataAsNsdata = (profileImageData as NSData?)!
@@ -436,21 +432,39 @@ class MyChannelNotificationViewController: UIViewController {
                         }
                     }
                     else{
-                        completion(UIImage(named: "thumb12")!)
+                        if key == "ThumbImage"
+                        {
+                            completion(UIImage(named: "thumb12")!)
+                        }
+                        else{
+                            completion(UIImage(named: "dummyUser")!)
+                        }
                     }
                 }
             }
             else
             {
-                completion(UIImage(named: "thumb12")!)
+                if key == "ThumbImage"
+                {
+                    completion(UIImage(named: "thumb12")!)
+                }
+                else{
+                    completion(UIImage(named: "dummyUser")!)
+                }
             }
             
         } catch {
-            completion(UIImage(named: "thumb12")!)
+            if key == "ThumbImage"
+            {
+                completion(UIImage(named: "thumb12")!)
+            }
+            else{
+                completion(UIImage(named: "dummyUser")!)
+            }
         }
     }
-
-
+    
+    
     func  getTimeDifference(dateStr:String) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
@@ -539,10 +553,10 @@ extension MyChannelNotificationViewController: UITableViewDelegate, UITableViewD
                 {
                     if fulldataSource[indexPath.row][mediaImageKey] as! String != ""
                     {
-                         cell.NotificationImage.image = FileManagerViewController.sharedInstance.getImageFromFilePath(mediaPath: fulldataSource[indexPath.row][mediaImageKey] as! String)
+                        cell.NotificationImage.image = FileManagerViewController.sharedInstance.getImageFromFilePath(mediaPath: fulldataSource[indexPath.row][mediaImageKey] as! String)
                     }
                     else{
-                         cell.NotificationImage.image = UIImage(named:"thumb12")
+                        cell.NotificationImage.image = UIImage(named:"thumb12")
                     }
                 }
                 else{

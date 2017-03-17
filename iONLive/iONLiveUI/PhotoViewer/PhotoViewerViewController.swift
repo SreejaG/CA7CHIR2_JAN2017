@@ -1365,9 +1365,7 @@ class PhotoViewerViewController: UIViewController,UIGestureRecognizerDelegate,UR
                     if(mediaIdFromData == dictMediaId){
                         GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[archiveChanelId]![i][progressKey] = dictProgress
                     }
-//                    DispatchQueue.main.async {
-                        self.photoThumpCollectionView.reloadData()
-//                    }
+                    self.photoThumpCollectionView.reloadData()
                 }
             }
         }
@@ -1444,7 +1442,7 @@ class PhotoViewerViewController: UIViewController,UIGestureRecognizerDelegate,UR
     {
         let myChannelStoryboard = UIStoryboard(name:"MyChannel" , bundle: nil)
         let myChannelVC = myChannelStoryboard.instantiateViewController(withIdentifier: MyChannelViewController.identifier)
-       self.present(myChannelVC, animated: false, completion: nil)
+        self.present(myChannelVC, animated: false, completion: nil)
         CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     

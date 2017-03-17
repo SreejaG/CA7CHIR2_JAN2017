@@ -60,9 +60,6 @@ class MyChannelItemDetailsViewController: UIViewController {
         let tokenExpired = Notification.Name("tokenExpired")
         NotificationCenter.default.addObserver(self, selector:#selector(ChannelItemListViewController.loadInitialViewControllerTokenExpire(notif:)), name: tokenExpired, object: nil)
         
-//        let removeActivityIndicatorMyChannel = Notification.Name("removeActivityIndicatorMyChannel")
-//        NotificationCenter.default.addObserver(self, selector:#selector(MyChannelItemDetailsViewController.removeActivityIndicator(notif:)), name: removeActivityIndicatorMyChannel, object: nil)
-        
         UserDefaults.standard.set(0, forKey: "tabToAppear")
         self.tabBarItem.selectedImage = UIImage(named:"all_media_blue")?.withRenderingMode(.alwaysOriginal)
         if let channelName = channelName
@@ -75,8 +72,6 @@ class MyChannelItemDetailsViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
         self.channelItemsCollectionView.alpha = 1.0
-        
-//        NotificationCenter.default.removeObserver(self, name: Notification.Name("removeActivityIndicatorMyChannel"), object: nil)
         NotificationCenter.default.removeObserver(self, name: Notification.Name("tokenExpired"), object: nil)
     }
     

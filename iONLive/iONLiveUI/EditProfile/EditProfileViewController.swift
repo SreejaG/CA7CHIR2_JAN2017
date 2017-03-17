@@ -434,7 +434,7 @@ class EditProfileViewController: UIViewController, UINavigationControllerDelegat
                         self.removeOverlay()
                         let alert = UIAlertController(title: "Success", message: "Profile updated successfully", preferredStyle: UIAlertControllerStyle.alert)
                         alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: { (action) -> Void in
-                                self.loadSettingsView()
+                            self.loadSettingsView()
                         }))
                         self.present(alert, animated: true, completion: nil)
                     }
@@ -534,7 +534,7 @@ class EditProfileViewController: UIViewController, UINavigationControllerDelegat
             if(self.photoTakenFlag == false){
                 let alert = UIAlertController(title: "Success", message: "Profile updated successfully", preferredStyle: UIAlertControllerStyle.alert)
                 alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: { (action) -> Void in
-                        self.loadSettingsView()
+                    self.loadSettingsView()
                 }))
                 self.present(alert, animated: true, completion: nil)
             }

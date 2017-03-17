@@ -663,7 +663,7 @@ class OtherChannelViewController: UIViewController  {
                 let mediaIdForFilePath = "\(selectedMediaId)thumb"
                 let parentPath = FileManagerViewController.sharedInstance.getParentDirectoryPath().absoluteString
                 let savingPath = parentPath! + "/" + mediaIdForFilePath
-
+                
                 vc = MovieViewController.movieViewController(withImageVideo: self.channelName,channelId: self.channelId as String, userName: userName, mediaType: SharedChannelDetailsAPI.sharedInstance.selectedSharedChannelMediaSource[indexPathRow][stream_mediaTypeKey] as! String, profileImage:self.profileImage,videoImageUrl:savingPath, notifType: SharedChannelDetailsAPI.sharedInstance.selectedSharedChannelMediaSource[indexPathRow][notificationKey] as! String, mediaId: SharedChannelDetailsAPI.sharedInstance.selectedSharedChannelMediaSource[indexPathRow][stream_mediaIdKey] as! String,timeDiff: imageTakenTime,likeCountStr: likeCount, selectedItem: Int32(index),pageIndicator: 2, videoDuration: SharedChannelDetailsAPI.sharedInstance.selectedSharedChannelMediaSource[indexPathRow][videoDurationKey] as? String) as! MovieViewController
                 self.present(vc, animated: false) { () -> Void in
                 }

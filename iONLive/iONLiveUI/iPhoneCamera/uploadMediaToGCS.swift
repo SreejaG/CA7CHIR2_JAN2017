@@ -304,13 +304,6 @@ class uploadMediaToGCS: UIViewController, URLSessionDelegate, URLSessionTaskDele
                 imageOrVideoData = NSData()
             }
         }
-//        let mem = cameraController.appConsumeSpace()
-//        print("memory in upload full image  ==>  \(mem)")
-//        if mem < 80
-//        {
-//            cameraController.loadViewDuringMemoryCheck()
-//        }
-      
     }
     
     //thumb image upload to cloud
@@ -362,12 +355,6 @@ class uploadMediaToGCS: UIViewController, URLSessionDelegate, URLSessionTaskDele
         }
         catch _ as NSError {
         }
-//        let mem = cameraController.appConsumeSpace()
-//        print("memory in deletion  ==>  \(mem)")
-//        if mem < 65
-//        {
-//            cameraController.loadViewDuringMemoryCheck()
-//        }
     }
     
     //after uploading map media to channels

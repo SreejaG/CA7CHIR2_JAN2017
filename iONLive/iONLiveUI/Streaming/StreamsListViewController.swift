@@ -62,27 +62,6 @@ class StreamsListViewController: UIViewController{
         getAllLiveStreams()
         showOverlay()
         createScrollViewAnimations()
-        
-        //          _ = NSTimer.scheduledTimerWithTimeInterval(60.0, target: self, selector: #selector(StreamsListViewController.test(_:)), userInfo: nil, repeats: true)
-        
-        
-        //        if GlobalStreamList.sharedInstance.GlobalStreamDataSource.count == 0
-        //        {
-        //            GlobalStreamList.sharedInstance.initialiseCloudData(startOffset: count ,endValueLimit: limit)
-        //            self.refreshControl.addTarget(self, action: #selector(StreamsListViewController.pullToRefresh), for: UIControlEvents.valueChanged)
-        //            self.streamListCollectionView.addSubview(self.refreshControl)
-        //        }
-        //        else
-        //        {
-        //            DispatchQueue.main.async {
-        //                self.removeOverlay()
-        //                self.setSourceByAppendingMediaAndLive()
-        //                self.refreshControl.addTarget(self, action: #selector(StreamsListViewController.pullToRefresh), for: UIControlEvents.valueChanged)
-        //                self.streamListCollectionView.addSubview(self.refreshControl)
-        //                self.streamListCollectionView.reloadData()
-        //            }
-        //        }
-        
         if UserDefaults.standard.object(forKey: "NotificationText") != nil{
             if(UserDefaults.standard.object(forKey: "NotificationText") as! String != "")
             {
@@ -207,28 +186,6 @@ class StreamsListViewController: UIViewController{
             }
         }
     }
-    
-    //    func test(timer : NSTimer)
-    //    {
-    //
-    //        print("CLEANING..................")
-    //      //  dispatch_async(dispatch_get_main_queue()) {
-    //            let info = ["channelId": "104", "type": "My Day Cleaning"]
-    //
-    //            let channelId = info["channelId"]! as String
-    //            self.deleteFromOtherChannelIfExistDuringMyDayCleanUp("104")
-    //            self.myDayCleanUpChannel("104")
-    //            self.deleteChannelSpecificMediaFromLocal(channelId)
-    //            self.deleteChannelSpecificMediaFromGlobal(channelId)
-    //            let refreshAlert = UIAlertController(title: "Deleted", message: "My Day Cleaning In Progress.", preferredStyle: UIAlertControllerStyle.Alert)
-    //            refreshAlert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { (action: UIAlertAction!) in
-    //
-    //            }))
-    //            self.presentViewController(refreshAlert, animated: true, completion: nil)
-    //
-    //      //  }
-    //
-    //    }
     
     //handling channel my day of subscriber cleaning when it expires after 1 day
     func myDayCleanUpChannel(channelId : String)
@@ -1433,7 +1390,7 @@ class StreamsListViewController: UIViewController{
                 let mediaIdForFilePath = "\(selectedMediaId)thumb"
                 let parentPath = FileManagerViewController.sharedInstance.getParentDirectoryPath().absoluteString
                 let savingPath = parentPath! + "/" + mediaIdForFilePath
-
+                
                 vc = MovieViewController.movieViewController(withImageVideo: mediaAndLiveArray[indexPathRow][stream_channelNameKey] as! String,channelId: mediaAndLiveArray[indexPathRow][channelIdkey] as! String, userName: mediaAndLiveArray[indexPathRow][userIdKey] as! String, mediaType:mediaAndLiveArray[indexPathRow][stream_mediaTypeKey] as! String, profileImage: profileImage, videoImageUrl:savingPath, notifType: mediaAndLiveArray[indexPathRow][notificationKey] as! String, mediaId: mediaAndLiveArray[indexPathRow][stream_mediaIdKey] as! String,timeDiff:imageTakenTime,likeCountStr:likeCount, selectedItem: Int32(index),pageIndicator: 1, videoDuration: mediaAndLiveArray[indexPathRow][videoDurationKey] as? String) as! MovieViewController
                 self.present(vc, animated: false) { () -> Void in
                 }
