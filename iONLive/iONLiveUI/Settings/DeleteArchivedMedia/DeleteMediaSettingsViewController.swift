@@ -28,7 +28,12 @@ class DeleteMediaSettingsViewController: UIViewController{
     {
         let value = FileManagerViewController.sharedInstance.getArchiveDeleteShortString(resolution: selectedOption)
         UserDefaults.standard.setValue(value, forKey: "archiveMediaDeletion")
-        _ = self.navigationController?.popViewController(animated: true)
+        guard (navigationController?.popViewController(animated:true)) != nil
+            else
+        {
+            dismiss(animated: true, completion: nil)
+            return
+        }
     }
     
     override func didReceiveMemoryWarning() {

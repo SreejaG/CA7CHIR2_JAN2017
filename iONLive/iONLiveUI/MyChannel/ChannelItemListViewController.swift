@@ -63,6 +63,8 @@ class ChannelItemListViewController: UIViewController, CAAnimationDelegate {
     {
         super.viewDidLoad()
         
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
+        
         userId = defaults.value(forKey: userLoginIdKey) as! String
         accessToken = defaults.value(forKey: userAccessTockenKey) as! String
         bottomView.isHidden = true
@@ -165,11 +167,12 @@ class ChannelItemListViewController: UIViewController, CAAnimationDelegate {
         if (info["type"] as! String == "My Day Cleaning")
         {
             let chanId = info["channelId"]!
+            let chanIdStr = "\(chanId)"
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "myDayCleanUp"), object:nil)
             operationInChannelImageList.cancel()
-            GlobalChannelToImageMapping.sharedInstance.cleanMyDayBasedOnTimeStamp(MyDayChanelId: chanId as! String)
+            GlobalChannelToImageMapping.sharedInstance.cleanMyDayBasedOnTimeStamp(MyDayChanelId: chanIdStr)
             let setOj = SetUpView()
-            setOj.cleanMyDayCall(obj: vc, chanelId: chanId as! String)
+            setOj.cleanMyDayCall(obj: vc, chanelId: chanIdStr)
             if(channelName == "My Day"){
                 let refreshAlert = UIAlertController(title: "Cleaning", message: "My Day Cleaning In Progress.", preferredStyle: UIAlertControllerStyle.alert)
                 
@@ -342,8 +345,8 @@ class ChannelItemListViewController: UIViewController, CAAnimationDelegate {
                     
                     let sharingStoryboard = UIStoryboard(name:"Authentication", bundle: nil)
                     let channelItemListVC = sharingStoryboard.instantiateViewController(withIdentifier: "AuthenticateViewController") as! AuthenticateViewController
-                    channelItemListVC.navigationController?.isNavigationBarHidden = true
-                    self.navigationController?.pushViewController(channelItemListVC, animated: false)
+                    self.present(channelItemListVC, animated: false, completion: nil)
+                    CFRunLoopWakeUp(CFRunLoopGetCurrent());
                 }
             }
         }
@@ -383,8 +386,8 @@ class ChannelItemListViewController: UIViewController, CAAnimationDelegate {
                     
                     let sharingStoryboard = UIStoryboard(name:"Authentication", bundle: nil)
                     let channelItemListVC = sharingStoryboard.instantiateViewController(withIdentifier: "AuthenticateViewController") as! AuthenticateViewController
-                    channelItemListVC.navigationController?.isNavigationBarHidden = true
-                    self.navigationController?.pushViewController(channelItemListVC, animated: false)
+                    self.present(channelItemListVC, animated: false, completion: nil)
+                    CFRunLoopWakeUp(CFRunLoopGetCurrent());
                 }
             }
         }
@@ -406,8 +409,8 @@ class ChannelItemListViewController: UIViewController, CAAnimationDelegate {
     {
         let notificationStoryboard = UIStoryboard(name:"MyChannel", bundle: nil)
         let channelVC = notificationStoryboard.instantiateViewController(withIdentifier: MyChannelViewController.identifier) as! MyChannelViewController
-        channelVC.navigationController?.isNavigationBarHidden = true
-        self.navigationController?.pushViewController(channelVC, animated: false)
+        self.present(channelVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     @IBAction func didTapAddtoButton(_ sender: Any) {
@@ -427,9 +430,8 @@ class ChannelItemListViewController: UIViewController, CAAnimationDelegate {
         addChannelVC.mediaDetailSelected = selected
         addChannelVC.selectedChannelId = channelId
         addChannelVC.localMediaDict = addToDict
-        
-        addChannelVC.navigationController?.isNavigationBarHidden = true
-        self.navigationController?.pushViewController(addChannelVC, animated: false)
+        self.present(addChannelVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     @IBAction func didTapSelectionButton(_ sender: Any) {
@@ -455,20 +457,82 @@ class ChannelItemListViewController: UIViewController, CAAnimationDelegate {
     
     @IBAction func didTapCancelButton(_ sender: Any) {
         removeOverlay()
-        selected.removeAllObjects()
+        GlobalChannelToImageMapping.sharedInstance.deleteMediasFromChannel(channelId: channelId, mediaIdChkS: selected)
+        totalMediaCount = totalMediaCount - selected.count
+        
+        let filteredData = GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[channelId]!.filter(thumbExists)
+        totalCount = filteredData.count
+        
+        downloadingFlag = false
+        selectionFlag = false
+        
+        if(totalCount == GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[channelId]!.count){
+            
+        }
+        else{
+            if(GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[channelId]!.count > totalCount){
+                if(totalCount < 18 && totalCount > 0){
+                    DispatchQueue.main.async {
+                        self.customView.stopAnimationg()
+                        self.customView.removeFromSuperview()
+                        self.customView = CustomInfiniteIndicator(frame: CGRect(x:(self.channelItemCollectionView.layer.frame.width/2 - 20), y:(self.channelItemCollectionView.layer.frame.height - 100), width:40, height:40))
+                        self.channelItemCollectionView.addSubview(self.customView)
+                        self.customView.startAnimating()
+                    }
+                }
+                else if totalCount == 0
+                {
+                    DispatchQueue.main.async {
+                        self.customView.stopAnimationg()
+                        self.customView.removeFromSuperview()
+                        self.showOverlay()
+                        self.selectionButton.isHidden = true
+                    }
+                }
+                else{
+                    DispatchQueue.main.async {
+                        self.customView.stopAnimationg()
+                        self.customView.removeFromSuperview()
+                        self.removeOverlay()
+                        self.selectionButton.isHidden = false
+                    }
+                }
+            }
+            else{
+                customView.stopAnimationg()
+                customView.removeFromSuperview()
+            }
+            if(GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[channelId]!.count > totalCount){
+                if(totalCount < 18){
+                    downloadImagesFromGlobalChannelImageMapping(limit: 18)
+                }
+                else{
+                    downloadImagesFromGlobalChannelImageMapping(limit: selected.count)
+                }
+            }
+        }
+        
         selectedArray.removeAll()
+        selected.removeAllObjects()
         channelTitleLabel.text = channelName.uppercased()
         cancelButton.isHidden = true
-        selectionButton.isHidden = false
         bottomView.isHidden = true
         deleteButton.isHidden = true
         addButton.isHidden = true
         backButton.isHidden = false
-        selectionFlag = false
+        if(GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[channelId]!.count > 0){
+            selectionButton.isHidden = false
+        }
+        else{
+            selectionButton.isHidden = true
+        }
+        if(GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[channelId]!.count == 0){
+            addNoDataLabel()
+        }
+        
         DispatchQueue.main.async {
             self.channelItemCollectionView.reloadData()
         }
-        
     }
     
     @IBAction func didTapDeleteButton(_ sender: Any) {
@@ -511,6 +575,7 @@ class ChannelItemListViewController: UIViewController, CAAnimationDelegate {
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: {
             (action:UIAlertAction!) in
+            
         }))
         self.present(alert, animated: true, completion: nil)
         
@@ -668,7 +733,13 @@ extension ChannelItemListViewController : UICollectionViewDataSource,UICollectio
             let mediaType = GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[channelId]![indexPath.row][mediaTypeKey] as! String
             if let imageData =  GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[channelId]![indexPath.row][tImageKey]
             {
-                channelItemImageView.image = imageData as? UIImage
+                if imageData as! String != ""
+                {
+                    channelItemImageView.image = FileManagerViewController.sharedInstance.getImageFromFilePath(mediaPath: imageData as! String)
+                }
+                else{
+                    channelItemImageView.image = UIImage(named: "thumb12")
+                }
             }
             else{
                 channelItemImageView.image = UIImage(named: "thumb12")
@@ -805,7 +876,7 @@ extension ChannelItemListViewController : UICollectionViewDataSource,UICollectio
         let index = Int32(indexPath.row)
         
         DispatchQueue.main.async {
-            self.vc = MovieViewController.movieViewController(withImageVideo: self.channelName, channelId: self.channelId as String, userName: self.userId, mediaType: GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[self.channelId]![indexPath.row][mediaTypeKey] as! String, profileImage: imageForProfile, videoImageUrl: GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[self.channelId]![indexPath.row][tImageKey] as! UIImage, notifType: GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[self.channelId]![indexPath.row][notifTypeKey] as! String,mediaId: GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[self.channelId]![indexPath.row][mediaIdKey] as! String, timeDiff: imageTakenTime,likeCountStr: "0",selectedItem:index,pageIndicator: 0, videoDuration:  GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[self.channelId]![indexPath.row][videoDurationKey] as? String) as! MovieViewController
+            self.vc = MovieViewController.movieViewController(withImageVideo: self.channelName, channelId: self.channelId as String, userName: self.userId, mediaType: GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[self.channelId]![indexPath.row][mediaTypeKey] as! String, profileImage: imageForProfile, videoImageUrl: GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[self.channelId]![indexPath.row][tImageKey] as! String, notifType: GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[self.channelId]![indexPath.row][notifTypeKey] as! String,mediaId: GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[self.channelId]![indexPath.row][mediaIdKey] as! String, timeDiff: imageTakenTime,likeCountStr: "0",selectedItem:index,pageIndicator: 0, videoDuration:  GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[self.channelId]![indexPath.row][videoDurationKey] as? String) as! MovieViewController
             self.present(self.vc, animated: false) { () -> Void in
                 self.removeOverlay()
                 self.channelItemCollectionView.alpha = 1.0

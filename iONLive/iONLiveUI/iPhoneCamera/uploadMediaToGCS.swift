@@ -160,8 +160,6 @@ class uploadMediaToGCS: UIViewController, URLSessionDelegate, URLSessionTaskDele
             saveVideoToCahce()
         }
         updateDataToLocalDataSource()
-        let mem = cameraController.appConsumeSpace()
-        print("memory in saveImageToLocalCache  ==>  \(mem)")
     }
     
     func  saveVideoToCahce()  {
@@ -212,7 +210,11 @@ class uploadMediaToGCS: UIViewController, URLSessionDelegate, URLSessionTaskDele
             duration = ""
         }
         
-        dataRowFromLocal = [mediaIdKey:mediaId,mediaTypeKey:media,notifTypeKey:"likes",mediaCreatedTimeKey:currentTimeStamp,progressKey:Float(0.02),tImageKey:imageAfterConversionThumbnail,videoDurationKey:duration]
+        let mediaIdForFilePath = "\(mediaId)thumb"
+        let parentPath = FileManagerViewController.sharedInstance.getParentDirectoryPath().absoluteString
+        let savingPath = parentPath! + "/" + mediaIdForFilePath
+        
+        dataRowFromLocal = [mediaIdKey:mediaId,mediaTypeKey:media,notifTypeKey:"likes",mediaCreatedTimeKey:currentTimeStamp,progressKey:Float(0.02),tImageKey:savingPath,videoDurationKey:duration]
         
         mediaBeforeUploadCompleteManager.updateDataSource(dataSourceRow: dataRowFromLocal)
     }
@@ -239,8 +241,6 @@ class uploadMediaToGCS: UIViewController, URLSessionDelegate, URLSessionTaskDele
                         if(result == "Success"){
                             self.imageAfterConversionThumbnail = UIImage()
                             GlobalChannelToImageMapping.sharedInstance.removeUploadSuccessMediaDetails(mediaId: self.mediaId)
-                            let mem = self.cameraController.appConsumeSpace()
-                            print("memory in startuploadtogcs  ==>  \(mem)")
                             self.mapMediaToDefaultChannels()
                         }
                         else{
@@ -304,12 +304,13 @@ class uploadMediaToGCS: UIViewController, URLSessionDelegate, URLSessionTaskDele
                 imageOrVideoData = NSData()
             }
         }
-        let mem = cameraController.appConsumeSpace()
-        if mem < 65
-        {
-            cameraController.loadViewDuringMemoryCheck()
-        }
-        print("memory in upload full image  ==>  \(mem)")
+//        let mem = cameraController.appConsumeSpace()
+//        print("memory in upload full image  ==>  \(mem)")
+//        if mem < 80
+//        {
+//            cameraController.loadViewDuringMemoryCheck()
+//        }
+      
     }
     
     //thumb image upload to cloud
@@ -331,12 +332,6 @@ class uploadMediaToGCS: UIViewController, URLSessionDelegate, URLSessionTaskDele
             else {
                 completion("Success")
             }
-        }
-        let mem = cameraController.appConsumeSpace()
-        print("memory in upload thumb image  ==>  \(mem)")
-        if mem < 65
-        {
-            cameraController.loadViewDuringMemoryCheck()
         }
         dataTask.resume()
         imageData = NSData()
@@ -367,8 +362,12 @@ class uploadMediaToGCS: UIViewController, URLSessionDelegate, URLSessionTaskDele
         }
         catch _ as NSError {
         }
-        let mem = cameraController.appConsumeSpace()
-        print("memory in deletion  ==>  \(mem)")
+//        let mem = cameraController.appConsumeSpace()
+//        print("memory in deletion  ==>  \(mem)")
+//        if mem < 65
+//        {
+//            cameraController.loadViewDuringMemoryCheck()
+//        }
     }
     
     //after uploading map media to channels

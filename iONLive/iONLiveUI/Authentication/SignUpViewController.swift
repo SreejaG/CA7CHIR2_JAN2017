@@ -15,6 +15,8 @@ class SignUpViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
+        
         continueButton.isHidden = true
         
         UserDefaults.standard.setValue("true", forKey: "tokenValid")
@@ -24,7 +26,7 @@ class SignUpViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        self.navigationController?.isNavigationBarHidden = false
+        self.navigationController?.isNavigationBarHidden = true
         self.emailTextfield.becomeFirstResponder()
     }
     
@@ -135,15 +137,23 @@ class SignUpViewController: UIViewController {
         loadUserNameView()
     }
     
+    @IBAction func backClicked(_ sender: Any){
+        guard (navigationController?.popViewController(animated:true)) != nil
+            else
+        {
+            dismiss(animated: true, completion: nil)
+            return
+        }
+    }
+    
     func loadUserNameView()
     {
         let storyboard = UIStoryboard(name:"Authentication" , bundle: nil)
         let userNameVC = storyboard.instantiateViewController(withIdentifier: SignUpUserNameViewController.identifier) as! SignUpUserNameViewController
         userNameVC.email = self.emailTextfield.text!
         userNameVC.password = self.passwdTextField.text!
-        let backItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        userNameVC.navigationItem.backBarButtonItem = backItem
-        self.navigationController?.pushViewController(userNameVC, animated: false)
+        self.present(userNameVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     //PRAGMA MARK:- Helper functions

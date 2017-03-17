@@ -79,8 +79,8 @@ class SettingsViewController: UIViewController, UIGestureRecognizerDelegate ,tog
     @IBAction func doneClicked(_ sender: Any) {
         let cameraViewStoryboard = UIStoryboard(name:"IPhoneCameraView" , bundle: nil)
         let iPhoneCameraViewController = cameraViewStoryboard.instantiateViewController(withIdentifier: "IPhoneCameraViewController") as! IPhoneCameraViewController
-        self.navigationController?.isNavigationBarHidden = true
-        self.navigationController?.pushViewController(iPhoneCameraViewController, animated: false)
+        self.present(iPhoneCameraViewController, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     override func didReceiveMemoryWarning() {
@@ -330,56 +330,64 @@ extension SettingsViewController:UITableViewDelegate,UITableViewDataSource
     {
         let storyBoard = UIStoryboard.init(name:"Settings", bundle: nil)
         let reportVC = storyBoard.instantiateViewController(withIdentifier: ReportAProblemViewController.identifier) as! ReportAProblemViewController
-        self.navigationController?.pushViewController(reportVC, animated: true)
+        self.present(reportVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     func loadAppInfoView()
     {
         let storyBoard = UIStoryboard.init(name:"Settings", bundle: nil)
         let reportVC = storyBoard.instantiateViewController(withIdentifier: AppInfoViewController.identifier) as! AppInfoViewController
-        self.navigationController?.pushViewController(reportVC, animated: true)
+        self.present(reportVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     func loadEditProfileView()
     {
         let storyBoard = UIStoryboard.init(name:"EditProfile", bundle: nil)
         let editProfileVC = storyBoard.instantiateViewController(withIdentifier: EditProfileViewController.identifier) as! EditProfileViewController
-        self.navigationController?.pushViewController(editProfileVC, animated: true)
+        self.present(editProfileVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     func loadTimeLapseOptionsView()
     {
         let storyBoard = UIStoryboard.init(name:"Settings", bundle: nil)
         let timeLapseVC = storyBoard.instantiateViewController(withIdentifier: TimeLapseSettingsViewController.identifier) as! TimeLapseSettingsViewController
-        self.navigationController?.pushViewController(timeLapseVC, animated: true)
+        self.present(timeLapseVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     func loadDeleteMediaOptionsView()
     {
         let storyBoard = UIStoryboard.init(name:"Settings", bundle: nil)
         let deleteMediaOptionsVC = storyBoard.instantiateViewController(withIdentifier: DeleteMediaSettingsViewController.identifier) as! DeleteMediaSettingsViewController
-        self.navigationController?.pushViewController(deleteMediaOptionsVC, animated: true)
+        self.present(deleteMediaOptionsVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     func loadConnectAccountView()
     {
         let storyBoard = UIStoryboard.init(name:"Settings", bundle: nil)
         let connectAccountVC = storyBoard.instantiateViewController(withIdentifier: ConnectAccountViewController.identifier) as! ConnectAccountViewController
-        self.navigationController?.pushViewController(connectAccountVC, animated: true)
+        self.present(connectAccountVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     func loadProgramCameraButtonView()
     {
         let storyBoard = UIStoryboard.init(name:"Settings", bundle: nil)
         let connectAccountVC = storyBoard.instantiateViewController(withIdentifier: ProgramCameraButtonViewController.identifier) as! ProgramCameraButtonViewController
-        self.navigationController?.pushViewController(connectAccountVC, animated: true)
+        self.present(connectAccountVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     func loadLiveStreamView()
     {
         let storyBoard = UIStoryboard.init(name:"Settings", bundle: nil)
         let LiveStreamVC = storyBoard.instantiateViewController(withIdentifier: ResolutionSelectionViewController.identifier) as! ResolutionSelectionViewController
-        self.navigationController?.pushViewController(LiveStreamVC, animated: true)
+        self.present(LiveStreamVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
 }
 

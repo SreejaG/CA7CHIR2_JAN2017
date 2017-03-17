@@ -37,6 +37,8 @@ class SignUpVerifyPhoneViewController: UIViewController
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
         if #available(iOS 10.0, *){
             countryPicker.selectRow(232, inComponent: 0, animated: true)
         }
@@ -50,12 +52,13 @@ class SignUpVerifyPhoneViewController: UIViewController
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        self.navigationController?.isNavigationBarHidden = false
+        self.navigationController?.isNavigationBarHidden = true
         checkVerificationCodeVisiblty()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
+        view.endEditing(true)
     }
     
     override func didReceiveMemoryWarning() {
@@ -245,14 +248,23 @@ class SignUpVerifyPhoneViewController: UIViewController
         }
     }
     
+    @IBAction func backClicked(_ sender: Any) {
+        guard (navigationController?.popViewController(animated:true)) != nil
+            else
+        {
+            dismiss(animated: true, completion: nil)
+            return
+        }
+    }
+    
+    
     func  loadForgotPasswordView(){
         let storyboard = UIStoryboard(name:"Authentication" , bundle: nil)
         let verifyPhoneVC = storyboard.instantiateViewController(withIdentifier: ForgotPasswordViewController.identifier) as! ForgotPasswordViewController
         verifyPhoneVC.verificationCode = verificationCodeTextField.text!
         verifyPhoneVC.mobileNumber = countryCodeTextField.text! + mobileNumberTextField.text!
-        let backItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        verifyPhoneVC.navigationItem.backBarButtonItem = backItem
-        self.navigationController?.pushViewController(verifyPhoneVC, animated: false)
+        self.present(verifyPhoneVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     func generateWaytoSendAlert()
@@ -419,8 +431,8 @@ class SignUpVerifyPhoneViewController: UIViewController
         let storyboard = UIStoryboard(name:"Authentication" , bundle: nil)
         let findFriendsVC = storyboard.instantiateViewController(withIdentifier: SignUpFindFriendsViewController.identifier) as! SignUpFindFriendsViewController
         findFriendsVC.phoneCode = CountryPhoneCode
-        findFriendsVC.navigationItem.hidesBackButton = true
-        self.navigationController?.pushViewController(findFriendsVC, animated: false)
+        self.present(findFriendsVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     func showOverlay(){
@@ -433,15 +445,6 @@ class SignUpVerifyPhoneViewController: UIViewController
     
     func removeOverlay(){
         self.loadingOverlay?.removeFromSuperview()
-    }
-    
-    func loadUserNameView()
-    {
-        let storyboard = UIStoryboard(name:"Authentication" , bundle: nil)
-        let userNameVC = storyboard.instantiateViewController(withIdentifier: SignUpUserNameViewController.identifier)
-        let backItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        userNameVC.navigationItem.backBarButtonItem = backItem
-        self.navigationController?.pushViewController(userNameVC, animated: false)
     }
 }
 

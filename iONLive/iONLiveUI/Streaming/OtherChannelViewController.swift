@@ -403,8 +403,8 @@ class OtherChannelViewController: UIViewController  {
                     
                     let sharingStoryboard = UIStoryboard(name:"Authentication", bundle: nil)
                     let channelItemListVC = sharingStoryboard.instantiateViewController(withIdentifier: "AuthenticateViewController") as! AuthenticateViewController
-                    channelItemListVC.navigationController?.isNavigationBarHidden = true
-                    self.navigationController?.pushViewController(channelItemListVC, animated: false)
+                    self.present(channelItemListVC, animated: false, completion: nil)
+                    CFRunLoopWakeUp(CFRunLoopGetCurrent());
                 }
             }
         }
@@ -416,8 +416,8 @@ class OtherChannelViewController: UIViewController  {
         UserDefaults.standard.set(0, forKey: "SelectedTab")
         let sharingStoryboard = UIStoryboard(name:"Streaming", bundle: nil)
         let sharingVC = sharingStoryboard.instantiateViewController(withIdentifier: StreamsGalleryViewController.identifier) as! StreamsGalleryViewController
-        sharingVC.navigationController?.isNavigationBarHidden = true
-        self.navigationController?.pushViewController(sharingVC, animated: false)
+        self.present(sharingVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     override func didReceiveMemoryWarning() {
@@ -658,7 +658,13 @@ class OtherChannelViewController: UIViewController  {
                     index = indexPathRow
                 }
                 let imageTakenTime = FileManagerViewController.sharedInstance.getTimeDifference(dateStr: dateString)
-                vc = MovieViewController.movieViewController(withImageVideo: self.channelName,channelId: self.channelId as String, userName: userName, mediaType: SharedChannelDetailsAPI.sharedInstance.selectedSharedChannelMediaSource[indexPathRow][stream_mediaTypeKey] as! String, profileImage:self.profileImage,videoImageUrl:SharedChannelDetailsAPI.sharedInstance.selectedSharedChannelMediaSource[indexPathRow][mediaUrlKey] as! UIImage, notifType: SharedChannelDetailsAPI.sharedInstance.selectedSharedChannelMediaSource[indexPathRow][notificationKey] as! String, mediaId: SharedChannelDetailsAPI.sharedInstance.selectedSharedChannelMediaSource[indexPathRow][stream_mediaIdKey] as! String,timeDiff: imageTakenTime,likeCountStr: likeCount, selectedItem: Int32(index),pageIndicator: 2, videoDuration: SharedChannelDetailsAPI.sharedInstance.selectedSharedChannelMediaSource[indexPathRow][videoDurationKey] as? String) as! MovieViewController
+                
+                let selectedMediaId : String = SharedChannelDetailsAPI.sharedInstance.selectedSharedChannelMediaSource[indexPathRow][stream_mediaIdKey] as! String
+                let mediaIdForFilePath = "\(selectedMediaId)thumb"
+                let parentPath = FileManagerViewController.sharedInstance.getParentDirectoryPath().absoluteString
+                let savingPath = parentPath! + "/" + mediaIdForFilePath
+
+                vc = MovieViewController.movieViewController(withImageVideo: self.channelName,channelId: self.channelId as String, userName: userName, mediaType: SharedChannelDetailsAPI.sharedInstance.selectedSharedChannelMediaSource[indexPathRow][stream_mediaTypeKey] as! String, profileImage:self.profileImage,videoImageUrl:savingPath, notifType: SharedChannelDetailsAPI.sharedInstance.selectedSharedChannelMediaSource[indexPathRow][notificationKey] as! String, mediaId: SharedChannelDetailsAPI.sharedInstance.selectedSharedChannelMediaSource[indexPathRow][stream_mediaIdKey] as! String,timeDiff: imageTakenTime,likeCountStr: likeCount, selectedItem: Int32(index),pageIndicator: 2, videoDuration: SharedChannelDetailsAPI.sharedInstance.selectedSharedChannelMediaSource[indexPathRow][videoDurationKey] as? String) as! MovieViewController
                 self.present(vc, animated: false) { () -> Void in
                 }
             }

@@ -40,6 +40,7 @@ class MyChannelNotificationViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
         self.navigationController?.view.layer.removeAllAnimations()
         self.navigationController?.view.layer.layoutIfNeeded()
         if let notifFlag = defaults.value(forKey: "notificationArrived")
@@ -75,10 +76,17 @@ class MyChannelNotificationViewController: UIViewController {
     }
     
     @IBAction func didTapNotificationButton(_ sender: Any) {
-        let storyboard = UIStoryboard(name:"MyChannel", bundle: nil)
-        let channelVC = storyboard.instantiateViewController(withIdentifier: MyChannelViewController.identifier) as! MyChannelViewController
-        channelVC.navigationController?.isNavigationBarHidden = true
-        self.navigationController?.pushViewController(channelVC, animated: false)
+        operationInNotif.cancel()
+        guard (navigationController?.popViewController(animated:false)) != nil
+            else
+        {
+            dismiss(animated: false, completion: nil)
+            return
+        }
+
+//        let storyboard = UIStoryboard(name:"MyChannel", bundle: nil)
+//        let channelVC = storyboard.instantiateViewController(withIdentifier: MyChannelViewController.identifier) as! MyChannelViewController
+//        self.present(channelVC, animated: false, completion: nil)
     }
     
     func initialise(){
@@ -137,8 +145,8 @@ class MyChannelNotificationViewController: UIViewController {
                     
                     let sharingStoryboard = UIStoryboard(name:"Authentication", bundle: nil)
                     let channelItemListVC = sharingStoryboard.instantiateViewController(withIdentifier: "AuthenticateViewController") as! AuthenticateViewController
-                    channelItemListVC.navigationController?.isNavigationBarHidden = true
-                    self.navigationController?.pushViewController(channelItemListVC, animated: false)
+                    self.present(channelItemListVC, animated: false, completion: nil)
+                    CFRunLoopWakeUp(CFRunLoopGetCurrent());
                 }
             }
         }
@@ -309,55 +317,58 @@ class MyChannelNotificationViewController: UIViewController {
                 if operationObj.isCancelled == true{
                     return
                 }
-                var mediaImage : UIImage?
-                var profileImage : UIImage?
+                var mediaImage : String?
                 
                 let user = dataSource[i][usernameKey] as! String
                 let savingPath = "\(user)Profile"
                 let parentPath = FileManagerViewController.sharedInstance.getParentDirectoryPath().absoluteString
-                let profileImagePath = parentPath! + "/" + savingPath
+                var profileImagePath = parentPath! + "/" + savingPath
                 let fileExistFlag = FileManagerViewController.sharedInstance.fileExist(mediaPath: profileImagePath)
                 
                 if fileExistFlag == true{
-                    let profileImageFromFile = FileManagerViewController.sharedInstance.getImageFromFilePath(mediaPath: profileImagePath)
-                    profileImage = profileImageFromFile!
                 }
                 else{
                     let profileImageName = dataSource[i][profileImageKey] as! String
                     if(profileImageName != "")
                     {
-                        profileImage = FileManagerViewController.sharedInstance.getProfileImage(profileNameURL: profileImageName)
-                        let profileImageData = UIImageJPEGRepresentation(profileImage!, 0.5)
-                        let profileImageDataAsNsdata = (profileImageData as NSData?)!
-                        let imageFromDefault = UIImageJPEGRepresentation(UIImage(named: "dummyUser")!, 0.5)
-                        let imageFromDefaultAsNsdata = (imageFromDefault as NSData?)!
-                        if(profileImageDataAsNsdata.isEqual(imageFromDefaultAsNsdata)){
-                        }
-                        else{
-                            _ =
-                                FileManagerViewController.sharedInstance.saveImageToFilePath(mediaName: savingPath, mediaImage: profileImage!)
-                        }
-                    }
-                    else{
-                        profileImage = UIImage(named: "dummyUser")
+                        let profileImageNameUrl = convertStringtoURL(url: profileImageName)
+                        downloadMedia(downloadURL: profileImageNameUrl, key: "ThumbImage", completion: { (result) -> Void in
+                            if(result != UIImage()){
+                                let profileImageData = UIImageJPEGRepresentation(result, 0.5)
+                                let profileImageDataAsNsdata = (profileImageData as NSData?)!
+                                let imageFromDefault = UIImageJPEGRepresentation(UIImage(named: "dummyUser")!, 0.5)
+                                let imageFromDefaultAsNsdata = (imageFromDefault as NSData?)!
+                                if(profileImageDataAsNsdata.isEqual(imageFromDefaultAsNsdata)){
+                                    profileImagePath = ""
+                                }
+                                else{
+                                    _ =
+                                        FileManagerViewController.sharedInstance.saveImageToFilePath(mediaName: savingPath, mediaImage: result)
+                                }
+                            }
+                            else{
+                                profileImagePath = ""
+                            }
+                        })
                     }
                 }
                 
                 let mediaThumbUrl = dataSource[i][mediaImageKey] as! String
+                let mediaIds = dataSource[i][mediaIdKey] as! String
                 if(mediaThumbUrl != "nomedia"){
                     if(mediaThumbUrl != "")
                     {
-                        mediaImage = createMediaThumb(mediaName: mediaThumbUrl)
+                        mediaImage = createMediaThumb(mediaName: mediaThumbUrl, mediaId: mediaIds)
                     }
                     else{
-                        mediaImage = UIImage()
+                        mediaImage = ""
                     }
                 }
                 else{
-                    mediaImage = UIImage()
+                    mediaImage = ""
                 }
                 
-                self.fulldataSource.append([self.notificationTypeKey:self.dataSource[i][self.notificationTypeKey]!,self.messageKey:self.dataSource[i][self.messageKey]!, self.profileImageKey:profileImage!, self.mediaImageKey:mediaImage!,self.notificationTimeKey:self.dataSource[i][self.notificationTimeKey]!,mediaIdKey:self.dataSource[i][mediaIdKey]!, mediaUrlKey: mediaThumbUrl])
+                self.fulldataSource.append([self.notificationTypeKey:self.dataSource[i][self.notificationTypeKey]!,self.messageKey:self.dataSource[i][self.messageKey]!, self.profileImageKey:profileImagePath, self.mediaImageKey:mediaImage!,self.notificationTimeKey:self.dataSource[i][self.notificationTimeKey]!,mediaIdKey:self.dataSource[i][mediaIdKey]!, mediaUrlKey: mediaThumbUrl])
                 
                 DispatchQueue.main.async {
                     self.removeOverlay()
@@ -367,29 +378,79 @@ class MyChannelNotificationViewController: UIViewController {
         }
     }
     
-    func createMediaThumb(mediaName: String) -> UIImage
+    func createMediaThumb(mediaName: String, mediaId: String) -> String
+    {
+        let parentPath = FileManagerViewController.sharedInstance.getParentDirectoryPath().absoluteString
+        let mediaIdForFilePath = mediaId + "thumb"
+        var savingPath = parentPath! + "/" + mediaIdForFilePath
+        let fileExistFlag = FileManagerViewController.sharedInstance.fileExist(mediaPath: savingPath)
+        if fileExistFlag == true{
+        }
+        else{
+            let url = convertStringtoURL(url: mediaName)
+            downloadMedia(downloadURL: url, key: "ThumbImage", completion: { (result) -> Void in
+                if(result != UIImage()){
+                    let imageDataFromresult = UIImageJPEGRepresentation(result, 0.5)
+                    let imageDataFromresultAsNsdata = (imageDataFromresult as NSData?)!
+                    let imageDataFromDefault = UIImageJPEGRepresentation(UIImage(named: "thumb12")!, 0.5)
+                    let imageDataFromDefaultAsNsdata = (imageDataFromDefault as NSData?)!
+                    if(imageDataFromresultAsNsdata.isEqual(imageDataFromDefaultAsNsdata)){
+                        savingPath = ""
+                    }
+                    else{
+                        _ = FileManagerViewController.sharedInstance.saveImageToFilePath(mediaName: mediaIdForFilePath, mediaImage: result)
+                    }
+                }
+                else{
+                    savingPath = ""
+                }
+            })
+        }
+        return savingPath
+    }
+    
+    func downloadMedia(downloadURL : NSURL ,key : String , completion: (_ result: UIImage) -> Void)
     {
         var mediaImage : UIImage = UIImage()
         do {
-            let url: NSURL = convertStringtoURL(url: mediaName)
-            let data = try NSData(contentsOf: url as URL,options: NSData.ReadingOptions())
+            let data = try NSData(contentsOf: downloadURL as URL,options: NSData.ReadingOptions())
             if let imageData = data as NSData? {
                 if let mediaImage1 = UIImage(data: imageData as Data)
                 {
                     mediaImage = mediaImage1
+                    completion(mediaImage)
+                }
+                else{
+                    let failedString = String(data: imageData as Data, encoding: String.Encoding.utf8)
+                    let fullString = failedString?.components(separatedBy: ",")
+                    let errorString = fullString?[1].components(separatedBy: ":")
+                    var orgString = errorString?[1]
+                    orgString = orgString?.trimmingCharacters(in: NSCharacterSet.alphanumerics.inverted)
+                    if((orgString == "USER004") || (orgString == "USER005") || (orgString == "USER006")){
+                        if let tokenValid = UserDefaults.standard.value(forKey: "tokenValid")
+                        {
+                            if tokenValid as! String == "true"
+                            {
+                                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "tokenExpired"), object:orgString)
+                            }
+                        }
+                    }
+                    else{
+                        completion(UIImage(named: "thumb12")!)
+                    }
                 }
             }
             else
             {
-                mediaImage = UIImage(named: "thumb12")!
+                completion(UIImage(named: "thumb12")!)
             }
             
         } catch {
-            mediaImage = UIImage(named: "thumb12")!
+            completion(UIImage(named: "thumb12")!)
         }
-        return mediaImage
     }
-    
+
+
     func  getTimeDifference(dateStr:String) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
@@ -453,7 +514,19 @@ extension MyChannelNotificationViewController: UITableViewDelegate, UITableViewD
         {
             let cell = tableView.dequeueReusableCell(withIdentifier: MyChannelNotificationCell.identifier, for:indexPath) as! MyChannelNotificationCell
             
-            cell.NotificationSenderImageView.image = fulldataSource[indexPath.row][profileImageKey] as? UIImage
+            if fulldataSource[indexPath.row][profileImageKey] != nil
+            {
+                if fulldataSource[indexPath.row][profileImageKey] as! String != ""
+                {
+                    cell.NotificationSenderImageView.image = FileManagerViewController.sharedInstance.getImageFromFilePath(mediaPath: fulldataSource[indexPath.row][profileImageKey] as! String)
+                }
+                else{
+                    cell.NotificationSenderImageView.image = UIImage(named: "dummyUser")
+                }
+            }
+            else{
+                cell.NotificationSenderImageView.image = UIImage(named: "dummyUser")
+            }
             
             if(fulldataSource[indexPath.row][mediaUrlKey] as! String != "nomedia"){
                 cell.NotificationImage.isHidden = false
@@ -464,7 +537,13 @@ extension MyChannelNotificationViewController: UITableViewDelegate, UITableViewD
                 
                 if fulldataSource[indexPath.row][mediaImageKey] != nil
                 {
-                    cell.NotificationImage.image = fulldataSource[indexPath.row][mediaImageKey] as? UIImage
+                    if fulldataSource[indexPath.row][mediaImageKey] as! String != ""
+                    {
+                         cell.NotificationImage.image = FileManagerViewController.sharedInstance.getImageFromFilePath(mediaPath: fulldataSource[indexPath.row][mediaImageKey] as! String)
+                    }
+                    else{
+                         cell.NotificationImage.image = UIImage(named:"thumb12")
+                    }
                 }
                 else{
                     cell.NotificationImage.image = UIImage(named:"thumb12")

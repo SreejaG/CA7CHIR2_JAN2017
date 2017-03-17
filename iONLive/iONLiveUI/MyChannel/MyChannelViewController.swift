@@ -52,6 +52,9 @@ class MyChannelViewController: UIViewController,UIScrollViewDelegate, UITextFiel
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
+        
         defaults.setValue("", forKey: "editedValue")
         
         channelUpdateSaveButton.isHidden = true
@@ -164,8 +167,8 @@ class MyChannelViewController: UIViewController,UIScrollViewDelegate, UITextFiel
                         channelItemListVC.totalMediaCount = Int(searchDataSource[swipedIndexPath.row][totalMediaKey]! as! String)!
                     }
                 }
-                channelItemListVC.navigationController?.isNavigationBarHidden = true
-                self.navigationController?.pushViewController(channelItemListVC, animated: false)
+                self.present(channelItemListVC, animated: false, completion: nil)
+                CFRunLoopWakeUp(CFRunLoopGetCurrent());
             }
         }
     }
@@ -173,24 +176,27 @@ class MyChannelViewController: UIViewController,UIScrollViewDelegate, UITextFiel
     @IBAction func didTapNotificationButton(_ sender: Any) {
         let notificationStoryboard = UIStoryboard(name:"MyChannel", bundle: nil)
         let channelItemListVC = notificationStoryboard.instantiateViewController(withIdentifier: MyChannelNotificationViewController.identifier) as! MyChannelNotificationViewController
-        channelItemListVC.navigationController?.isNavigationBarHidden = true
-        let animation:CATransition = CATransition()
-        animation.timingFunction = CAMediaTimingFunction(name:
-            kCAMediaTimingFunctionEaseOut)
-        animation.type = kCATransitionFade
-        animation.subtype = kCATransitionFromBottom
-        animation.fillMode = kCAFillModeRemoved
-        animation.duration = 0.2
-        self.navigationController?.view.layer.add(animation, forKey: "animation")
-        self.navigationController?.pushViewController(channelItemListVC, animated: false)
+//        channelItemListVC.navigationController?.isNavigationBarHidden = true
+//        let animation:CATransition = CATransition()
+//        animation.timingFunction = CAMediaTimingFunction(name:
+//            kCAMediaTimingFunctionEaseOut)
+//        animation.type = kCATransitionFade
+//        animation.subtype = kCATransitionFromBottom
+//        animation.fillMode = kCAFillModeRemoved
+//        animation.duration = 0.2
+//        self.view.layer.add(animation, forKey: "animation")
+        self.present(channelItemListVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
+//        self.navigationController?.view.layer.add(animation, forKey: "animation")
+//        self.navigationController?.pushViewController(channelItemListVC, animated: false)
     }
     
     @IBAction func didtapBackButton(_ sender: Any)
     {
         let cameraViewStoryboard = UIStoryboard(name:"PhotoViewer" , bundle: nil)
         let iPhoneCameraViewController = cameraViewStoryboard.instantiateViewController(withIdentifier: "PhotoViewerViewController") as! PhotoViewerViewController
-        self.navigationController?.isNavigationBarHidden = true
-        self.navigationController?.pushViewController(iPhoneCameraViewController, animated: false)
+       self.present(iPhoneCameraViewController, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     @IBAction func didTapAddChannelButton(_ sender: Any) {
@@ -558,8 +564,8 @@ class MyChannelViewController: UIViewController,UIScrollViewDelegate, UITextFiel
                     
                     let sharingStoryboard = UIStoryboard(name:"Authentication", bundle: nil)
                     let channelItemListVC = sharingStoryboard.instantiateViewController(withIdentifier: "AuthenticateViewController") as! AuthenticateViewController
-                    channelItemListVC.navigationController?.isNavigationBarHidden = true
-                    self.navigationController?.pushViewController(channelItemListVC, animated: false)
+                    self.present(channelItemListVC, animated: false, completion: nil)
+                    CFRunLoopWakeUp(CFRunLoopGetCurrent());
                 }
             }
         }
@@ -750,7 +756,13 @@ extension MyChannelViewController: UITableViewDelegate, UITableViewDataSource
             cell.channelItemCount.text = dataSourceTmp![indexPath.row][totalMediaKey] as? String
             if let latestImage = dataSourceTmp![indexPath.row][tImageKey]
             {
-                cell.channelHeadImageView.image = latestImage as? UIImage
+                if latestImage as! String != ""
+                {
+                    cell.channelHeadImageView.image = FileManagerViewController.sharedInstance.getImageFromFilePath(mediaPath: latestImage as! String)
+                }
+                else{
+                    cell.channelHeadImageView.image = UIImage(named: "thumb12")
+                }
             }
             else
             {

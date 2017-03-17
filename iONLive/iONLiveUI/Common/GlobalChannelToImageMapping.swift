@@ -156,17 +156,15 @@ class GlobalChannelToImageMapping: NSObject {
                         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "removeActivityIndicatorMyChannel"), object:nil)
                         return
                     }
-                    var imageForMedia : UIImage = UIImage()
+                    var savingPath = String()
                     if let mediaIdChk = localDataSource[k][mediaIdKey]
                     {
                         let mediaId = String(describing: mediaIdChk)
                         let mediaIdForFilePath = "\(mediaId)thumb"
                         let parentPath = FileManagerViewController.sharedInstance.getParentDirectoryPath().absoluteString
-                        let savingPath = parentPath! + "/" + mediaIdForFilePath
+                        savingPath = parentPath! + "/" + mediaIdForFilePath
                         let fileExistFlag = FileManagerViewController.sharedInstance.fileExist(mediaPath: savingPath)
                         if fileExistFlag == true{
-                            let mediaImageFromFile = FileManagerViewController.sharedInstance.getImageFromFilePath(mediaPath: savingPath)
-                            imageForMedia = mediaImageFromFile!
                         }
                         else{
                             let mediaUrl = UrlManager.sharedInstance.getThumbImageForMedia(mediaId: mediaId, userName: userId, accessToken: accessToken)
@@ -180,34 +178,31 @@ class GlobalChannelToImageMapping: NSObject {
                                             let imageDataFromDefault = UIImageJPEGRepresentation(UIImage(named: "thumb12")!, 0.5)
                                             let imageDataFromDefaultAsNsdata = (imageDataFromDefault as NSData?)!
                                             if(imageDataFromresultAsNsdata.isEqual(imageDataFromDefaultAsNsdata)){
+                                                savingPath = ""
                                             }
                                             else{
                                                 _ = FileManagerViewController.sharedInstance.saveImageToFilePath(mediaName: mediaIdForFilePath, mediaImage: result)
                                             }
-                                            imageForMedia = result
                                         }
                                         else{
-                                            imageForMedia = UIImage(named: "thumb12")!
+                                            savingPath = ""
                                         }
                                     }
                                     else{
-                                        imageForMedia = UIImage(named: "thumb12")!
+                                        savingPath = ""
                                     }
                                 })
                             }
                             else{
-                                imageForMedia = UIImage(named: "thumb12")!
+                                savingPath = ""
                             }
                         }
-                    }
-                    else{
-                        imageForMedia = UIImage(named: "thumb12")!
                     }
                     if localDataSource.count > 0
                     {
                         if k < localDataSource.count
                         {
-                            localDataSource[k][tImageKey] = imageForMedia
+                            localDataSource[k][tImageKey] = savingPath
                         }
                     }
                 }
@@ -225,7 +220,7 @@ class GlobalChannelToImageMapping: NSObject {
                         {
                             if element[tImageKey] != nil
                             {
-                                GlobalChannelImageDict[chanelId]![j][tImageKey] = element[tImageKey] as! UIImage
+                                GlobalChannelImageDict[chanelId]![j][tImageKey] = element[tImageKey] as! String
                             }
                         }
                     }
@@ -427,16 +422,13 @@ class GlobalChannelToImageMapping: NSObject {
         }
     }
     
-    func downloadLatestMedia(mediaId: String) -> UIImage
+    func downloadLatestMedia(mediaId: String) -> String
     {
-        var imageForMedia : UIImage = UIImage()
         let parentPath = FileManagerViewController.sharedInstance.getParentDirectoryPath().absoluteString
         let mediaIdForFilePath = mediaId + "thumb"
-        let savingPath = parentPath! + "/" + mediaIdForFilePath
+        var savingPath = parentPath! + "/" + mediaIdForFilePath
         let fileExistFlag = FileManagerViewController.sharedInstance.fileExist(mediaPath: savingPath)
         if fileExistFlag == true{
-            let mediaImageFromFile = FileManagerViewController.sharedInstance.getImageFromFilePath(mediaPath: savingPath)
-            imageForMedia = mediaImageFromFile!
         }
         else{
             let thumbUrl = UrlManager.sharedInstance.getThumbImageForMedia(mediaId: mediaId, userName: userId, accessToken: accessToken)
@@ -448,19 +440,18 @@ class GlobalChannelToImageMapping: NSObject {
                     let imageDataFromDefault = UIImageJPEGRepresentation(UIImage(named: "thumb12")!, 0.5)
                     let imageDataFromDefaultAsNsdata = (imageDataFromDefault as NSData?)!
                     if(imageDataFromresultAsNsdata.isEqual(imageDataFromDefaultAsNsdata)){
-                        
+                        savingPath = ""
                     }
                     else{
                         _ = FileManagerViewController.sharedInstance.saveImageToFilePath(mediaName: mediaIdForFilePath, mediaImage: result)
                     }
-                    imageForMedia = result
                 }
                 else{
-                    imageForMedia =  UIImage(named: "thumb12")!
+                    savingPath = ""
                 }
             })
         }
-        return imageForMedia
+        return savingPath
     }
     
     // delete media from Channels
@@ -571,7 +562,7 @@ class GlobalChannelToImageMapping: NSObject {
                     GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][latestMediaIdKey] = mediaIdForFilePath
                     GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][tImageKey] = downloadLatestMedia(mediaId: mediaIdForFilePath)
                 }else{
-                    GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][tImageKey] = UIImage(named: "thumb12")
+                    GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][tImageKey] = ""
                     GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][latestMediaIdKey] = ""
                 }
                 GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][totalMediaKey] = "\(GlobalChannelImageDict[chanelId]!.count)"
@@ -595,7 +586,7 @@ class GlobalChannelToImageMapping: NSObject {
                 let chanIdChk = GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][MyChannelIdKey] as! String
                 if globalChanelId == chanIdChk
                 {
-                    GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][tImageKey] = UIImage(named: "thumb12")
+                    GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][tImageKey] = ""
                     GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][latestMediaIdKey] = ""
                     GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][totalMediaKey] = "\(GlobalChannelImageDict[globalChanelId]!.count)"
                 }
@@ -622,7 +613,7 @@ class GlobalChannelToImageMapping: NSObject {
                     let chanIdChk = GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][MyChannelIdKey] as! String
                     if globalChanelId == chanIdChk
                     {
-                        GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][tImageKey] = UIImage(named: "thumb12")
+                        GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][tImageKey] = ""
                         GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][latestMediaIdKey] = ""
                         GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][totalMediaKey] = "\(GlobalChannelImageDict[globalChanelId]!.count)"
                     }
@@ -716,7 +707,7 @@ class GlobalChannelToImageMapping: NSObject {
                 let chanIdChk = GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][MyChannelIdKey] as! String
                 if MyDayChanelId == chanIdChk
                 {
-                    GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][tImageKey] = UIImage(named: "thumb12")
+                    GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][tImageKey] = ""
                     GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][latestMediaIdKey] = ""
                     GlobalDataChannelList.sharedInstance.globalChannelDataSource[p][totalMediaKey] = "\(GlobalChannelImageDict[MyDayChanelId]!.count)"
                 }

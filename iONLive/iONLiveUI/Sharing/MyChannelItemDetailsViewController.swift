@@ -48,6 +48,9 @@ class MyChannelItemDetailsViewController: UIViewController {
         let myDayCleanUp = Notification.Name("myDayCleanUp")
         NotificationCenter.default.addObserver(self, selector:#selector(MyChannelItemDetailsViewController.myDayCleanUp(notif:)), name: myDayCleanUp, object: nil)
         
+        let removeActivityIndicatorMyChannel = Notification.Name("removeActivityIndicatorMyChannel")
+        NotificationCenter.default.addObserver(self, selector:#selector(MyChannelItemDetailsViewController.removeActivityIndicator(notif:)), name: removeActivityIndicatorMyChannel, object: nil)
+        
         initialise()
     }
     
@@ -57,8 +60,8 @@ class MyChannelItemDetailsViewController: UIViewController {
         let tokenExpired = Notification.Name("tokenExpired")
         NotificationCenter.default.addObserver(self, selector:#selector(ChannelItemListViewController.loadInitialViewControllerTokenExpire(notif:)), name: tokenExpired, object: nil)
         
-        let removeActivityIndicatorMyChannel = Notification.Name("removeActivityIndicatorMyChannel")
-        NotificationCenter.default.addObserver(self, selector:#selector(MyChannelItemDetailsViewController.removeActivityIndicator(notif:)), name: removeActivityIndicatorMyChannel, object: nil)
+//        let removeActivityIndicatorMyChannel = Notification.Name("removeActivityIndicatorMyChannel")
+//        NotificationCenter.default.addObserver(self, selector:#selector(MyChannelItemDetailsViewController.removeActivityIndicator(notif:)), name: removeActivityIndicatorMyChannel, object: nil)
         
         UserDefaults.standard.set(0, forKey: "tabToAppear")
         self.tabBarItem.selectedImage = UIImage(named:"all_media_blue")?.withRenderingMode(.alwaysOriginal)
@@ -73,7 +76,7 @@ class MyChannelItemDetailsViewController: UIViewController {
         super.viewWillDisappear(true)
         self.channelItemsCollectionView.alpha = 1.0
         
-        NotificationCenter.default.removeObserver(self, name: Notification.Name("removeActivityIndicatorMyChannel"), object: nil)
+//        NotificationCenter.default.removeObserver(self, name: Notification.Name("removeActivityIndicatorMyChannel"), object: nil)
         NotificationCenter.default.removeObserver(self, name: Notification.Name("tokenExpired"), object: nil)
     }
     
@@ -112,8 +115,8 @@ class MyChannelItemDetailsViewController: UIViewController {
                     
                     let sharingStoryboard = UIStoryboard(name:"Authentication", bundle: nil)
                     let channelItemListVC = sharingStoryboard.instantiateViewController(withIdentifier: "AuthenticateViewController") as! AuthenticateViewController
-                    channelItemListVC.navigationController?.isNavigationBarHidden = true
-                    self.navigationController?.pushViewController(channelItemListVC, animated: false)
+                    self.present(channelItemListVC, animated: false, completion: nil)
+                    CFRunLoopWakeUp(CFRunLoopGetCurrent());
                 }
             }
         }
@@ -123,8 +126,8 @@ class MyChannelItemDetailsViewController: UIViewController {
     {
         let sharingStoryboard = UIStoryboard(name:"sharing", bundle: nil)
         let sharingVC = sharingStoryboard.instantiateViewController(withIdentifier: MySharedChannelsViewController.identifier) as! MySharedChannelsViewController
-        sharingVC.navigationController?.isNavigationBarHidden = true
-        self.navigationController?.pushViewController(sharingVC, animated: false)
+        self.present(sharingVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     override func didReceiveMemoryWarning() {
@@ -137,8 +140,8 @@ class MyChannelItemDetailsViewController: UIViewController {
         inviteContactsVC.channelId = channelId
         inviteContactsVC.channelName = channelName
         inviteContactsVC.totalMediaCount = totalMediaCount
-        inviteContactsVC.navigationController?.isNavigationBarHidden = true
-        self.navigationController?.pushViewController(inviteContactsVC, animated: false)
+        self.present(inviteContactsVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     func initialise()
@@ -315,7 +318,13 @@ extension MyChannelItemDetailsViewController : UICollectionViewDataSource,UIColl
             let mediaType = GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[channelId]![indexPath.row][mediaTypeKey] as! String
             let channelImageView = cell.viewWithTag(100) as! UIImageView
             if let imageData =  GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[channelId]![indexPath.row][tImageKey] {
-                channelImageView.image = imageData as? UIImage
+                if imageData as! String != ""
+                {
+                    channelImageView.image = FileManagerViewController.sharedInstance.getImageFromFilePath(mediaPath: imageData as! String)
+                }
+                else{
+                    channelImageView.image = UIImage(named: "thumb12")
+                }
             }
             else{
                 channelImageView.image = UIImage(named: "thumb12")
@@ -408,7 +417,7 @@ extension MyChannelItemDetailsViewController : UICollectionViewDataSource,UIColl
         let index = Int32(indexPath.row)
         
         DispatchQueue.main.async {
-            self.vc = MovieViewController.movieViewController(withImageVideo: self.channelName, channelId: self.channelId as String, userName: userId, mediaType: GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[self.channelId]![indexPath.row][mediaTypeKey] as! String, profileImage: imageForProfile, videoImageUrl: GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[self.channelId]![indexPath.row][tImageKey] as! UIImage, notifType: GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[self.channelId]![indexPath.row][notifTypeKey] as! String,mediaId: GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[self.channelId]![indexPath.row][mediaIdKey] as! String, timeDiff: imageTakenTime,likeCountStr: "0",selectedItem: index,pageIndicator: 0 , videoDuration:  GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[self.channelId]![indexPath.row][videoDurationKey] as? String) as! MovieViewController
+            self.vc = MovieViewController.movieViewController(withImageVideo: self.channelName, channelId: self.channelId as String, userName: userId, mediaType: GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[self.channelId]![indexPath.row][mediaTypeKey] as! String, profileImage: imageForProfile, videoImageUrl: GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[self.channelId]![indexPath.row][tImageKey] as! String, notifType: GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[self.channelId]![indexPath.row][notifTypeKey] as! String,mediaId: GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[self.channelId]![indexPath.row][mediaIdKey] as! String, timeDiff: imageTakenTime,likeCountStr: "0",selectedItem: index,pageIndicator: 0 , videoDuration:  GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[self.channelId]![indexPath.row][videoDurationKey] as? String) as! MovieViewController
             self.present(self.vc, animated: false) { () -> Void in
                 self.removeOverlay()
                 self.channelItemsCollectionView.alpha = 1.0

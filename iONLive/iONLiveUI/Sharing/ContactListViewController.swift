@@ -174,7 +174,7 @@ class ContactListViewController: UIViewController
             contactListTableView.reloadData()
         }
         else{
-            _ = self.navigationController?.popViewController(animated: false)
+            loadMychannelDetailController()
         }
     }
     
@@ -454,8 +454,8 @@ class ContactListViewController: UIViewController
         (channelDetailVC as! MyChannelDetailViewController).channelId = channelId as String
         (channelDetailVC as! MyChannelDetailViewController).channelName = channelName as String
         (channelDetailVC as! MyChannelDetailViewController).totalMediaCount = Int(totalMediaCount)
-        channelDetailVC.navigationController?.isNavigationBarHidden = true
-        self.navigationController?.pushViewController(channelDetailVC, animated: false)
+        self.present(channelDetailVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     func getChannelContactDetails(username: String, token: String, channelid: String)
@@ -722,8 +722,8 @@ class ContactListViewController: UIViewController
                     
                     let sharingStoryboard = UIStoryboard(name:"Authentication", bundle: nil)
                     let channelItemListVC = sharingStoryboard.instantiateViewController(withIdentifier: "AuthenticateViewController") as! AuthenticateViewController
-                    channelItemListVC.navigationController?.isNavigationBarHidden = true
-                    self.navigationController?.pushViewController(channelItemListVC, animated: false)
+                    self.present(channelItemListVC, animated: false, completion: nil)
+                    CFRunLoopWakeUp(CFRunLoopGetCurrent());
                 }
             }
         }

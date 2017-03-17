@@ -135,8 +135,8 @@ class MyChannelSharingDetailsViewController: UIViewController {
         else{
             let sharingStoryboard = UIStoryboard(name:"sharing", bundle: nil)
             let sharingVC = sharingStoryboard.instantiateViewController(withIdentifier: MySharedChannelsViewController.identifier) as! MySharedChannelsViewController
-            sharingVC.navigationController?.isNavigationBarHidden = true
-            self.navigationController?.pushViewController(sharingVC, animated: false)
+            self.present(sharingVC, animated: false, completion: nil)
+            CFRunLoopWakeUp(CFRunLoopGetCurrent());
         }
     }
     
@@ -146,8 +146,8 @@ class MyChannelSharingDetailsViewController: UIViewController {
         inviteContactsVC.channelId = channelId
         inviteContactsVC.channelName = channelName
         inviteContactsVC.totalMediaCount = totalMediaCount
-        inviteContactsVC.navigationController?.isNavigationBarHidden = true
-        self.navigationController?.pushViewController(inviteContactsVC, animated: false)
+        self.present(inviteContactsVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     @IBAction func didTapDoneButton(_ sender: Any) {
@@ -432,8 +432,8 @@ class MyChannelSharingDetailsViewController: UIViewController {
                     
                     let sharingStoryboard = UIStoryboard(name:"Authentication", bundle: nil)
                     let channelItemListVC = sharingStoryboard.instantiateViewController(withIdentifier: "AuthenticateViewController") as! AuthenticateViewController
-                    channelItemListVC.navigationController?.isNavigationBarHidden = true
-                    self.navigationController?.pushViewController(channelItemListVC, animated: false)
+                    self.present(channelItemListVC, animated: false, completion: nil)
+                    CFRunLoopWakeUp(CFRunLoopGetCurrent());
                 }
             }
         }

@@ -29,6 +29,15 @@ class ForgotPasswordViewController: UIViewController{
         super.didReceiveMemoryWarning()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        self.navigationController?.isNavigationBarHidden = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        view.endEditing(true)
+    }
+    
     func initialise()
     {
         self.title = "RESET PASSWORD"
@@ -145,6 +154,16 @@ class ForgotPasswordViewController: UIViewController{
         }
     }
     
+    @IBAction func backClicked(_ sender: Any) {
+        guard (navigationController?.popViewController(animated:true)) != nil
+            else
+        {
+            dismiss(animated: true, completion: nil)
+            return
+        }
+    }
+    
+    
     func authenticationSuccessHandler(response:AnyObject?)
     {
         removeOverlay()
@@ -218,8 +237,8 @@ class ForgotPasswordViewController: UIViewController{
             
             let sharingStoryboard = UIStoryboard(name:"Authentication", bundle: nil)
             let channelItemListVC = sharingStoryboard.instantiateViewController(withIdentifier: "AuthenticateViewController") as! AuthenticateViewController
-            channelItemListVC.navigationController?.isNavigationBarHidden = true
-            self.navigationController?.pushViewController(channelItemListVC, animated: false)
+           self.present(channelItemListVC, animated: false, completion: nil)
+            CFRunLoopWakeUp(CFRunLoopGetCurrent());
         }
     }
 }

@@ -32,6 +32,7 @@ class SignUpFindFriendsViewController: UIViewController{
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
+        view.endEditing(true)
     }
     
     override func viewDidLoad() {
@@ -53,7 +54,7 @@ class SignUpFindFriendsViewController: UIViewController{
     @IBAction func continueButtonClicked(_ sender: Any) {
         contactAuthorizationAlert()
     }
-    
+        
     func contactAuthorizationAlert()
     {
         let authorizationStatus = ABAddressBookGetAuthorizationStatus()
@@ -264,8 +265,8 @@ class SignUpFindFriendsViewController: UIViewController{
     {
         let cameraViewStoryboard = UIStoryboard(name:"IPhoneCameraView" , bundle: nil)
         let iPhoneCameraViewController = cameraViewStoryboard.instantiateViewController(withIdentifier: "IPhoneCameraViewController") as! IPhoneCameraViewController
-        iPhoneCameraViewController.navigationController?.isNavigationBarHidden = true
-        self.navigationController?.pushViewController(iPhoneCameraViewController, animated: true)
+       self.present(iPhoneCameraViewController, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     func loadContactViewController()
@@ -275,7 +276,7 @@ class SignUpFindFriendsViewController: UIViewController{
         let contactDetailsViewController = storyboard.instantiateViewController(withIdentifier: "ContactDetailsViewController") as! ContactDetailsViewController
         contactDetailsViewController.contactDataSource = dataSource
         contactDetailsViewController.contactExistChk = contactExist
-        contactDetailsViewController.navigationController?.isNavigationBarHidden = true
-        self.navigationController?.pushViewController(contactDetailsViewController, animated: true)
+        self.present(contactDetailsViewController, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
 }

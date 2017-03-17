@@ -245,8 +245,8 @@ class EditProfileViewController: UIViewController, UINavigationControllerDelegat
                     
                     let sharingStoryboard = UIStoryboard(name:"Authentication", bundle: nil)
                     let channelItemListVC = sharingStoryboard.instantiateViewController(withIdentifier: "AuthenticateViewController") as! AuthenticateViewController
-                    channelItemListVC.navigationController?.isNavigationBarHidden = true
-                    self.navigationController?.pushViewController(channelItemListVC, animated: false)
+                    self.present(channelItemListVC, animated: false, completion: nil)
+                    CFRunLoopWakeUp(CFRunLoopGetCurrent());
                 }
             }
         }
@@ -381,7 +381,7 @@ class EditProfileViewController: UIViewController, UINavigationControllerDelegat
     }
     
     func redirect() {
-        _ = self.navigationController?.popViewController(animated: false)
+        loadSettingsView()
     }
     
     @IBAction func backClicked(_ sender: Any) {
@@ -389,7 +389,7 @@ class EditProfileViewController: UIViewController, UINavigationControllerDelegat
             generateWaytoSendAlert()
         }
         else{
-            _ = self.navigationController?.popViewController(animated: false)
+            loadSettingsView()
         }
     }
     
@@ -434,7 +434,7 @@ class EditProfileViewController: UIViewController, UINavigationControllerDelegat
                         self.removeOverlay()
                         let alert = UIAlertController(title: "Success", message: "Profile updated successfully", preferredStyle: UIAlertControllerStyle.alert)
                         alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: { (action) -> Void in
-                            _ = self.navigationController?.popViewController(animated: false)
+                                self.loadSettingsView()
                         }))
                         self.present(alert, animated: true, completion: nil)
                     }
@@ -448,6 +448,12 @@ class EditProfileViewController: UIViewController, UINavigationControllerDelegat
         }
     }
     
+    func loadSettingsView(){
+        let storyBoard = UIStoryboard.init(name:"Settings", bundle: nil)
+        let settingsVC = storyBoard.instantiateViewController(withIdentifier: "SettingsViewController") as! SettingsViewController
+        self.present(settingsVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
+    }
     
     func notificationToCloudForProfileChange()
     {
@@ -528,7 +534,7 @@ class EditProfileViewController: UIViewController, UINavigationControllerDelegat
             if(self.photoTakenFlag == false){
                 let alert = UIAlertController(title: "Success", message: "Profile updated successfully", preferredStyle: UIAlertControllerStyle.alert)
                 alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: { (action) -> Void in
-                    _ = self.navigationController?.popViewController(animated: false)
+                        self.loadSettingsView()
                 }))
                 self.present(alert, animated: true, completion: nil)
             }

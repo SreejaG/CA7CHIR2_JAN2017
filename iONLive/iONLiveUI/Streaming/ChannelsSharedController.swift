@@ -42,8 +42,8 @@ class ChannelsSharedController: UIViewController,UIScrollViewDelegate  {
         SharedChannelDetailsAPI.sharedInstance.selectedSharedChannelMediaSource.removeAll()
         let cameraViewStoryboard = UIStoryboard(name:"IPhoneCameraView" , bundle: nil)
         let iPhoneCameraVC = cameraViewStoryboard.instantiateViewController(withIdentifier: "IPhoneCameraViewController") as! IPhoneCameraViewController
-        iPhoneCameraVC.navigationController?.isNavigationBarHidden = true
-        self.navigationController?.pushViewController(iPhoneCameraVC, animated: false)
+        self.present(iPhoneCameraVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     //timer to check global dictionary on every 5sec
@@ -694,8 +694,8 @@ extension ChannelsSharedController:UITableViewDataSource, UITableViewDelegate
             channelItemListVC.totalMediaCount = sharedCount
             channelItemListVC.userName = ChannelSharedListAPI.sharedInstance.SharedChannelListDataSource[indexPath.row][usernameKey] as! String
             channelItemListVC.profileImage = ChannelSharedListAPI.sharedInstance.SharedChannelListDataSource[indexPath.row][profileImageKey] as! UIImage
-            channelItemListVC.navigationController?.isNavigationBarHidden = true
-            self.navigationController?.pushViewController(channelItemListVC, animated: false)
+            self.present(channelItemListVC, animated: false, completion: nil)
+            CFRunLoopWakeUp(CFRunLoopGetCurrent());
         }
     }
     

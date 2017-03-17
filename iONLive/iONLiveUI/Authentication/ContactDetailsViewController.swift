@@ -210,8 +210,10 @@ class ContactDetailsViewController: UIViewController {
         
         let cameraViewStoryboard = UIStoryboard(name:"IPhoneCameraView" , bundle: nil)
         let iPhoneCameraVC = cameraViewStoryboard.instantiateViewController(withIdentifier: "IPhoneCameraViewController") as! IPhoneCameraViewController
-        iPhoneCameraVC.navigationController?.isNavigationBarHidden = true
-        self.navigationController?.pushViewController(iPhoneCameraVC, animated: false)
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.window?.rootViewController = iPhoneCameraVC
+        self.present(iPhoneCameraVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     func initialise()

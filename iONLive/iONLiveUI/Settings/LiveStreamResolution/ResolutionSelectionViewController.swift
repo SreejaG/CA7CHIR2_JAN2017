@@ -32,7 +32,12 @@ class ResolutionSelectionViewController: UIViewController {
     {
         let value = FileManagerViewController.sharedInstance.getLiveResolutionShortString(resolution: selectedOption)
         UserDefaults.standard.setValue(value, forKey: "liveResolution")
-        _ = self.navigationController?.popViewController(animated: true)
+        guard (navigationController?.popViewController(animated:true)) != nil
+            else
+        {
+            dismiss(animated: true, completion: nil)
+            return
+        }
     }
 }
 

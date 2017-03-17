@@ -117,8 +117,8 @@ class MySharedChannelsViewController: UIViewController {
         else{
             let cameraViewStoryboard = UIStoryboard(name:"IPhoneCameraView" , bundle: nil)
             let iPhoneCameraViewController = cameraViewStoryboard.instantiateViewController(withIdentifier: "IPhoneCameraViewController") as! IPhoneCameraViewController
-            self.navigationController?.isNavigationBarHidden = true
-            self.navigationController?.pushViewController(iPhoneCameraViewController, animated: false)
+            self.present(iPhoneCameraViewController, animated: false, completion: nil)
+            CFRunLoopWakeUp(CFRunLoopGetCurrent());
         }
     }
     
@@ -343,8 +343,8 @@ class MySharedChannelsViewController: UIViewController {
                     
                     let sharingStoryboard = UIStoryboard(name:"Authentication", bundle: nil)
                     let channelItemListVC = sharingStoryboard.instantiateViewController(withIdentifier: "AuthenticateViewController") as! AuthenticateViewController
-                    channelItemListVC.navigationController?.isNavigationBarHidden = true
-                    self.navigationController?.pushViewController(channelItemListVC, animated: false)
+                    self.present(channelItemListVC, animated: false, completion: nil)
+                    CFRunLoopWakeUp(CFRunLoopGetCurrent());
                 }
             }
         }
@@ -465,7 +465,13 @@ extension MySharedChannelsViewController: UITableViewDelegate, UITableViewDataSo
             
             if let latestImage = dataSourceTmp![indexPath.row][tImageKey]
             {
-                cell.userImage.image = latestImage as? UIImage
+                if latestImage as! String != ""
+                {
+                    cell.userImage.image = FileManagerViewController.sharedInstance.getImageFromFilePath(mediaPath: latestImage as! String)
+                }
+                else{
+                    cell.userImage.image = UIImage(named: "thumb12")
+                }
             }
             else
             {
@@ -513,8 +519,8 @@ extension MySharedChannelsViewController: UITableViewDelegate, UITableViewDataSo
                 (channelDetailVC as! MyChannelDetailViewController).totalMediaCount = Int(searchDataSource[indexPath.row][totalMediaKey]! as! String)!
             }
         }
-        channelDetailVC.navigationController?.isNavigationBarHidden = true
-        self.navigationController?.pushViewController(channelDetailVC, animated: false)
+        self.present(channelDetailVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
 }
 

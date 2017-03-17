@@ -17,6 +17,10 @@
 #import <mach/mach.h>
  #import <mach/mach_host.h>
 
+#include <mach/vm_statistics.h>
+#include <mach/mach_types.h>
+#include <mach/mach_init.h>
+
 static void * CapturingStillImageContext = &CapturingStillImageContext;
 static void * SessionRunningContext = &SessionRunningContext;
 
@@ -197,7 +201,7 @@ int timerCount = 0;
 
 - (void) orientationChanged2:(NSNotification *)note
 {
-    UIViewController *viewContr = self.navigationController.visibleViewController;
+    UIViewController *viewContr = [UIApplication sharedApplication].keyWindow.rootViewController;
     if([viewContr.restorationIdentifier  isEqual: @"IPhoneCameraViewController"])
     {
         UIDevice *device = note.object;
@@ -230,7 +234,7 @@ int timerCount = 0;
 {
     backgroundEnterFlag = true;
     [[NSUserDefaults standardUserDefaults] setBool:true forKey:@"Background"];
-    UIViewController *viewContr = self.navigationController.visibleViewController;
+    UIViewController *viewContr = [UIApplication sharedApplication].keyWindow.rootViewController;
     if([viewContr.restorationIdentifier  isEqual: @"IPhoneCameraViewController"])
     {
         if (shutterActionMode == SnapCamSelectionModeVideo)
@@ -270,7 +274,7 @@ int timerCount = 0;
 
 -(void)applicationDidActives: (NSNotification *)notification
 {
-    UIViewController *viewContr = self.navigationController.visibleViewController;
+    UIViewController *viewContr = [UIApplication sharedApplication].keyWindow.rootViewController;
     if([viewContr.restorationIdentifier  isEqual: @"IPhoneCameraViewController"])
     {
         dispatch_async( dispatch_get_main_queue(), ^{
@@ -308,7 +312,7 @@ int timerCount = 0;
 
 -(void) stopInitialisation : (NSNotification *)notif
 {
-    UIViewController *viewContr = self.navigationController.visibleViewController;
+    UIViewController *viewContr = [UIApplication sharedApplication].keyWindow.rootViewController;
     if([viewContr.restorationIdentifier  isEqual: @"IPhoneCameraViewController"])
     {
         NSString *code = notif.object;
@@ -361,8 +365,7 @@ int timerCount = 0;
                 
                 UIStoryboard  *login = [UIStoryboard storyboardWithName:@"Authentication" bundle:nil];
                 UIViewController *authenticate = [login instantiateViewControllerWithIdentifier:@"AuthenticateViewController"];
-                authenticate.navigationController.navigationBarHidden = true;
-                [[self navigationController] pushViewController:authenticate animated:false];
+                [self presentViewController:authenticate animated:NO completion:nil];
             });
         }
     }
@@ -477,7 +480,9 @@ int timerCount = 0;
             UIImage *img = [[UIImage alloc]init];
             if(GlobalChannelToImageMappingObj.GlobalChannelImageDict[archiveChanelId][0][@"thumbImage"] != nil)
             {
-                img = GlobalChannelToImageMappingObj.GlobalChannelImageDict[archiveChanelId][0][@"thumbImage"];
+                NSString *path = GlobalChannelToImageMappingObj.GlobalChannelImageDict[archiveChanelId][0][@"thumbImage"];
+                
+                img =  [[FileManagerViewController sharedInstance] getImageFromFilePathWithMediaPath:path];
                 NSString *type = GlobalChannelToImageMappingObj.GlobalChannelImageDict[archiveChanelId][0][@"media_type"];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if([type  isEqual: @"video"])
@@ -495,8 +500,8 @@ int timerCount = 0;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.thumbnailImageView.image = img;
                 });
-                
             }
+            img = nil;
         }
     }
 }
@@ -512,6 +517,7 @@ int timerCount = 0;
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.latestSharedMediaImage.image = img;
             });
+            img = nil;
         }
         else{
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -580,7 +586,7 @@ int timerCount = 0;
 }
 
 - (void) thisMethodGetsFiredOnceEveryThirtySeconds:(NSTimer *)sender {
-    UIViewController *viewContr = self.navigationController.visibleViewController;
+    UIViewController *viewContr = [UIApplication sharedApplication].keyWindow.rootViewController;
     if([viewContr.restorationIdentifier  isEqual: @"IPhoneCameraViewController"])
     {
         if(!_activityImageView.hidden)
@@ -616,7 +622,8 @@ int timerCount = 0;
     if (GlobalChannelToImageMappingObj.GlobalChannelImageDict[archiveChanelId].count > 0)
     {
         UIImage *img = [[UIImage alloc]init];
-        img = GlobalChannelToImageMappingObj.GlobalChannelImageDict[archiveChanelId][0][@"thumbImage"];
+        NSString *path = GlobalChannelToImageMappingObj.GlobalChannelImageDict[archiveChanelId][0][@"thumbImage"];
+        img = [[FileManagerViewController sharedInstance] getImageFromFilePathWithMediaPath:path];
         NSString *type = GlobalChannelToImageMappingObj.GlobalChannelImageDict[archiveChanelId][0][@"media_type"];
         dispatch_async(dispatch_get_main_queue(), ^{
             if([type  isEqual: @"video"])
@@ -795,13 +802,19 @@ int timerCount = 0;
                 initialVideoOrientation = (AVCaptureVideoOrientation)statusBarOrientation;
             }
             AVCaptureVideoPreviewLayer *previewLayer = (AVCaptureVideoPreviewLayer *)self.previewView.layer;
-            if (shutterActionMode == SnapCamSelectionModeVideo)
-            {
-                [previewLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
-                if([self.session canSetSessionPreset:AVCaptureSessionPresetMedium]){
-                    [self.session setSessionPreset:AVCaptureSessionPresetMedium];
-                }
+//            if (shutterActionMode == SnapCamSelectionModeVideo)
+//            {
+//                [previewLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
+//                if([self.session canSetSessionPreset:AVCaptureSessionPresetMedium]){
+//                    [self.session setSessionPreset:AVCaptureSessionPresetMedium];
+//                }
+//            }
+            
+            [previewLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
+            if([self.session canSetSessionPreset:AVCaptureSessionPresetMedium]){
+                [self.session setSessionPreset:AVCaptureSessionPresetMedium];
             }
+
             previewLayer.connection.videoOrientation = initialVideoOrientation;
         }
         else {
@@ -969,7 +982,6 @@ int timerCount = 0;
             else if ([UIImage imageWithData: data] == nil)
             {
                 dispatch_async(dispatch_get_main_queue(), ^{
-//                    self.thumbnailImageView.image = [UIImage imageNamed:@"thumb12"];
                     [self updateThumbnailsChannel];
                 });
             }
@@ -985,6 +997,7 @@ int timerCount = 0;
                     self.thumbnailImageView.image = [UIImage imageWithData: data];
                 });
             }
+            data = nil;
         });
     }
     else{
@@ -1005,6 +1018,7 @@ int timerCount = 0;
                     self.latestSharedMediaImage.image= [UIImage imageWithData: data];
                 });
             }
+            data = nil;
         });
     }
     else{
@@ -1038,8 +1052,10 @@ int timerCount = 0;
                         self.latestSharedMediaImage.image = [UIImage imageWithData: data];
                     });
                 }
+                data = nil;
             });
         }
+        mediaArray = nil;
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -1172,6 +1188,30 @@ int timerCount = 0;
         memeorySpace = [splitStr[0] intValue];
     } else {
     }
+    
+    vm_size_t page_size;
+    mach_port_t mach_port;
+    mach_msg_type_number_t count;
+    vm_statistics64_data_t vm_stats;
+    
+    mach_port = mach_host_self();
+    count = sizeof(vm_stats) / sizeof(natural_t);
+    if (KERN_SUCCESS == host_page_size(mach_port, &page_size) &&
+        KERN_SUCCESS == host_statistics64(mach_port, HOST_VM_INFO,
+                                          (host_info64_t)&vm_stats, &count))
+    {
+        long long free_memory = (int64_t)vm_stats.free_count * (int64_t)page_size;
+        
+        long long used_memory = ((int64_t)vm_stats.active_count +
+                                 (int64_t)vm_stats.inactive_count +
+                                 (int64_t)vm_stats.wire_count) *  (int64_t)page_size;
+        NSString *usedmemInStr = [NSByteCountFormatter stringFromByteCount:used_memory countStyle:NSByteCountFormatterCountStyleBinary];
+        NSString *freememInStr = [NSByteCountFormatter stringFromByteCount:free_memory countStyle:NSByteCountFormatterCountStyleBinary];
+//        NSArray *splitStr = [usedmemInStr componentsSeparatedByString:@" "];
+//        memeorySpace = [splitStr[0] intValue];
+        NSLog(@"free memory: %@\nused memory: %@\n", freememInStr, usedmemInStr);
+    }
+
     return memeorySpace;
 }
 
@@ -1312,10 +1352,10 @@ int timerCount = 0;
 
 - (IBAction)didTapsCameraActionButton:(id)sender
 {
-    int memory = [self appConsumeSpace];
-    NSLog(@"Memory in capture button  ===>%d",memory);
-    if(memory < 70)
-    {
+//    int memory = [self appConsumeSpace];
+//    NSLog(@"Memory in capture button  ===>%d",memory);
+//    if(memory < 70)
+//    {
         if (shutterActionMode == SnapCamSelectionModePhotos) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 _cameraButton.hidden = false;
@@ -1358,12 +1398,12 @@ int timerCount = 0;
                     break;
             }
         }
-    }
-    else{
-        dispatch_async( dispatch_get_main_queue(), ^{
-            [self loadViewDuringMemoryCheck];
-        });
-    }
+//    }
+//    else{
+//        dispatch_async( dispatch_get_main_queue(), ^{
+//            [self loadViewDuringMemoryCheck];
+//        });
+//    }
 }
 
 -(void) memoryCheck
@@ -1382,12 +1422,16 @@ int timerCount = 0;
 
 -(void) loadViewDuringMemoryCheck
 {
-    dispatch_async( dispatch_get_main_queue(), ^{
-        _noDataFound.text = @"Uploading Progress...";
-        [self loadingView:@"load" completion:^{
-        }];
-    });
-    [self performSelector:@selector(memoryCheck) withObject:nil afterDelay:7];
+    UIViewController *viewContr = [UIApplication sharedApplication].keyWindow.rootViewController;
+    if([viewContr.restorationIdentifier  isEqual: @"IPhoneCameraViewController"])
+    {
+        dispatch_async( dispatch_get_main_queue(), ^{
+            _noDataFound.text = @"Uploading Progress...";
+            [self loadingView:@"load" completion:^{
+            }];
+        });
+        [self performSelector:@selector(memoryCheck) withObject:nil afterDelay:7];
+    }
 }
 
 #pragma mark take photo
@@ -2209,13 +2253,7 @@ UIImage* rotate(UIImage* src, UIImageOrientation orientation)
     
     UIStoryboard *sharingStoryboard = [UIStoryboard storyboardWithName:@"sharing" bundle:nil];
     UIViewController *mysharedChannelVC = [sharingStoryboard instantiateViewControllerWithIdentifier:@"MySharedChannelsViewController"];
-    
-    UINavigationController *navController = [[UINavigationController alloc]initWithRootViewController:mysharedChannelVC];
-    navController.navigationBarHidden = true;
-    
-    navController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    [self.navigationController presentViewController:navController animated:true completion:^{
-    }];
+    [self presentViewController:mysharedChannelVC animated:false completion:nil];
 }
 
 - (IBAction)didTapPhotoViewer:(id)sender {
@@ -2235,14 +2273,8 @@ UIImage* rotate(UIImage* src, UIImageOrientation orientation)
 -(void) loadPhotoViewer
 {
     UIStoryboard *streamingStoryboard = [UIStoryboard storyboardWithName:@"PhotoViewer" bundle:nil];
-    
     PhotoViewerViewController *photoViewerViewController =( PhotoViewerViewController*)[streamingStoryboard instantiateViewControllerWithIdentifier:@"PhotoViewerViewController"];
-    UINavigationController *navController = [[UINavigationController alloc]initWithRootViewController:photoViewerViewController];
-    navController.navigationBarHidden = true;
-    navController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    [self presentViewController:navController animated:true completion:^{
-        
-    }];
+    [self presentViewController:photoViewerViewController animated:false completion:nil];
 }
 
 - (IBAction)didTapStreamThumb:(id)sender {
@@ -2264,9 +2296,9 @@ UIImage* rotate(UIImage* src, UIImageOrientation orientation)
     [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"SelectedTab"];
     UIStoryboard *streamingStoryboard = [UIStoryboard storyboardWithName:@"Streaming" bundle:nil];
     StreamsGalleryViewController *streamsGalleryViewController = [streamingStoryboard instantiateViewControllerWithIdentifier:@"StreamsGalleryViewController"];
-    [self.navigationController pushViewController:streamsGalleryViewController animated:false];
-    
+    [self presentViewController:streamsGalleryViewController animated:NO completion:nil];
 }
+
 -(void) deinit {
 }
 

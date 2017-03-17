@@ -1,7 +1,7 @@
 
 import UIKit
 
-class GlobalDataChannelList: NSObject {
+class GlobalDataChannelList: UIViewController {
     
     var globalChannelDataSource: [[String:Any]] = [[String:Any]]()
     var channelDetailsDict : [[String:Any]] = [[String:Any]]()
@@ -113,17 +113,15 @@ class GlobalDataChannelList: NSObject {
             {
                 return
             }
-            var imageForMedia : UIImage = UIImage()
+            var savingPath = String()
             if(i < globalChannelDataSource.count){
                 if let mediaIdChk = globalChannelDataSource[i][mediaIdKey]
                 {
                     let mediaIdForFilePath = "\(mediaIdChk as! String)thumb"
                     let parentPath = FileManagerViewController.sharedInstance.getParentDirectoryPath().absoluteString
-                    let savingPath = parentPath! + "/" + mediaIdForFilePath
+                    savingPath = parentPath! + "/" + mediaIdForFilePath
                     let fileExistFlag = FileManagerViewController.sharedInstance.fileExist(mediaPath: savingPath)
                     if fileExistFlag == true{
-                        let mediaImageFromFile = FileManagerViewController.sharedInstance.getImageFromFilePath(mediaPath: savingPath)
-                        imageForMedia = mediaImageFromFile!
                     }
                     else{
                         let mediaUrl = UrlManager.sharedInstance.getThumbImageForMedia(mediaId: mediaIdChk as! String, userName: userId, accessToken: accessToken)
@@ -136,26 +134,23 @@ class GlobalDataChannelList: NSObject {
                                     let imageDataFromDefault = UIImageJPEGRepresentation(UIImage(named: "thumb12")!, 0.5)
                                     let imageDataFromDefaultAsNsdata = (imageDataFromDefault as NSData?)!
                                     if(imageDataFromresultAsNsdata.isEqual(imageDataFromDefaultAsNsdata)){
-                                        
+                                        savingPath = ""
                                     }
                                     else{
                                         _ = FileManagerViewController.sharedInstance.saveImageToFilePath    (mediaName: mediaIdForFilePath, mediaImage: result)
                                     }
-                                    imageForMedia = result
                                 }
                                 else{
-                                    imageForMedia =  UIImage(named: "thumb12")!
+                                    savingPath = ""
                                 }
                             }
                             else{
-                                imageForMedia =  UIImage(named: "thumb12")!
+                               savingPath = ""
                             }
                         })
                     }
-                }else{
-                    imageForMedia =  UIImage(named: "thumb12")!
                 }
-                self.globalChannelDataSource[i][tImageKey] = imageForMedia
+                self.globalChannelDataSource[i][tImageKey] = savingPath
             }
         }
     }

@@ -37,6 +37,9 @@ class AddChannelViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
+        
         initialise()
     }
     
@@ -149,8 +152,8 @@ class AddChannelViewController: UIViewController {
         else{
             let storyboard = UIStoryboard(name:"MyChannel", bundle: nil)
             let channelVC = storyboard.instantiateViewController(withIdentifier: MyChannelViewController.identifier) as! MyChannelViewController
-            channelVC.navigationController?.isNavigationBarHidden = true
-            self.navigationController?.pushViewController(channelVC, animated: false)
+            self.present(channelVC, animated: false, completion: nil)
+            CFRunLoopWakeUp(CFRunLoopGetCurrent());
         }
     }
     
@@ -253,8 +256,8 @@ class AddChannelViewController: UIViewController {
             channelTextField.text = ""
             let storyboard = UIStoryboard(name:"MyChannel", bundle: nil)
             let channelVC = storyboard.instantiateViewController(withIdentifier: MyChannelViewController.identifier) as! MyChannelViewController
-            channelVC.navigationController?.isNavigationBarHidden = true
-            self.navigationController?.pushViewController(channelVC, animated: false)
+            self.present(channelVC, animated: false, completion: nil)
+            CFRunLoopWakeUp(CFRunLoopGetCurrent());
         }
         else
         {
@@ -337,8 +340,8 @@ class AddChannelViewController: UIViewController {
                     
                     let sharingStoryboard = UIStoryboard(name:"Authentication", bundle: nil)
                     let channelItemListVC = sharingStoryboard.instantiateViewController(withIdentifier: "AuthenticateViewController") as! AuthenticateViewController
-                    channelItemListVC.navigationController?.isNavigationBarHidden = true
-                    self.navigationController?.pushViewController(channelItemListVC, animated: false)
+                    self.present(channelItemListVC, animated: false, completion: nil)
+                    CFRunLoopWakeUp(CFRunLoopGetCurrent());
                 }
             }
         }
@@ -380,7 +383,13 @@ extension AddChannelViewController: UITableViewDelegate, UITableViewDataSource
             
             if let latestImage = fulldataSource[indexPath.row][tImageKey]
             {
-                cell.addChannelImageView.image = latestImage as? UIImage
+                if latestImage as! String != ""
+                {
+                    cell.addChannelImageView.image = FileManagerViewController.sharedInstance.getImageFromFilePath(mediaPath: latestImage as! String)
+                }
+                else{
+                    cell.addChannelImageView.image = UIImage(named: "thumb12")
+                }
             }
             else
             {

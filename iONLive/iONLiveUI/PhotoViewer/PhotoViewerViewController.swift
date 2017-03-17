@@ -82,6 +82,8 @@ class PhotoViewerViewController: UIViewController,UIGestureRecognizerDelegate,UR
     {
         super.viewDidLoad()
         
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
+        
         getCurrentOrientaion()
         selectedItem = 0
         self.photoThumpCollectionView.alwaysBounceHorizontal = true
@@ -317,8 +319,8 @@ class PhotoViewerViewController: UIViewController,UIGestureRecognizerDelegate,UR
                     
                     let sharingStoryboard = UIStoryboard(name:"Authentication", bundle: nil)
                     let channelItemListVC = sharingStoryboard.instantiateViewController(withIdentifier: "AuthenticateViewController") as! AuthenticateViewController
-                    channelItemListVC.navigationController?.isNavigationBarHidden = true
-                    self.navigationController?.pushViewController(channelItemListVC, animated: false)
+                    self.present(channelItemListVC, animated: false, completion: nil)
+                    CFRunLoopWakeUp(CFRunLoopGetCurrent());
                 }
             }
         }
@@ -358,8 +360,8 @@ class PhotoViewerViewController: UIViewController,UIGestureRecognizerDelegate,UR
                     
                     let sharingStoryboard = UIStoryboard(name:"Authentication", bundle: nil)
                     let channelItemListVC = sharingStoryboard.instantiateViewController(withIdentifier: "AuthenticateViewController") as! AuthenticateViewController
-                    channelItemListVC.navigationController?.isNavigationBarHidden = true
-                    self.navigationController?.pushViewController(channelItemListVC, animated: false)
+                    self.present(channelItemListVC, animated: false, completion: nil)
+                    CFRunLoopWakeUp(CFRunLoopGetCurrent());
                 }
             }
         }
@@ -392,7 +394,7 @@ class PhotoViewerViewController: UIViewController,UIGestureRecognizerDelegate,UR
         }
         var orientedImage = Orgimage
         DispatchQueue.main.async {
-            let viewController: UIViewController = (self.navigationController?.visibleViewController)!
+            let viewController: UIViewController = UIApplication.topViewController()!
             if(viewController.restorationIdentifier == "PhotoViewerViewController"){
                 if self.totalCount > 0
                 {
@@ -1426,8 +1428,8 @@ class PhotoViewerViewController: UIViewController,UIGestureRecognizerDelegate,UR
                 addChannelVC.mediaDetailSelected = mediaSelected
                 addChannelVC.selectedChannelId = String(channel as! Int)
                 addChannelVC.localMediaDict = addToDict
-                addChannelVC.navigationController?.isNavigationBarHidden = true
-                self.navigationController?.pushViewController(addChannelVC, animated: false)
+                self.present(addChannelVC, animated: false, completion: nil)
+                CFRunLoopWakeUp(CFRunLoopGetCurrent());
             }
         }
         else{
@@ -1439,8 +1441,8 @@ class PhotoViewerViewController: UIViewController,UIGestureRecognizerDelegate,UR
     {
         let myChannelStoryboard = UIStoryboard(name:"MyChannel" , bundle: nil)
         let myChannelVC = myChannelStoryboard.instantiateViewController(withIdentifier: MyChannelViewController.identifier)
-        myChannelVC.navigationController?.isNavigationBarHidden = true
-        self.navigationController?.pushViewController(myChannelVC, animated: false)
+       self.present(myChannelVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     @IBAction func donebuttonClicked(_ sender: Any)
@@ -1449,8 +1451,8 @@ class PhotoViewerViewController: UIViewController,UIGestureRecognizerDelegate,UR
         {
             let cameraViewStoryboard = UIStoryboard(name:"IPhoneCameraView" , bundle: nil)
             let iPhoneCameraViewController = cameraViewStoryboard.instantiateViewController(withIdentifier: "IPhoneCameraViewController") as! IPhoneCameraViewController
-            self.navigationController?.isNavigationBarHidden = true
-            self.navigationController?.pushViewController(iPhoneCameraViewController, animated: false)
+            self.present(iPhoneCameraViewController, animated: false, completion: nil)
+            CFRunLoopWakeUp(CFRunLoopGetCurrent());
         }
         else if(playHandleflag == 1)
         {
@@ -1535,7 +1537,7 @@ class PhotoViewerViewController: UIViewController,UIGestureRecognizerDelegate,UR
                             }
                             self.fullScrenImageView.layer.add(animation, forKey: "imageTransition")
                         }
-                        self.videoThumbImage = fullImage as? UIImage
+                        self.videoThumbImage = FileManagerViewController.sharedInstance.getImageFromFilePath(mediaPath: fullImage as! String)
                         self.fullScrenImageView.image = (self.setOrientationForVideo())
                         self.fullScreenZoomView.image = (self.setOrientationForVideo())
                         
@@ -1726,7 +1728,13 @@ extension PhotoViewerViewController:UICollectionViewDelegate,UICollectionViewDel
                 }
                 cell.progressView.isHidden = true
                 
-                cell.thumbImageView.image = (thumpImage as! UIImage)
+                if thumpImage as! String != ""
+                {
+                    cell.thumbImageView.image = FileManagerViewController.sharedInstance.getImageFromFilePath(mediaPath: thumpImage as! String)
+                }
+                else{
+                    cell.thumbImageView.image = UIImage(named: "thumb12")
+                }
                 
                 let progress = GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[archiveChanelId]![indexPath.row][progressKey] as! Float
                 if(progress == 3.0 || progress == 3)

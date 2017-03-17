@@ -1200,8 +1200,8 @@ class StreamsListViewController: UIViewController{
                     
                     let sharingStoryboard = UIStoryboard(name:"Authentication", bundle: nil)
                     let channelItemListVC = sharingStoryboard.instantiateViewController(withIdentifier: "AuthenticateViewController") as! AuthenticateViewController
-                    channelItemListVC.navigationController?.isNavigationBarHidden = true
-                    self.navigationController?.pushViewController(channelItemListVC, animated: false)
+                    self.present(channelItemListVC, animated: false, completion: nil)
+                    CFRunLoopWakeUp(CFRunLoopGetCurrent());
                 }
             }
         }
@@ -1304,8 +1304,8 @@ class StreamsListViewController: UIViewController{
         SharedChannelDetailsAPI.sharedInstance.selectedSharedChannelMediaSource.removeAll()
         let cameraViewStoryboard = UIStoryboard(name:"IPhoneCameraView" , bundle: nil)
         let iPhoneCameraVC = cameraViewStoryboard.instantiateViewController(withIdentifier: "IPhoneCameraViewController") as! IPhoneCameraViewController
-        iPhoneCameraVC.navigationController?.isNavigationBarHidden = true
-        self.navigationController?.pushViewController(iPhoneCameraVC, animated: false)
+        self.present(iPhoneCameraVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     func  didSelectExtension(indexPathRow: Int, operation: BlockOperation)
@@ -1429,7 +1429,12 @@ class StreamsListViewController: UIViewController{
                 selectedMediaId = mediaAndLiveArray[indexPathRow][stream_mediaIdKey] as! String
                 let dateString = mediaAndLiveArray[indexPathRow]["createdTime"] as! String
                 let imageTakenTime = FileManagerViewController.sharedInstance.getTimeDifference(dateStr: dateString)
-                vc = MovieViewController.movieViewController(withImageVideo: mediaAndLiveArray[indexPathRow][stream_channelNameKey] as! String,channelId: mediaAndLiveArray[indexPathRow][channelIdkey] as! String, userName: mediaAndLiveArray[indexPathRow][userIdKey] as! String, mediaType:mediaAndLiveArray[indexPathRow][stream_mediaTypeKey] as! String, profileImage: profileImage, videoImageUrl:mediaAndLiveArray[indexPathRow][mediaUrlKey] as! UIImage, notifType: mediaAndLiveArray[indexPathRow][notificationKey] as! String, mediaId: mediaAndLiveArray[indexPathRow][stream_mediaIdKey] as! String,timeDiff:imageTakenTime,likeCountStr:likeCount, selectedItem: Int32(index),pageIndicator: 1, videoDuration: mediaAndLiveArray[indexPathRow][videoDurationKey] as? String) as! MovieViewController
+                
+                let mediaIdForFilePath = "\(selectedMediaId)thumb"
+                let parentPath = FileManagerViewController.sharedInstance.getParentDirectoryPath().absoluteString
+                let savingPath = parentPath! + "/" + mediaIdForFilePath
+
+                vc = MovieViewController.movieViewController(withImageVideo: mediaAndLiveArray[indexPathRow][stream_channelNameKey] as! String,channelId: mediaAndLiveArray[indexPathRow][channelIdkey] as! String, userName: mediaAndLiveArray[indexPathRow][userIdKey] as! String, mediaType:mediaAndLiveArray[indexPathRow][stream_mediaTypeKey] as! String, profileImage: profileImage, videoImageUrl:savingPath, notifType: mediaAndLiveArray[indexPathRow][notificationKey] as! String, mediaId: mediaAndLiveArray[indexPathRow][stream_mediaIdKey] as! String,timeDiff:imageTakenTime,likeCountStr:likeCount, selectedItem: Int32(index),pageIndicator: 1, videoDuration: mediaAndLiveArray[indexPathRow][videoDurationKey] as? String) as! MovieViewController
                 self.present(vc, animated: false) { () -> Void in
                 }
             }

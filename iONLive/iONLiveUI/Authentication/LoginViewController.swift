@@ -17,6 +17,7 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
         loginButton.isHidden = true
         
         UserDefaults.standard.setValue("true", forKey: "tokenValid")
@@ -26,8 +27,12 @@ class LoginViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        self.navigationController?.isNavigationBarHidden = false
+        self.navigationController?.isNavigationBarHidden = true
         self.userNameTextfield.becomeFirstResponder()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        view.endEditing(true)
     }
     
     override func didReceiveMemoryWarning() {
@@ -140,9 +145,8 @@ class LoginViewController: UIViewController {
         let verifyPhoneVC = storyboard.instantiateViewController(withIdentifier: SignUpVerifyPhoneViewController.identifier) as! SignUpVerifyPhoneViewController
         verifyPhoneVC.email = "invalid"
         verifyPhoneVC.userName = "invalid"
-        let backItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        verifyPhoneVC.navigationItem.backBarButtonItem = backItem
-        self.navigationController?.pushViewController(verifyPhoneVC, animated: false)
+        self.present(verifyPhoneVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     @IBAction func tapGestureRecognized(_ sender: Any) {
@@ -164,6 +168,15 @@ class LoginViewController: UIViewController {
             else{
                 ErrorManager.sharedInstance.installFailure()
             }
+        }
+    }
+    
+    @IBAction func backClicked(_ sender: Any){
+        guard (navigationController?.popViewController(animated:true)) != nil
+            else
+        {
+            dismiss(animated: true, completion: nil)
+            return
         }
     }
     
@@ -196,7 +209,6 @@ class LoginViewController: UIViewController {
     {
         self.passwordTextField.text = ""
         self.removeOverlay()
-        loadCameraViewController()
         if let json = response as? [String: AnyObject]
         {
             clearStreamingUserDefaults(defaults: defaults)
@@ -225,6 +237,7 @@ class LoginViewController: UIViewController {
             UserDefaults.standard.setValue("0", forKey: "notificationArrived")
             GlobalDataChannelList.sharedInstance.initialise()
             ChannelSharedListAPI.sharedInstance.initialisedata()
+            loadCameraViewController()
         }
         else
         {
@@ -273,7 +286,10 @@ class LoginViewController: UIViewController {
     {
         let cameraViewStoryboard = UIStoryboard(name:"IPhoneCameraView" , bundle: nil)
         let iPhoneCameraViewController = cameraViewStoryboard.instantiateViewController(withIdentifier: "IPhoneCameraViewController") as! IPhoneCameraViewController
-        self.navigationController?.pushViewController(iPhoneCameraViewController, animated: false)
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.window?.rootViewController = iPhoneCameraViewController
+        self.present(iPhoneCameraViewController, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
 }
 

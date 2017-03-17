@@ -20,12 +20,14 @@ class SignUpUserNameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         continuButton.isHidden = true
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
+        
         initialise()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        self.navigationController?.isNavigationBarHidden = false
+        self.navigationController?.isNavigationBarHidden = true
         userNameTextfield.becomeFirstResponder()
     }
     
@@ -126,15 +128,24 @@ class SignUpUserNameViewController: UIViewController {
         signUpUser(email: email, password: password, userName: self.userNameTextfield.text!)
     }
     
+    
+    @IBAction func backClicked(_ sender: Any) {
+        guard (navigationController?.popViewController(animated:true)) != nil
+            else
+        {
+            dismiss(animated: true, completion: nil)
+            return
+        }
+    }
+    
     func loadVerifyPhoneView()
     {
         let storyboard = UIStoryboard(name:"Authentication" , bundle: nil)
         let verifyPhoneVC = storyboard.instantiateViewController(withIdentifier: SignUpVerifyPhoneViewController.identifier) as! SignUpVerifyPhoneViewController
         verifyPhoneVC.email = email
         verifyPhoneVC.userName = self.userNameTextfield.text
-        let backItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        verifyPhoneVC.navigationItem.backBarButtonItem = backItem
-        self.navigationController?.pushViewController(verifyPhoneVC, animated: false)
+        self.present(verifyPhoneVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     func signUpUser(email: String, password: String, userName: String)

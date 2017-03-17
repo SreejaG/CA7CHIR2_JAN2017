@@ -146,8 +146,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         {
             let defaults = UserDefaults .standard
             defaults.setValue("login", forKey: "loadingView")
+            
             let authenticationStoryboard = UIStoryboard(name:"Authentication" , bundle: nil)
-            controller = authenticationStoryboard.instantiateViewController(withIdentifier: "AuthenticateNavigationController")
+            controller = authenticationStoryboard.instantiateViewController(withIdentifier: "AuthenticateViewController")
             self.window!.rootViewController = controller
         }
         else
@@ -167,13 +168,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     {
         let defaults = UserDefaults.standard
         defaults.setValue("appDelegateRedirection", forKey: "viewFromWhichPage")
-        var navigationController:UINavigationController?
+
         let cameraViewStoryboard = UIStoryboard(name:"IPhoneCameraView" , bundle: nil)
         let iPhoneCameraViewController = cameraViewStoryboard.instantiateViewController(withIdentifier: "IPhoneCameraViewController") as! IPhoneCameraViewController
-        
-        navigationController = UINavigationController(rootViewController: iPhoneCameraViewController)
-        navigationController!.isNavigationBarHidden = true
-        self.window!.rootViewController = navigationController
+        self.window!.rootViewController = iPhoneCameraViewController
     }
     
     func loadLiveStreamView()
@@ -190,12 +188,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UserDefaults.standard.set(1, forKey: "SelectedTab")
         let defaults = UserDefaults .standard
         defaults.setValue("1", forKey: "notificationFlag")
-        var navigationController:UINavigationController?
+        
         let notificationStoryboard = UIStoryboard(name:"Streaming" , bundle: nil)
         let notificationViewController = notificationStoryboard.instantiateViewController(withIdentifier: StreamsGalleryViewController.identifier) as! StreamsGalleryViewController
-        navigationController = UINavigationController(rootViewController: notificationViewController)
-        navigationController!.isNavigationBarHidden = true
-        self.window?.rootViewController = navigationController
+        
+        if(UIApplication.shared.applicationState == .inactive){
+             self.window!.rootViewController = notificationViewController
+        }
+        else{
+            let topController = UIApplication.topViewController()
+            topController?.present(notificationViewController, animated: false, completion: nil)
+        }
     }
     
     // MARK: - Core Data stack
@@ -539,6 +542,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     //Called if unable to register for APNS.
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+    }
+}
+
+
+//Checking op controller 
+
+extension UIApplication
+{
+    class func topViewController(base: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController?
+    {
+        if let nav = base as? UINavigationController
+        {
+            return topViewController(base: nav.visibleViewController)
+        }
+        if let tab = base as? UITabBarController
+        {
+            if let selected = tab.selectedViewController {
+                return topViewController(base: selected)
+            }
+        }
+        if let presented = base?.presentedViewController
+        {
+            return topViewController(base: presented)
+        }
+        return base
     }
 }
 

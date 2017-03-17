@@ -17,7 +17,12 @@ class ProgramCameraButtonViewController: UIViewController {
     
     @IBAction func didTapBackButton(_ sender: Any)
     {
-        _ = self.navigationController?.popViewController(animated: true)
+        guard (navigationController?.popViewController(animated:true)) != nil
+            else
+        {
+            dismiss(animated: true, completion: nil)
+            return
+        }
     }
     
     override func didReceiveMemoryWarning() {

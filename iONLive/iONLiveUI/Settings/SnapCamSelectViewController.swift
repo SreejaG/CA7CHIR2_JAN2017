@@ -126,16 +126,16 @@ extension SnapCamSelectViewController:UITableViewDataSource,UITableViewDelegate
                 titleLabel.text = "iPhone"
                 let cameraViewStoryboard = UIStoryboard(name:"IPhoneCameraView" , bundle: nil)
                 let iPhoneCameraViewController = cameraViewStoryboard.instantiateViewController(withIdentifier: "IPhoneCameraViewController") as! IPhoneCameraViewController
-                self.navigationController?.pushViewController(iPhoneCameraViewController, animated: false)
+                self.present(iPhoneCameraViewController, animated: false, completion: nil)
+                CFRunLoopWakeUp(CFRunLoopGetCurrent());
                 loadSnapCamViewWithFadeInFadeOutAnimation()
             }
             break
         default :
             let cameraViewStoryboard = UIStoryboard(name:"IPhoneCameraView" , bundle: nil)
             let iPhoneCameraViewController = cameraViewStoryboard.instantiateViewController(withIdentifier: "IPhoneCameraViewController") as! IPhoneCameraViewController
-            let navController = UINavigationController(rootViewController: iPhoneCameraViewController)
-            self.present(navController, animated: false) { () -> Void in
-            }
+            self.present(iPhoneCameraViewController, animated: false, completion: nil)
+            CFRunLoopWakeUp(CFRunLoopGetCurrent());
             break;
         }
     }
@@ -239,27 +239,24 @@ extension SnapCamSelectViewController
     {
         let vc = MovieViewController.movieViewController(withContentPath: "rtsp://192.168.42.1:554/live", parameters: nil , liveVideo: true) as! MovieViewController
         clearStreamingUserDefaults(defaults: UserDefaults.standard)
-        let navigationController:UINavigationController = UINavigationController(rootViewController: vc)
-        navigationController.isNavigationBarHidden = true
-        self.present(navigationController, animated: false) { () -> Void in
-        }
+        self.present(vc, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     func loadCameraViewController()
     {
         let cameraViewStoryboard = UIStoryboard(name:"IPhoneCameraView" , bundle: nil)
         let iPhoneCameraViewController = cameraViewStoryboard.instantiateViewController(withIdentifier: "IPhoneCameraViewController") as! IPhoneCameraViewController
-        let navController = UINavigationController(rootViewController: iPhoneCameraViewController)
-        navController.isNavigationBarHidden = true
-        self.present(navController, animated: false) { () -> Void in
-        }
+        self.present(iPhoneCameraViewController, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     func loadAPITestView()
     {
         let storyBoard = UIStoryboard(name:"iONCamPictureAPITest" , bundle: nil)
         let testAPIListVC = storyBoard.instantiateViewController(withIdentifier: iONLiveCamAPIListViewController.identifier)
-        self.navigationController?.pushViewController(testAPIListVC, animated: true)
+        self.present(testAPIListVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     func changeSelectedSnapCamMode(selectedMode:SnapCamSelectionMode)
@@ -408,21 +405,16 @@ extension SnapCamSelectViewController
     {
         let storyBoard = UIStoryboard.init(name:"Settings", bundle: nil)
         let settingsVC = storyBoard.instantiateViewController(withIdentifier: "SettingsViewController") as! SettingsViewController
-        
-        let navController = UINavigationController(rootViewController: settingsVC)
-        navController.isNavigationBarHidden = true
-        self.present(navController, animated: false) { () -> Void in
-        }
+        self.present(settingsVC, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     @IBAction func snapcamButtonClicked(_ sender: Any)
     {
         let cameraViewStoryboard = UIStoryboard(name:"IPhoneCameraView" , bundle: nil)
         let iPhoneCameraViewController = cameraViewStoryboard.instantiateViewController(withIdentifier: "IPhoneCameraViewController") as! IPhoneCameraViewController
-        let navController = UINavigationController(rootViewController: iPhoneCameraViewController)
-        navController.isNavigationBarHidden = true
-        self.present(navController, animated: false) { () -> Void in
-        }
+        self.present(iPhoneCameraViewController, animated: false, completion: nil)
+        CFRunLoopWakeUp(CFRunLoopGetCurrent());
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {

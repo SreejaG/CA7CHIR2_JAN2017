@@ -219,7 +219,7 @@ NSBlockOperation *likeOper;
                                 userName: (NSString *) username
                                mediaType: (NSString *) mediaType
                             profileImage: (UIImage *) profileImage
-                           VideoImageUrl: (UIImage *) VideoImageUrl
+                           VideoImageUrl: (NSString *) VideoImageUrl
                                notifType: (NSString *) notifType
                                  mediaId: (NSString *) mediaId
                                 timeDiff: (NSString *) timeDiff
@@ -312,7 +312,7 @@ NSBlockOperation *likeOper;
                  userName: (NSString *) username
                 mediaType: (NSString *) mediaType
              profileImage: (UIImage *) profileImage
-            VideoImageUrl: (UIImage *) VideoImageUrl
+            VideoImageUrl: (NSString *) VideoImageUrl
                 notifType: (NSString *) notifType
                   mediaId: (NSString *) mediaId
                  timeDiff: (NSString *) timeDiff
@@ -431,7 +431,7 @@ NSBlockOperation *likeOper;
              timeDiff: (NSString *) timeDiff
          likeCountStr: (NSString *) likeCountStr
             notifType: (NSString *) notifType
-        VideoImageUrl: (UIImage *) VideoImageUrl
+        VideoImageUrl: (NSString *) VideoImageUrl
         videoDuration: (NSString *) videoDuration
 {
     urlManager = [UrlManager sharedInstance];
@@ -476,7 +476,7 @@ NSBlockOperation *likeOper;
         scrollViewZoom.alpha = 1.0;
         topView.hidden = false;
         imageVideoView.contentMode = UIViewContentModeScaleAspectFill;
-        mediaImage = VideoImageUrl;
+        mediaImage = [[FileManagerViewController sharedInstance] getImageFromFilePathWithMediaPath:VideoImageUrl];
         [playIconView removeFromSuperview];
         playIconView = [[UIImageView alloc]init];
         playIconView.image = [UIImage imageNamed:@"Circled Play"];
@@ -985,7 +985,7 @@ NSBlockOperation *likeOper;
         [self removeOverlay];
         [self showOverlay1];
         orgIndex = -11;
-        UIImage *VideoImageUrlChk;
+        NSString *VideoImageUrlChk;
         if (swipeReceived.direction == UISwipeGestureRecognizerDirectionLeft)
         {
             gestureId = 0;
@@ -1132,7 +1132,9 @@ NSBlockOperation *likeOper;
                             timeDiffChk = [[FileManagerViewController sharedInstance] getTimeDifferenceWithDateStr:createdTime];
                             likeCountStrChk = @"";
                             notifTypeChk = streamORChannelDict[indexForSwipe][@"notification"];
-                            VideoImageUrlChk = streamORChannelDict[indexForSwipe][@"mediaUrl"];
+                            NSString *parentPath = [[[FileManagerViewController sharedInstance] getParentDirectoryPath] absoluteString];
+                            NSString *savingPath = [NSString stringWithFormat:@"%@/%@thumb",parentPath,mediaIdChk];
+                            VideoImageUrlChk = savingPath;
                             videoDurationChk = streamORChannelDict[indexForSwipe][@"video_duration"];
                             SetUpView *setUpObj = [[SetUpView alloc]init];
                             if(screenNumber == 1){
@@ -2737,10 +2739,7 @@ NSBlockOperation *likeOper;
     snapCamSelectVC.streamingDelegate = self;
     snapCamSelectVC.snapCamMode = [self getCameraSelectionMode];
     snapCamSelectVC.toggleSnapCamIPhoneMode = SnapCamSelectionModeSnapCam;
-    
-    UINavigationController *nav = [[UINavigationController alloc]initWithRootViewController:snapCamSelectVC];
-    nav.navigationBarHidden = true;
-    [self presentViewController:nav animated:YES completion:nil];
+    [self presentViewController:snapCamSelectVC animated:NO completion:nil];
 }
 
 - (IBAction)didTapPhotoViewer:(id)sender {
@@ -2853,13 +2852,7 @@ NSBlockOperation *likeOper;
     }
     UIStoryboard *sharingStoryboard = [UIStoryboard storyboardWithName:@"sharing" bundle:nil];
     UIViewController *mysharedChannelVC = [sharingStoryboard instantiateViewControllerWithIdentifier:@"MySharedChannelsViewController"];
-    
-    UINavigationController *navController = [[UINavigationController alloc]initWithRootViewController:mysharedChannelVC];
-    navController.navigationBarHidden = true;
-    
-    navController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    [self.navigationController presentViewController:navController animated:true completion:^{
-    }];
+    [self.navigationController presentViewController:mysharedChannelVC animated:NO completion:nil];
 }
 
 -(BOOL)isViewFinderLoading
@@ -2976,7 +2969,7 @@ NSBlockOperation *likeOper;
 {
     UIStoryboard *streamingStoryboard = [UIStoryboard storyboardWithName:@"Streaming" bundle:nil];
     StreamsGalleryViewController *streamsGalleryViewController = [streamingStoryboard instantiateViewControllerWithIdentifier:@"StreamsGalleryViewController"];
-    [self.navigationController pushViewController:streamsGalleryViewController animated:true];
+    [self presentViewController:streamsGalleryViewController animated:NO completion:nil];
 }
 
 -(void)resetBufferedDuration
@@ -3009,11 +3002,7 @@ NSBlockOperation *likeOper;
 {
     UIStoryboard *streamingStoryboard = [UIStoryboard storyboardWithName:@"PhotoViewer" bundle:nil];
     PhotoViewerViewController *photoViewerViewController =( PhotoViewerViewController*)[streamingStoryboard instantiateViewControllerWithIdentifier:@"PhotoViewerViewController"];
-    UINavigationController *navController = [[UINavigationController alloc]initWithRootViewController:photoViewerViewController];
-    navController.navigationBarHidden = true;
-    navController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    [self presentViewController:navController animated:true completion:^{
-    }];
+    [self presentViewController:photoViewerViewController animated:NO completion:nil];
 }
 
 -(SnapCamSelectionMode)getCameraSelectionMode
