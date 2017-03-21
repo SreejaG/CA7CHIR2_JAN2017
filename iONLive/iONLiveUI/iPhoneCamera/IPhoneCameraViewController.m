@@ -6,7 +6,7 @@
 #import <UIKit/UIKit.h>
 #import "IPhoneCameraViewController.h"
 #import "AAPLPreviewView.h"
-#import "CA7CH360-Swift.h"
+#import "CATCH360-Swift.h"
 #import "VCSimpleSession.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import <AVFoundation/AVFoundation.h>
@@ -785,13 +785,13 @@ int timerCount = 0;
             }
             AVCaptureVideoPreviewLayer *previewLayer = (AVCaptureVideoPreviewLayer *)self.previewView.layer;
             
-            //            if (shutterActionMode == SnapCamSelectionModeVideo)
-            //            {
-            //                [previewLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
-            //                if([self.session canSetSessionPreset:AVCaptureSessionPresetMedium]){
-            //                    [self.session setSessionPreset:AVCaptureSessionPresetMedium];
-            //                }
-            //            }
+//                        if (shutterActionMode == SnapCamSelectionModeVideo)
+//                        {
+//                            [previewLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
+//                            if([self.session canSetSessionPreset:AVCaptureSessionPresetMedium]){
+//                                [self.session setSessionPreset:AVCaptureSessionPresetMedium];
+//                            }
+//                        }
             
             [previewLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
             if([self.session canSetSessionPreset:AVCaptureSessionPresetMedium]){

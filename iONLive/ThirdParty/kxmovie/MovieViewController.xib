@@ -249,7 +249,7 @@
                                                         <action selector="didTapHeartImage:" destination="-1" eventType="touchUpInside" id="d4G-nd-i2h"/>
                                                     </connections>
                                                 </button>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="dummyUser" translatesAutoresizingMaskIntoConstraints="NO" id="BMp-J9-C8j">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="dummyUser" translatesAutoresizingMaskIntoConstraints="NO" id="BMp-J9-C8j">
                                                     <rect key="frame" x="10" y="5" width="40" height="40"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="40" id="KS9-IN-u7o"/>

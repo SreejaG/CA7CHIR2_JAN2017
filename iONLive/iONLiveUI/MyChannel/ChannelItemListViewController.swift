@@ -38,6 +38,7 @@ class ChannelItemListViewController: UIViewController, CAAnimationDelegate {
     
     var selectionFlag : Bool = false
     var downloadingFlag : Bool = false
+    var deleteSuccessFlag : Bool = false
     
     var channelId:String!
     var channelName:String!
@@ -74,6 +75,8 @@ class ChannelItemListViewController: UIViewController, CAAnimationDelegate {
         selectionFlag = false
         self.channelItemCollectionView.alwaysBounceVertical = true
         
+        deleteSuccessFlag = false
+
         let removeActivityIndicatorMyChannel = Notification.Name("removeActivityIndicatorMyChannel")
         NotificationCenter.default.addObserver(self, selector:#selector(ChannelItemListViewController.removeActivityIndicatorMyChanel(notif:)), name: removeActivityIndicatorMyChannel, object: nil)
         
@@ -426,61 +429,64 @@ class ChannelItemListViewController: UIViewController, CAAnimationDelegate {
     
     @IBAction func didTapCancelButton(_ sender: Any) {
         removeOverlay()
-        GlobalChannelToImageMapping.sharedInstance.deleteMediasFromChannel(channelId: channelId, mediaIdChkS: selected)
-        totalMediaCount = totalMediaCount - selected.count
-        
-        let filteredData = GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[channelId]!.filter(thumbExists)
-        totalCount = filteredData.count
-        
-        downloadingFlag = false
-        selectionFlag = false
-        
-        if(totalCount == GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[channelId]!.count){
+        if deleteSuccessFlag == true
+        {
+            GlobalChannelToImageMapping.sharedInstance.deleteMediasFromChannel(channelId: channelId, mediaIdChkS: selected)
+            totalMediaCount = totalMediaCount - selected.count
             
-        }
-        else{
-            if(GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[channelId]!.count > totalCount){
-                if(totalCount < 18 && totalCount > 0){
-                    DispatchQueue.main.async {
-                        self.customView.stopAnimationg()
-                        self.customView.removeFromSuperview()
-                        self.customView = CustomInfiniteIndicator(frame: CGRect(x:(self.channelItemCollectionView.layer.frame.width/2 - 20), y:(self.channelItemCollectionView.layer.frame.height - 100), width:40, height:40))
-                        self.channelItemCollectionView.addSubview(self.customView)
-                        self.customView.startAnimating()
-                    }
-                }
-                else if totalCount == 0
-                {
-                    DispatchQueue.main.async {
-                        self.customView.stopAnimationg()
-                        self.customView.removeFromSuperview()
-                        self.showOverlay()
-                        self.selectionButton.isHidden = true
-                    }
-                }
-                else{
-                    DispatchQueue.main.async {
-                        self.customView.stopAnimationg()
-                        self.customView.removeFromSuperview()
-                        self.removeOverlay()
-                        self.selectionButton.isHidden = false
-                    }
-                }
+            let filteredData = GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[channelId]!.filter(thumbExists)
+            totalCount = filteredData.count
+            
+            downloadingFlag = false
+            selectionFlag = false
+            
+            if(totalCount == GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[channelId]!.count){
+                
             }
             else{
-                customView.stopAnimationg()
-                customView.removeFromSuperview()
-            }
-            if(GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[channelId]!.count > totalCount){
-                if(totalCount < 18){
-                    downloadImagesFromGlobalChannelImageMapping(limit: 18)
+                if(GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[channelId]!.count > totalCount){
+                    if(totalCount < 18 && totalCount > 0){
+                        DispatchQueue.main.async {
+                            self.customView.stopAnimationg()
+                            self.customView.removeFromSuperview()
+                            self.customView = CustomInfiniteIndicator(frame: CGRect(x:(self.channelItemCollectionView.layer.frame.width/2 - 20), y:(self.channelItemCollectionView.layer.frame.height - 100), width:40, height:40))
+                            self.channelItemCollectionView.addSubview(self.customView)
+                            self.customView.startAnimating()
+                        }
+                    }
+                    else if totalCount == 0
+                    {
+                        DispatchQueue.main.async {
+                            self.customView.stopAnimationg()
+                            self.customView.removeFromSuperview()
+                            self.showOverlay()
+                            self.selectionButton.isHidden = true
+                        }
+                    }
+                    else{
+                        DispatchQueue.main.async {
+                            self.customView.stopAnimationg()
+                            self.customView.removeFromSuperview()
+                            self.removeOverlay()
+                            self.selectionButton.isHidden = false
+                        }
+                    }
                 }
                 else{
-                    downloadImagesFromGlobalChannelImageMapping(limit: selected.count)
+                    customView.stopAnimationg()
+                    customView.removeFromSuperview()
+                }
+                if(GlobalChannelToImageMapping.sharedInstance.GlobalChannelImageDict[channelId]!.count > totalCount){
+                    if(totalCount < 18){
+                        downloadImagesFromGlobalChannelImageMapping(limit: 18)
+                    }
+                    else{
+                        downloadImagesFromGlobalChannelImageMapping(limit: selected.count)
+                    }
                 }
             }
+            
         }
-        
         selectedArray.removeAll()
         selected.removeAllObjects()
         channelTitleLabel.text = channelName.uppercased()
@@ -531,6 +537,7 @@ class ChannelItemListViewController: UIViewController, CAAnimationDelegate {
             }
             
             if(self.selected.count > 0){
+                self.deleteSuccessFlag = true
                 channelIds.append(Int(self.channelId)!)
                 self.showOverlay()
                 self.selectionButton.isHidden = true
@@ -553,6 +560,7 @@ class ChannelItemListViewController: UIViewController, CAAnimationDelegate {
     func authenticationSuccessHandlerDelete(response:AnyObject?)
     {
         removeOverlay()
+        deleteSuccessFlag = false
         if (response as? [String: AnyObject]) != nil
         {
             GlobalChannelToImageMapping.sharedInstance.deleteMediasFromChannel(channelId: channelId, mediaIdChkS: selected)
@@ -637,6 +645,7 @@ class ChannelItemListViewController: UIViewController, CAAnimationDelegate {
     func authenticationFailureHandlerDelete(error: NSError?, code: String)
     {
         self.removeOverlay()
+        deleteSuccessFlag = false
         selectionButton.isHidden = false
         cancelButton.isHidden = true
         backButton.isHidden = false
