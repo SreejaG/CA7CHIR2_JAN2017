@@ -5,11 +5,11 @@ class UrlManager : NSObject {
     
 //    let baseUrl = "http://104.196.159.90:3000"; //IR3 Instance
     
-    //let baseUrl = "http://192.168.18.94:3000"; //IR3 Local Instance
+//    let baseUrl = "http://192.168.16.128:3000"; //IR3 Local Instance
     
-    //let baseUrl = "http://104.196.113.247:3000"; //Production
+    let baseUrl = "http://104.196.113.247:3000"; //Production
     
-    let baseUrl = "http://104.197.92.137:3000"; //Developer
+//    let baseUrl = "http://104.197.92.137:3000"; //Developer
     
     //let baseUrl = "http://192.168.18.89:3000"; //Local
     

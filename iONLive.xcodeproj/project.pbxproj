@@ -1651,7 +1651,7 @@
 					};
 					167AF03E1BFDC1F6003CDF30 = {
 						CreatedOnToolsVersion = 7.1.1;
-						DevelopmentTeam = T5CRG25QM8;
+						DevelopmentTeam = 3SG4EU67W3;
 						TestTargetID = 167AF02A1BFDC1F6003CDF30;
 					};
 					167AF0491BFDC1F6003CDF30 = {
@@ -2004,8 +2004,8 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Leif Chastaine (XM4FV4QQ99)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Leif Chastaine (XM4FV4QQ99)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Catch Motion, Inc. (3SG4EU67W3)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Catch Motion, Inc. (3SG4EU67W3)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -2027,7 +2027,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "7e4825b2-d4d2-4112-b2b9-590ad524122b";
+				PROVISIONING_PROFILE = "55c84623-254d-4296-b926-c628b45101d8";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "../ionliveiosapp/iONLive/ObjectiveCBridging/iONLive-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -2055,8 +2055,8 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Leif Chastaine (XM4FV4QQ99)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Leif Chastaine (XM4FV4QQ99)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Catch Motion, Inc. (3SG4EU67W3)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Catch Motion, Inc. (3SG4EU67W3)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -2071,7 +2071,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "7e4825b2-d4d2-4112-b2b9-590ad524122b";
+				PROVISIONING_PROFILE = "55c84623-254d-4296-b926-c628b45101d8";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "../ionliveiosapp/iONLive/ObjectiveCBridging/iONLive-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -2088,8 +2088,8 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = iONLive/CA7CH.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Leif Chastaine (XM4FV4QQ99)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Leif Chastaine (XM4FV4QQ99)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Catch Motion, Inc. (3SG4EU67W3)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Catch Motion, Inc. (3SG4EU67W3)";
 				DEVELOPMENT_TEAM = 3SG4EU67W3;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2109,8 +2109,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.gadgeon.ca7ch360;
 				PRODUCT_NAME = CATCH360;
-				PROVISIONING_PROFILE = "7e4825b2-d4d2-4112-b2b9-590ad524122b";
-				PROVISIONING_PROFILE_SPECIFIER = ca7ch360DevProf1;
+				PROVISIONING_PROFILE = "55c84623-254d-4296-b926-c628b45101d8";
+				PROVISIONING_PROFILE_SPECIFIER = catchProdProfileVersion1;
 				SWIFT_OBJC_BRIDGING_HEADER = "../live-ios-app/iONLive/ObjectiveCBridging/iONLive-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0.1;
@@ -2125,8 +2125,8 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = iONLive/CA7CH.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Leif Chastaine (XM4FV4QQ99)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Leif Chastaine (XM4FV4QQ99)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Catch Motion, Inc. (3SG4EU67W3)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Catch Motion, Inc. (3SG4EU67W3)";
 				DEVELOPMENT_TEAM = 3SG4EU67W3;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2146,8 +2146,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.gadgeon.ca7ch360;
 				PRODUCT_NAME = CATCH360;
-				PROVISIONING_PROFILE = "7e4825b2-d4d2-4112-b2b9-590ad524122b";
-				PROVISIONING_PROFILE_SPECIFIER = ca7ch360DevProf1;
+				PROVISIONING_PROFILE = "55c84623-254d-4296-b926-c628b45101d8";
+				PROVISIONING_PROFILE_SPECIFIER = catchProdProfileVersion1;
 				SWIFT_OBJC_BRIDGING_HEADER = "../live-ios-app/iONLive/ObjectiveCBridging/iONLive-Bridging-Header.h";
 				SWIFT_VERSION = 3.0.1;
 			};
@@ -2157,12 +2157,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = T5CRG25QM8;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Catch Motion, Inc. (3SG4EU67W3)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Catch Motion, Inc. (3SG4EU67W3)";
+				DEVELOPMENT_TEAM = 3SG4EU67W3;
 				INFOPLIST_FILE = iONLiveTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Gadgeon.iONLiveTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "55c84623-254d-4296-b926-c628b45101d8";
 				SWIFT_VERSION = 3.0.1;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iONLive.app/iONLive";
 			};
@@ -2172,11 +2174,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = T5CRG25QM8;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Catch Motion, Inc. (3SG4EU67W3)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Catch Motion, Inc. (3SG4EU67W3)";
+				DEVELOPMENT_TEAM = 3SG4EU67W3;
 				INFOPLIST_FILE = iONLiveTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Gadgeon.iONLiveTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "55c84623-254d-4296-b926-c628b45101d8";
 				SWIFT_VERSION = 3.0.1;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iONLive.app/iONLive";
 			};
@@ -2185,10 +2190,13 @@
 		167AF05A1BFDC1F6003CDF30 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Catch Motion, Inc. (3SG4EU67W3)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Catch Motion, Inc. (3SG4EU67W3)";
 				INFOPLIST_FILE = iONLiveUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Gadgeon.iONLiveUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "55c84623-254d-4296-b926-c628b45101d8";
 				SWIFT_VERSION = 3.0.1;
 				TEST_TARGET_NAME = iONLive;
 				USES_XCTRUNNER = YES;
@@ -2198,10 +2206,13 @@
 		167AF05B1BFDC1F6003CDF30 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Catch Motion, Inc. (3SG4EU67W3)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Catch Motion, Inc. (3SG4EU67W3)";
 				INFOPLIST_FILE = iONLiveUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Gadgeon.iONLiveUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "55c84623-254d-4296-b926-c628b45101d8";
 				SWIFT_VERSION = 3.0.1;
 				TEST_TARGET_NAME = iONLive;
 				USES_XCTRUNNER = YES;

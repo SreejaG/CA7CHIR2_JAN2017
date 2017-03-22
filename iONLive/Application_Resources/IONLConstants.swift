@@ -15,9 +15,9 @@ let initializingStream = "InitializingStream"
 let subChannelIdKey = "channel_sub_detail_id"
 let apiDeveloperFailureMessage = "developerMsg"
 
-let vowzaIp = "104.197.92.137" //Developer
+//let vowzaIp = "104.197.92.137" //Developer
 
-//let vowzaIp = "104.154.69.174" //production
+let vowzaIp = "104.154.69.174" //production
 
 //let vowzaIp = "104.196.159.90" //IR3
 
